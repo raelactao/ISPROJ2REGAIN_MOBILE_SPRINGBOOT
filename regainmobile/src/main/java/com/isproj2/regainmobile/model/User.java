@@ -79,9 +79,9 @@ public class User {
     @Column(name = "commission_balance")
     private BigDecimal commissionBalance = new BigDecimal(0.0);
 
-    @Lob
-    @Column(name = "profile_picture", columnDefinition = "BLOB", nullable = true)
-    private byte[] image;
+    // @Lob
+    // @Column(name = "profile_picture", columnDefinition = "BLOB", nullable = true)
+    // private byte[] image;
 
     @Column(name = "js_name", nullable = true)
     private String junkshopName;
@@ -89,9 +89,7 @@ public class User {
     public User() {
     }
 
-    public User(String lastname, String firstname, String username, String contactNo, String pw) {
-        this.lastName = lastname;
-        this.firstName = firstname;
+    public User(String username, String contactNo, String pw) {
         this.username = username;
         this.contactNo = contactNo;
         this.password = pw;
