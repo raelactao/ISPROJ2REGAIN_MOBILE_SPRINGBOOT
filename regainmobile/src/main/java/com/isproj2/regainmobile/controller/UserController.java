@@ -19,9 +19,9 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/add")
-    public String registerUser(@RequestBody User user) {
+    public void registerUser(@RequestBody User user) {
         userService.addUser(user);
-        return "User registered successfully";
+        // return;
     }
 
 }
