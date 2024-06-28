@@ -1,9 +1,11 @@
 package com.isproj2.regainmobile.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.isproj2.regainmobile.model.ResponseModel;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.services.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +21,9 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/add")
-    public void registerUser(@RequestBody User user) {
-        userService.addUser(user);
-        // return;
+    public ResponseModel registerUser(@RequestBody User user) {
+        final User savedUser = userService.addUser(user);
+        return new ResponseModel<>(HttpStatus.OK.value(), "User saved", savedUser);
     }
 
 }
