@@ -6,7 +6,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.isproj2.regainmobile.dto.UserDTO;
+import com.isproj2.regainmobile.model.Role;
 import com.isproj2.regainmobile.model.User;
+import com.isproj2.regainmobile.repo.RoleRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.UserService;
 
@@ -14,26 +17,20 @@ import com.isproj2.regainmobile.services.UserService;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository _userRepository;
 
-    // temp data while tables don't exist + default values
-    private final Long TEMP_ROLE = (long) 2;
-    private final Long TEMP_ADDRESS = (long) 1;
-    // private final int TEMP_PENALTY_POINTS = 0;
-    // private final BigDecimal TEMP_COMMISSION_BAL = new BigDecimal(0.0);
-    // private final String TEMP_ACC_STATUS = "Active";
+    @Autowired
+    private RoleRepository _roleRepository;
+
+    // private final Long TEMP_ROLE = (long) 2;
 
     @Override
-    public User addUser(User user) {
-        user.setRole(TEMP_ROLE);
-        user.setAddress(TEMP_ADDRESS);
+    public User addUser(UserDTO userDTO) {
+        // user.setRole(TEMP_ROLE);
+        User user = new User(userDTO);
+        user.setRole(_roleRepository.findByName(userDTO.getRole()));
 
-        // default values jic
-        // user.setPenaltyPoints(TEMP_PENALTY_POINTS);
-        // user.setCommissionBalance(TEMP_COMMISSION_BAL);
-        // user.setAccountStatus(TEMP_ACC_STATUS);
-
-        return userRepository.save(user);
+        return _userRepository.save(user);
     }
 
 }
