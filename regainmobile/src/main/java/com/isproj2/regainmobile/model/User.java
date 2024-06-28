@@ -2,29 +2,26 @@ package com.isproj2.regainmobile.model;
 
 import java.math.BigDecimal;
 
-import jakarta.persistence.CascadeType;
+import com.isproj2.regainmobile.dto.UserDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.Builder.Default;
 
 @Getter
 @Setter
-// @NoArgsConstructor
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "users")
 @Entity
 public class User {
@@ -34,11 +31,11 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "role_type")
-    private Long role;
-    // @ManyToOne
-    // @JoinColumn(name = "role_id", nullable = false)
-    // private Role role;
+    // @Column(name = "role_type")
+    // private Long role;
+    @ManyToOne
+    @JoinColumn(name = "role_type") // ** needs to be 'role_type' column as FK column in DB **
+    private Role role; // property name must match with 'mappedBy' name in Role class
 
     @Column(name = "last_name")
     private String lastName;
@@ -46,29 +43,21 @@ public class User {
     @Column(name = "first_name")
     private String firstName;
 
+    @lombok.NonNull
     @Column(name = "user_name")
     private String username;
 
+    @lombok.NonNull
     @Column(name = "contact_number", unique = true)
     private String contactNo;
 
+    @lombok.NonNull
     @Column(name = "pass")
     private String password;
 
     @Email
     @Column(name = "email", nullable = true)
     private String email;
-
-    @Column(name = "address")
-    private Long address;
-    // @OneToMany(mappedBy = "users", fetch = FetchType.EAGER, cascade =
-    // CascadeType.DETACH)
-    // private Set<Address> addressList;
-
-    /*
-     * need to modify address (and users?) table -- why list of addresses when no
-     * userID column?
-     */
 
     @Column(name = "acc_status")
     private String accountStatus = "Active";
@@ -86,13 +75,22 @@ public class User {
     @Column(name = "js_name", nullable = true)
     private String junkshopName;
 
-    public User() {
+    public User(UserDTO userDTO) {
+        this.id = userDTO.getId();
+        this.lastName = userDTO.getLastName();
+        this.firstName = userDTO.getFirstName();
+        this.username = userDTO.getUsername();
+        this.contactNo = userDTO.getContactNo();
+        this.password = userDTO.getPassword();
+        this.email = userDTO.getEmail();
+        this.accountStatus = userDTO.getAccountStatus();
+        this.penaltyPoints = userDTO.getPenaltyPoints();
+        this.commissionBalance = userDTO.getCommissionBalance();
+        this.junkshopName = userDTO.getJunkshopName();
     }
 
-    public User(String username, String contactNo, String pw) {
-        this.username = username;
-        this.contactNo = contactNo;
-        this.password = pw;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
 }
