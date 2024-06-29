@@ -18,6 +18,9 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class UserDTO {
 
+    // make sure the properties of the receiving class in the controller
+    // matches the Json instance properties / object
+
     private Long id;
 
     @lombok.NonNull
@@ -31,7 +34,7 @@ public class UserDTO {
     private String username;
 
     @lombok.NonNull
-    private String contactNo;
+    private String contactNumber;
 
     @lombok.NonNull
     private String password;
@@ -54,7 +57,7 @@ public class UserDTO {
         this.lastName = user.getLastName();
         this.firstName = user.getFirstName();
         this.username = user.getUsername();
-        this.contactNo = user.getContactNo();
+        this.contactNumber = user.getContactNumber();
         this.password = user.getPassword();
         this.email = user.getEmail();
         this.accountStatus = user.getAccountStatus();

@@ -49,7 +49,7 @@ public class User {
 
     @lombok.NonNull
     @Column(name = "contact_number", unique = true)
-    private String contactNo;
+    private String contactNumber;
 
     @lombok.NonNull
     @Column(name = "pass")
@@ -80,7 +80,7 @@ public class User {
         this.lastName = userDTO.getLastName();
         this.firstName = userDTO.getFirstName();
         this.username = userDTO.getUsername();
-        this.contactNo = userDTO.getContactNo();
+        this.contactNumber = userDTO.getContactNumber();
         this.password = userDTO.getPassword();
         this.email = userDTO.getEmail();
         this.accountStatus = userDTO.getAccountStatus();
