@@ -6,6 +6,6 @@ import com.isproj2.regainmobile.model.Role;
 
 public interface RoleService {
 
-    public Long getRoleId(String name);
+    public Integer getRoleId(String name);
 
 }

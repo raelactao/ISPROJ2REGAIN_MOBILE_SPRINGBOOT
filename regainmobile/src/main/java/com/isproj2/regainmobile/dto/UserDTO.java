@@ -21,7 +21,7 @@ public class UserDTO {
     // make sure the properties of the receiving class in the controller
     // matches the Json instance properties / object
 
-    private Long id;
+    private Integer id;
 
     @lombok.NonNull
     private String role;
