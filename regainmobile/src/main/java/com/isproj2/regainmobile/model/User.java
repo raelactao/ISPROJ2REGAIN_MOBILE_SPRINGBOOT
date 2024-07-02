@@ -2,15 +2,19 @@ package com.isproj2.regainmobile.model;
 
 import java.math.BigDecimal;
 
+import java.util.Collection;
+
 import com.isproj2.regainmobile.dto.UserDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
@@ -29,7 +33,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long id;
+    private Integer id;
 
     // @Column(name = "role_type")
     // private Long role;
@@ -75,6 +79,9 @@ public class User {
     @Column(name = "js_name", nullable = true)
     private String junkshopName;
 
+    @OneToMany(mappedBy = "seller", fetch=FetchType.EAGER)
+    private Collection<Product> product;
+
     public User(UserDTO userDTO) {
         this.id = userDTO.getId();
         this.lastName = userDTO.getLastName();
@@ -92,5 +99,6 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
+
 
 }

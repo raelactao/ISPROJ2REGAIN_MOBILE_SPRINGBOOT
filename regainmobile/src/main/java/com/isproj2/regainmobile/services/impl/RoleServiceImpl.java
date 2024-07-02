@@ -19,7 +19,7 @@ public class RoleServiceImpl implements RoleService {
     private RoleRepository _roleRepository;
 
     @Override
-    public Long getRoleId(String name) {
+    public Integer getRoleId(String name) {
         return _roleRepository.findByName(name).getRoleID();
     }
 
