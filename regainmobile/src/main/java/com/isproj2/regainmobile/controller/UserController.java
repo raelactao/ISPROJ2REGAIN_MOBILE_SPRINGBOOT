@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/api/register")
+// @RequestMapping("/api/register")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    // @Autowired
+    // private UserService userService;
 
-    @PostMapping("/add")
-    public ResponseModel registerUser(@RequestBody UserDTO user) {
-        final User savedUser = userService.addUser(user);
-        return new ResponseModel<>(HttpStatus.OK.value(), "User saved", savedUser);
-    }
+    // @PostMapping("/add")
+    // public ResponseModel registerUser(@RequestBody UserDTO user) {
+    // final User savedUser = userService.addUser(user);
+    // return new ResponseModel<>(HttpStatus.OK.value(), "User saved", savedUser);
+    // }
 
 }

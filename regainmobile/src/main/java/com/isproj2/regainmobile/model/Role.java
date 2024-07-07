@@ -25,7 +25,7 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
-    private Long roleID;
+    private Integer roleID;
 
     // column name = 'role_type' must match FK column
     @Column(name = "role_type", columnDefinition = "ROLE_USER")
