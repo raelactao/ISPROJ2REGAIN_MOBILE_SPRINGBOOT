@@ -1,5 +1,7 @@
 package com.isproj2.regainmobile.services.impl;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
@@ -8,6 +10,7 @@ import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.repo.ProductRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.ProductService;
+import com.isproj2.regainmobile.services.UserService;
 
 import jakarta.transaction.Transactional;
 
@@ -15,19 +18,18 @@ import jakarta.transaction.Transactional;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, UserService userService) {
         this.productRepository = productRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
     @Transactional
     public Product addProduct(ProductDTO productDTO) {
-        User seller = userRepository.findById(productDTO.getSellerID())
-        .orElseThrow(() -> new RuntimeException("Seller not found with ID:" + productDTO.getSellerID()));
-
+        User seller = userService.getUserById(productDTO.getSellerID());
+        
         Product product = new Product();
         product.setSeller(seller);
         product.setProductName(productDTO.getProductName());
@@ -44,8 +46,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(Integer productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+        Optional<Product> product = productRepository.findById(productId);
+        return product.orElseThrow(() -> new IllegalArgumentException("Product Not Found"));
     }
 
     @Override
@@ -54,9 +56,8 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        User seller = userRepository.findById(productDTO.getSellerID())
-        .orElseThrow(() -> new RuntimeException("Seller not found with ID:" + productDTO.getSellerID()));
-
+        User seller = userService.getUserById(productDTO.getSellerID());
+     
         // Update fields based on DTO
         product.setSeller(seller);
         product.setProductName(productDTO.getProductName());
