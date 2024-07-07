@@ -1,17 +1,20 @@
 package com.isproj2.regainmobile.model;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -66,6 +69,9 @@ public class Product {
     @lombok.NonNull
     @Column(name = "can_deliver")
     private Boolean canDeliver;
+
+    @OneToMany(mappedBy = "product", fetch=FetchType.EAGER)
+    private Collection<Favorite> favorite;
 
     public Product(ProductDTO productDTO) {
         this.productID = productDTO.getProductID();

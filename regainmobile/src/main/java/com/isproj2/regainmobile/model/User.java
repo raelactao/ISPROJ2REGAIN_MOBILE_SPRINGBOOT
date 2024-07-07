@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import com.isproj2.regainmobile.dto.UserDTO;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -81,6 +82,9 @@ public class User {
 
     @OneToMany(mappedBy = "seller", fetch=FetchType.EAGER)
     private Collection<Product> product;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Collection<Favorite> favorite;
 
     public User(UserDTO userDTO) {
         this.id = userDTO.getId();
