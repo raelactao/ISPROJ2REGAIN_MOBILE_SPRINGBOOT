@@ -32,13 +32,13 @@ public class FavoriteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(favorite);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFavorite(@PathVariable Integer id) {
-        favoriteService.deleteFavorite(id);
+    @DeleteMapping("/delete/{favoriteId}")
+    public ResponseEntity<Void> deleteFavorite(@PathVariable Integer favoriteId) {
+        favoriteService.deleteFavorite(favoriteId);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/user/{userID}")
+    @GetMapping("/all/{userID}")
     public ResponseEntity<List<Favorite>> getAllFavoritesByUserId(@PathVariable Integer userID) {
         List<Favorite> favorites = favoriteService.getAllFavoritesByUserId(userID);
         return ResponseEntity.ok(favorites);

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
@@ -15,6 +16,7 @@ import com.isproj2.regainmobile.model.Product;
 import com.isproj2.regainmobile.services.ProductService;
 
 @RestController
+@RequestMapping("/products")
 public class ProductController {
     
 private final ProductService productService;
@@ -24,7 +26,7 @@ private final ProductService productService;
     }
 
     // Endpoint to add a new product
-    @PostMapping("/addproduct")
+    @PostMapping("/add")
     public ResponseEntity<Product> addProduct(@RequestBody ProductDTO productDTO) {
         Product addedProduct = productService.addProduct(productDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(addedProduct);
@@ -38,14 +40,14 @@ private final ProductService productService;
     }
 
     // Endpoint to update an existing product
-    @PutMapping("/{productId}")
+    @PutMapping("/update/{productId}")
     public ResponseEntity<Product> updateProduct(@PathVariable Integer productId, @RequestBody ProductDTO productDTO) {
         Product updatedProduct = productService.updateProduct(productId, productDTO);
         return ResponseEntity.ok(updatedProduct);
     }
 
     // Endpoint to delete a product by its ID
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/delete/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Integer productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.noContent().build();

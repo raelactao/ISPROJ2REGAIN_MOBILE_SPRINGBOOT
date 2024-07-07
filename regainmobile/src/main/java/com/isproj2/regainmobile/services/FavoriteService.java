@@ -7,6 +7,6 @@ import com.isproj2.regainmobile.model.Favorite;
 
 public interface FavoriteService {
     Favorite addFavorite(FavoriteDTO favoriteDTO);
-    void deleteFavorite(Integer favoriteID);
-    List<Favorite> getAllFavoritesByUserId(Integer userID);
+    void deleteFavorite(Integer favoriteId);
+    List<Favorite> getAllFavoritesByUserId(Integer userId);
 }

@@ -86,6 +86,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Collection<Favorite> favorite;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Collection<Address> address;
+
     public User(UserDTO userDTO) {
         this.id = userDTO.getId();
         this.lastName = userDTO.getLastName();

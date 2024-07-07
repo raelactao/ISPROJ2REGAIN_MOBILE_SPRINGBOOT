@@ -2,6 +2,7 @@ package com.isproj2.regainmobile.services.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,12 @@ public class UserServiceImpl implements UserService {
         user.setRole(_roleRepository.findByName(userDTO.getRole()));
 
         return _userRepository.save(user);
+    }
+
+    @Override
+    public User getUserById(Integer userId) {
+        Optional<User> user = _userRepository.findById(userId);
+        return user.orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
 }
