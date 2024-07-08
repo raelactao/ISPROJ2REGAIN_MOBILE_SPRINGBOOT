@@ -9,5 +9,4 @@ import com.isproj2.regainmobile.model.Address;
 
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Integer> {
-    List<Address> findAllByUser_Id(Integer userId);
 }

@@ -13,10 +13,8 @@ public class FavoriteDTO {
 
     private Integer favoriteID;
 
-    @lombok.NonNull
     private Integer userID;
 
-    @lombok.NonNull
     private Integer productID;
 
     @lombok.NonNull

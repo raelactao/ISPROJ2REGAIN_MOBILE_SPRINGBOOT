@@ -6,9 +6,7 @@ import com.isproj2.regainmobile.dto.AddressDTO;
 import com.isproj2.regainmobile.model.Address;
 
 public interface AddressService {
-    Address addAddress(AddressDTO addressDTO);
-    Address updateAddress(Integer addressId, AddressDTO addressDTO);
+    AddressDTO createAddress(AddressDTO addressDTO);
     void deleteAddress(Integer addressId);
-    List<Address> getAllAddressesByUserId(Integer userId);
-    Address getAddressById(Integer addressId);
+    AddressDTO getAddressById(Integer addressId);
 }
