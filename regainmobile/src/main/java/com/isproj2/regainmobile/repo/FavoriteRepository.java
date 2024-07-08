@@ -9,5 +9,4 @@ import com.isproj2.regainmobile.model.Favorite;
 
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
-    List<Favorite> findAllByUser_Id(Integer userID);
 }

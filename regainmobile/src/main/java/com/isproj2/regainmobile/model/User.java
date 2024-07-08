@@ -89,6 +89,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Collection<Address> address;
 
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL)
+    private Collection<Order> order;
+
     public User(UserDTO userDTO) {
         this.id = userDTO.getId();
         this.lastName = userDTO.getLastName();

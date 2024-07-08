@@ -32,6 +32,5 @@ public class AddressDTO {
     @lombok.NonNull
     private String zipCode;
 
-    @lombok.NonNull
     private Integer userID;
 }

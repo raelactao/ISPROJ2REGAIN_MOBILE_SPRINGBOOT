@@ -1,64 +1,46 @@
 package com.isproj2.regainmobile.services.impl;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
+import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Product;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.repo.ProductRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.ProductService;
-import com.isproj2.regainmobile.services.UserService;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository productRepository;
-    private final UserService userService;
+    @Autowired
+    private ProductRepository productRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, UserService userService) {
-        this.productRepository = productRepository;
-        this.userService = userService;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Override
+    public ProductDTO createProduct(ProductDTO productDTO) {
+        User seller = userRepository.findById(productDTO.getSellerID())
+                .orElseThrow(() -> new ResourceNotFoundException("Seller not found with id " + productDTO.getSellerID()));
+
+        Product product = new Product(productDTO, seller);
+        productRepository.save(product);
+        return productDTO;
     }
 
     @Override
-    @Transactional
-    public Product addProduct(ProductDTO productDTO) {
-        User seller = userService.getUserById(productDTO.getSellerID());
-        
-        Product product = new Product();
-        product.setSeller(seller);
-        product.setProductName(productDTO.getProductName());
-        product.setDescription(productDTO.getDescription());
-        product.setWeight(productDTO.getWeight());
-        product.setLocation(productDTO.getLocation());
-        product.setCategory(productDTO.getCategory());
-        product.setPrice(productDTO.getPrice());
-        // product.setImage(productDTO.getImage());
-        product.setCanDeliver(productDTO.getCanDeliver());
-
-        return productRepository.save(product);
-    }
-
-    @Override
-    public Product getProductById(Integer productId) {
-        Optional<Product> product = productRepository.findById(productId);
-        return product.orElseThrow(() -> new IllegalArgumentException("Product Not Found"));
-    }
-
-    @Override
-    @Transactional
-    public Product updateProduct(Integer productId, ProductDTO productDTO) {
+    public ProductDTO updateProduct(Integer productId, ProductDTO productDTO) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + productId));
 
-        User seller = userService.getUserById(productDTO.getSellerID());
-     
-        // Update fields based on DTO
+        User seller = userRepository.findById(productDTO.getSellerID())
+                .orElseThrow(() -> new ResourceNotFoundException("Seller not found with id " + productDTO.getSellerID()));
+
         product.setSeller(seller);
         product.setProductName(productDTO.getProductName());
         product.setDescription(productDTO.getDescription());
@@ -66,23 +48,31 @@ public class ProductServiceImpl implements ProductService {
         product.setLocation(productDTO.getLocation());
         product.setCategory(productDTO.getCategory());
         product.setPrice(productDTO.getPrice());
-        // product.setImage(productDTO.getImage());
         product.setCanDeliver(productDTO.getCanDeliver());
 
-        return productRepository.save(product);
+        productRepository.save(product);
+        return productDTO;
     }
 
     @Override
-    @Transactional
     public void deleteProduct(Integer productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        productRepository.delete(product);
+        if (!productRepository.existsById(productId)) {
+            throw new ResourceNotFoundException("Product not found with id " + productId);
+        }
+        productRepository.deleteById(productId);
     }
 
-    // @Override
-    // public List<Product> getAllProducts() {
-    //     return productRepository.findAll();
-    // }
+    @Override
+    public ProductDTO getProductById(Integer productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + productId));
+        return new ProductDTO(product.getProductID(), product.getSeller().getId(), product.getProductName(), product.getDescription(), product.getWeight(), product.getLocation(), product.getCategory(), product.getPrice(), product.getCanDeliver());
+    }
+
+    @Override
+    public List<ProductDTO> getAllProducts() {
+        return productRepository.findAll().stream()
+                .map(product -> new ProductDTO(product.getProductID(), product.getSeller().getId(), product.getProductName(), product.getDescription(), product.getWeight(), product.getLocation(), product.getCategory(), product.getPrice(), product.getCanDeliver()))
+                .collect(Collectors.toList());
+    }
 }

@@ -34,7 +34,6 @@ public class Product {
     @Column(name = "product_id")
     private Integer productID;
 
-    
     @ManyToOne
     @JoinColumn(name = "seller_id", referencedColumnName = "user_id", nullable = false)
     private User seller;
@@ -73,9 +72,12 @@ public class Product {
     @OneToMany(mappedBy = "product", fetch=FetchType.EAGER)
     private Collection<Favorite> favorite;
 
-    public Product(ProductDTO productDTO) {
+    @OneToMany(mappedBy = "product", fetch=FetchType.EAGER)
+    private Collection<Order> order;
+
+    public Product(ProductDTO productDTO, User seller) {
         this.productID = productDTO.getProductID();
-        // this.seller = productDTO.getSellerID();
+        this.seller = seller;
         this.productName = productDTO.getProductName();
         this.description = productDTO.getDescription();
         this.weight = productDTO.getWeight();
