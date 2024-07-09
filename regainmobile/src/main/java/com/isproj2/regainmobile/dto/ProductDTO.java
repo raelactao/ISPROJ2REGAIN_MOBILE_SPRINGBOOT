@@ -24,13 +24,15 @@ public class ProductDTO {
     private String description;
 
     @lombok.NonNull
-    private Float weight;
+    private Double weight;
 
     @lombok.NonNull
     private Integer location;
 
+    // changed to String so that I don't need to map ID from Flutter app and require
+    // ID's in Flutter to match ID's in DB
     @lombok.NonNull
-    private Integer category;
+    private String category;
 
     @lombok.NonNull
     private BigDecimal price;
