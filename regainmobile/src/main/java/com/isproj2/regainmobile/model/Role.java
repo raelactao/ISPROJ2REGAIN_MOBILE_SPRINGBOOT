@@ -33,7 +33,7 @@ public class Role {
 
     // mappedBy = 'role' must match with a property in User class
     @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
-    private Collection<User> users;
+    private Collection<AppUser> users;
 
     public Role(String role) {
         this.name = role;

@@ -2,13 +2,16 @@ package com.isproj2.regainmobile.dto;
 
 import java.math.BigDecimal;
 
-import com.isproj2.regainmobile.model.User;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
+
+import com.isproj2.regainmobile.model.AppUser;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,6 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
 
     // make sure the properties of the receiving class in the controller
@@ -23,7 +27,6 @@ public class UserDTO {
 
     private Integer id;
 
-    @lombok.NonNull
     private String role;
 
     private String lastName;
@@ -33,7 +36,6 @@ public class UserDTO {
     @lombok.NonNull
     private String username;
 
-    @lombok.NonNull
     private String contactNumber;
 
     @lombok.NonNull
@@ -51,7 +53,7 @@ public class UserDTO {
 
     private String junkshopName;
 
-    public UserDTO(User user) {
+    public UserDTO(AppUser user) {
         this.id = user.getId();
         this.role = user.getRole().getName();
         this.lastName = user.getLastName();
@@ -65,4 +67,11 @@ public class UserDTO {
         this.commissionBalance = user.getCommissionBalance();
         this.junkshopName = user.getJunkshopName();
     }
+
+    public UserDTO(String username, String password, String contactNumber) {
+        this.username = username;
+        this.password = password;
+        this.contactNumber = contactNumber;
+    }
+
 }

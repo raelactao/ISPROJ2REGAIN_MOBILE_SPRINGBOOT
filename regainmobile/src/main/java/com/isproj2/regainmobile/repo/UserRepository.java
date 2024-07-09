@@ -2,11 +2,11 @@ package com.isproj2.regainmobile.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.isproj2.regainmobile.model.User;
+import com.isproj2.regainmobile.model.AppUser;
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<AppUser, Integer> {
 
-    Optional<User> findByUsername(String username);
+    Optional<AppUser> findByUsername(String username);
 
 }

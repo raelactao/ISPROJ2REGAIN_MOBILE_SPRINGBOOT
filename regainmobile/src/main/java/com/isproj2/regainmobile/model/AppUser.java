@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 @Entity
-public class User {
+public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +49,6 @@ public class User {
     @Column(name = "user_name")
     private String username;
 
-    @lombok.NonNull
     @Column(name = "contact_number", unique = true)
     private String contactNumber;
 
@@ -75,7 +76,7 @@ public class User {
     @Column(name = "js_name", nullable = true)
     private String junkshopName;
 
-    public User(UserDTO userDTO) {
+    public AppUser(UserDTO userDTO) {
         this.id = userDTO.getId();
         this.lastName = userDTO.getLastName();
         this.firstName = userDTO.getFirstName();
@@ -87,6 +88,12 @@ public class User {
         this.penaltyPoints = userDTO.getPenaltyPoints();
         this.commissionBalance = userDTO.getCommissionBalance();
         this.junkshopName = userDTO.getJunkshopName();
+    }
+
+    public AppUser(String username, String password, String contactNumber) {
+        this.username = username;
+        this.password = password;
+        this.contactNumber = contactNumber;
     }
 
     public void setRole(Role role) {

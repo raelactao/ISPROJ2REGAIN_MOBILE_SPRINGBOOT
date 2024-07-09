@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.isproj2.regainmobile.dto.UserDTO;
 import com.isproj2.regainmobile.model.Role;
-import com.isproj2.regainmobile.model.User;
+import com.isproj2.regainmobile.model.AppUser;
 import com.isproj2.regainmobile.repo.RoleRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
+import com.isproj2.regainmobile.security.AESEncryptor;
 import com.isproj2.regainmobile.services.UserService;
 
 @Service
@@ -22,13 +23,17 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleRepository _roleRepository;
 
+    @Autowired
+    private AESEncryptor _aesEncryptor;
+
     // private final Long TEMP_ROLE = (long) 2;
 
     @Override
-    public User addUser(UserDTO userDTO) {
+    public AppUser addUser(UserDTO userDTO) {
         // user.setRole(TEMP_ROLE);
-        User user = new User(userDTO);
+        AppUser user = new AppUser(userDTO);
         user.setRole(_roleRepository.findByName(userDTO.getRole()));
+        user.setPassword(_aesEncryptor.encrypt(userDTO.getPassword()));
 
         return _userRepository.save(user);
     }

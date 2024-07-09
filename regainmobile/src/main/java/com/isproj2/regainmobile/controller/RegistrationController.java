@@ -8,20 +8,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.UserDTO;
+import com.isproj2.regainmobile.model.AppUser;
 import com.isproj2.regainmobile.model.ResponseModel;
-import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.services.UserService;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/register")
 public class RegistrationController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
+    @PostMapping("/add")
     public ResponseModel registerUser(@RequestBody UserDTO user) {
-        final User savedUser = userService.addUser(user);
+        final AppUser savedUser = userService.addUser(user);
         return new ResponseModel<>(HttpStatus.OK.value(), "User saved", savedUser);
     }
 

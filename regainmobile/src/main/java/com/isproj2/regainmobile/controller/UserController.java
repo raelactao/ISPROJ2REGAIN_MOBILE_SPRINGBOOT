@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.UserDTO;
 import com.isproj2.regainmobile.model.ResponseModel;
-import com.isproj2.regainmobile.model.User;
+import com.isproj2.regainmobile.model.AppUser;
 import com.isproj2.regainmobile.services.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
