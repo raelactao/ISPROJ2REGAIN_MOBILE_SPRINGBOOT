@@ -29,10 +29,8 @@ public class ProductDTO {
     @lombok.NonNull
     private Integer location;
 
-    // changed to String so that I don't need to map ID from Flutter app and require
-    // ID's in Flutter to match ID's in DB
     @lombok.NonNull
-    private String category;
+    private Integer categoryID;
 
     @lombok.NonNull
     private BigDecimal price;
