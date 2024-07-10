@@ -2,6 +2,7 @@ package com.isproj2.regainmobile.model;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Optional;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
 
@@ -75,14 +76,14 @@ public class Product {
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private Collection<Order> order;
 
-    public Product(ProductDTO productDTO, User seller) {
+    public Product(ProductDTO productDTO, User seller, Category category) {
         this.productID = productDTO.getProductID();
         this.seller = seller;
         this.productName = productDTO.getProductName();
         this.description = productDTO.getDescription();
         this.weight = productDTO.getWeight();
         this.location = productDTO.getLocation();
-        // this.category = productDTO.getCategory();
+        this.category = category;
         this.price = productDTO.getPrice();
         // this.image = productDTO.getPenaltyPoints();
         this.canDeliver = productDTO.getCanDeliver();
