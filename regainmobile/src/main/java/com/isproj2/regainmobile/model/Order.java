@@ -1,6 +1,7 @@
 package com.isproj2.regainmobile.model;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 import com.isproj2.regainmobile.dto.OrderDTO;
@@ -49,7 +50,7 @@ public class Order {
 
     @lombok.NonNull
     @Column(name = "delivery_date")
-    private LocalDateTime deliveryDate;
+    private Date deliveryDate;
 
     @lombok.NonNull
     @Column(name = "payment_method")

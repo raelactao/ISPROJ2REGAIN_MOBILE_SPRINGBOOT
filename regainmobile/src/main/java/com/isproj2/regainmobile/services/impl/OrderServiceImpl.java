@@ -46,8 +46,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new RuntimeException("Address not found"));
 
         Order order = new Order(orderDTO, buyer, address, product);
-        order.setOrderDate(LocalDateTime.now());
-        order.setDeliveryDate(LocalDateTime.now());// Set current timestamp for order date
+        order.setOrderDate(LocalDateTime.now()); // Set current timestamp for order date
         orderRepository.save(order);
 
         return orderDTO;
