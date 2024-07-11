@@ -8,8 +8,10 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import com.isproj2.regainmobile.model.RateTag;
+import com.isproj2.regainmobile.model.ReportCategory;
 import com.isproj2.regainmobile.model.Role;
 import com.isproj2.regainmobile.repo.RateTagRepository;
+import com.isproj2.regainmobile.repo.ReportCategoryRepository;
 import com.isproj2.regainmobile.repo.RoleRepository;
 
 @Component
@@ -23,6 +25,9 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Autowired
     private RateTagRepository rateTagRepository;
 
+    @Autowired
+    private ReportCategoryRepository reportCategoryRepository;
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (alreadySetup) {
@@ -35,6 +40,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         createRoleIfNotFound("ROLE_USER");
         createRoleIfNotFound("ROLE_USER_HOUSEHOLD");
         createRoleIfNotFound("ROLE_USER_JUNKSHOP");
+
         //Pickup/Drop-off
         createRateTagIfNotFound("On-time Pickup");
         createRateTagIfNotFound("Delayed Pickup");
@@ -63,6 +69,14 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         createRateTagIfNotFound("Contaminated Waste");
         createRateTagIfNotFound("Mixed Quality Items");
 
+        //Report Categories
+        createReportCategoryIfNotFound("Suspicious Account");
+        createReportCategoryIfNotFound("Fake Location");
+        createReportCategoryIfNotFound("Item Wrongly Categorized");
+        createReportCategoryIfNotFound("Selling Prohibited Items");
+        createReportCategoryIfNotFound("Mispriced Listings");
+        createReportCategoryIfNotFound("Offensive Behavior/Content");
+        
         alreadySetup = true;
     }
 
@@ -86,6 +100,17 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             rateTagRepository.save(rateTag);
         }
         return rateTag;
+    }
+
+    @Transactional
+    ReportCategory createReportCategoryIfNotFound(String name) {
+
+        ReportCategory reportCategory= reportCategoryRepository.findByName(name);
+        if (reportCategory == null) {
+            reportCategory = new ReportCategory(name);
+            reportCategoryRepository.save(reportCategory);
+        }
+        return reportCategory;
     }
 
 }
