@@ -83,14 +83,26 @@ public class User {
     @OneToMany(mappedBy = "seller", fetch=FetchType.EAGER)
     private Collection<Product> product;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch=FetchType.EAGER)
     private Collection<Favorite> favorite;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch=FetchType.EAGER)
     private Collection<Address> address;
 
-    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "buyer", fetch=FetchType.EAGER)
     private Collection<Order> order;
+
+    @OneToMany(mappedBy = "buyer", fetch=FetchType.EAGER)
+    private Collection<Offer> offer;
+
+    @OneToMany(mappedBy = "seller", fetch=FetchType.EAGER)
+    private Collection<Offer> offer2;
+
+    @OneToMany(mappedBy = "reporter", fetch=FetchType.EAGER)
+    private Collection<ListingReport> listingReport;
+
+    @OneToMany(mappedBy = "reporter", fetch = FetchType.EAGER)
+    private Collection<EQListingReport> eqlistingReport;
 
     public User(UserDTO userDTO) {
         this.id = userDTO.getId();

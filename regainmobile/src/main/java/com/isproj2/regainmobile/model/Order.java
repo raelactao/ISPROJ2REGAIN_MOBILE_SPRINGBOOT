@@ -34,7 +34,7 @@ public class Order {
     @Column(name = "order_id")
     private Integer orderID;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id", unique = true)
     private Product product;
 

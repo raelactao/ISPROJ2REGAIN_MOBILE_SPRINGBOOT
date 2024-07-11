@@ -49,8 +49,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + productId));
 
         User seller = userRepository.findById(productDTO.getSellerID())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Seller not found with id " + productDTO.getSellerID()));
+                .orElseThrow(() -> new ResourceNotFoundException("Seller not found with id " + productDTO.getSellerID()));
 
         Category categ = categoryRepository.findById(productDTO.getCategoryID())
                 .orElseThrow(() -> new ResourceNotFoundException(
