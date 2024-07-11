@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -72,7 +73,7 @@ public class Product {
     @OneToMany(mappedBy = "product", fetch=FetchType.EAGER)
     private Collection<Favorite> favorite;
 
-    @OneToMany(mappedBy = "product", fetch=FetchType.EAGER)
+    @OneToOne(mappedBy = "product", fetch=FetchType.EAGER)
     private Collection<Order> order;
 
     public Product(ProductDTO productDTO, User seller) {
