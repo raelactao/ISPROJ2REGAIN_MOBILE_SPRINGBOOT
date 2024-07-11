@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
+import com.isproj2.regainmobile.model.Category;
 import com.isproj2.regainmobile.model.Product;
 import com.isproj2.regainmobile.model.User;
+import com.isproj2.regainmobile.repo.CategoryRepository;
 import com.isproj2.regainmobile.repo.ProductRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.ProductService;
@@ -23,12 +25,20 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     @Override
     public ProductDTO createProduct(ProductDTO productDTO) {
         User seller = userRepository.findById(productDTO.getSellerID())
-                .orElseThrow(() -> new ResourceNotFoundException("Seller not found with id " + productDTO.getSellerID()));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Seller not found with id " + productDTO.getSellerID()));
 
-        Product product = new Product(productDTO, seller);
+        Category categ = categoryRepository.findById(productDTO.getCategoryID())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Category not found with id " + productDTO.getCategoryID()));
+
+        Product product = new Product(productDTO, seller, categ);
         productRepository.save(product);
         return productDTO;
     }
@@ -39,14 +49,20 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + productId));
 
         User seller = userRepository.findById(productDTO.getSellerID())
-                .orElseThrow(() -> new ResourceNotFoundException("Seller not found with id " + productDTO.getSellerID()));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Seller not found with id " + productDTO.getSellerID()));
+
+        Category categ = categoryRepository.findById(productDTO.getCategoryID())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Category not found with id " + productDTO.getCategoryID()));
 
         product.setSeller(seller);
+        product.setCategory(categ);
         product.setProductName(productDTO.getProductName());
         product.setDescription(productDTO.getDescription());
         product.setWeight(productDTO.getWeight());
         product.setLocation(productDTO.getLocation());
-        product.setCategory(productDTO.getCategory());
+        // product.setCategory(categoryRepository.findByCategoryID(productDTO.getCategoryID()));
         product.setPrice(productDTO.getPrice());
         product.setCanDeliver(productDTO.getCanDeliver());
 
@@ -66,13 +82,27 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO getProductById(Integer productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + productId));
-        return new ProductDTO(product.getProductID(), product.getSeller().getId(), product.getProductName(), product.getDescription(), product.getWeight(), product.getLocation(), product.getCategory(), product.getPrice(), product.getCanDeliver());
+        return new ProductDTO(product.getProductID(), product.getSeller().getId(), product.getProductName(),
+                product.getDescription(), product.getWeight(), product.getLocation(),
+                product.getCategory().getCategoryID(),
+                product.getPrice(), product.getCanDeliver());
     }
+
+    // @Override
+    // public List<ProductDTO> getAllProducts() {
+    // return productRepository.findAll();
+    // }
 
     @Override
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
-                .map(product -> new ProductDTO(product.getProductID(), product.getSeller().getId(), product.getProductName(), product.getDescription(), product.getWeight(), product.getLocation(), product.getCategory(), product.getPrice(), product.getCanDeliver()))
+                .map(product -> new ProductDTO(product.getProductID(),
+                        product.getSeller().getId(),
+                        product.getProductName(), product.getDescription(), product.getWeight(),
+                        product.getLocation(),
+                        product.getCategory().getCategoryID(), product.getPrice(),
+                        product.getCanDeliver()))
                 .collect(Collectors.toList());
     }
+
 }

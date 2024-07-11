@@ -6,5 +6,6 @@ import com.isproj2.regainmobile.model.User;
 public interface UserService {
 
     User addUser(UserDTO user);
+
     User getUserById(Integer userId);
 }
