@@ -8,6 +8,7 @@ import com.isproj2.regainmobile.dto.OrderDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,8 +34,8 @@ public class Order {
     @Column(name = "order_id")
     private Integer orderID;
 
-    @OneToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "product_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id", unique = true)
     private Product product;
 
     @ManyToOne

@@ -7,7 +7,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import com.isproj2.regainmobile.model.RateTag;
 import com.isproj2.regainmobile.model.Role;
+import com.isproj2.regainmobile.repo.RateTagRepository;
 import com.isproj2.regainmobile.repo.RoleRepository;
 
 @Component
@@ -17,6 +19,9 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private RateTagRepository rateTagRepository;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -30,6 +35,33 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         createRoleIfNotFound("ROLE_USER");
         createRoleIfNotFound("ROLE_USER_HOUSEHOLD");
         createRoleIfNotFound("ROLE_USER_JUNKSHOP");
+        //Pickup/Drop-off
+        createRateTagIfNotFound("On-time Pickup");
+        createRateTagIfNotFound("Delayed Pickup");
+        createRateTagIfNotFound("Convenient Drop-off Location");
+        createRateTagIfNotFound("Missed Pickup");
+        //Product Quality
+        createRateTagIfNotFound("Accurate Description");
+        createRateTagIfNotFound("Misrepresented Item");
+        createRateTagIfNotFound("High-quality Recyclables");
+        createRateTagIfNotFound("Low-quality waste");
+        //Pricing
+        createRateTagIfNotFound("Fair Pricing");
+        createRateTagIfNotFound("Overpriced Items");
+        createRateTagIfNotFound("Good Value");
+        //Overall Experience
+        createRateTagIfNotFound("Smooth Transaction");        
+        createRateTagIfNotFound("Complicated Process");
+        createRateTagIfNotFound("Highly Satisfied");
+        createRateTagIfNotFound("Disappointed");
+        //Payment
+        createRateTagIfNotFound("Prompt Payment");
+        createRateTagIfNotFound("Delayed Payment");
+        //Condition of Waste
+        createRateTagIfNotFound("Well-sorted Waste");
+        createRateTagIfNotFound("Clean Recylables");
+        createRateTagIfNotFound("Contaminated Waste");
+        createRateTagIfNotFound("Mixed Quality Items");
 
         alreadySetup = true;
     }
@@ -43,6 +75,17 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             roleRepository.save(role);
         }
         return role;
+    }
+
+    @Transactional
+    RateTag createRateTagIfNotFound(String name) {
+
+        RateTag rateTag = rateTagRepository.findByName(name);
+        if (rateTag == null) {
+            rateTag = new RateTag(name);
+            rateTagRepository.save(rateTag);
+        }
+        return rateTag;
     }
 
 }
