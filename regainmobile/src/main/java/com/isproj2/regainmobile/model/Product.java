@@ -75,8 +75,14 @@ public class Product {
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private Collection<Favorite> favorite;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "product", fetch = FetchType.EAGER)
     private Order order;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    private Collection<Offer> offer;
+
+    @OneToMany(mappedBy = "reportedListing", fetch = FetchType.EAGER)
+    private Collection<ListingReport> listingReport;
 
     public Product(ProductDTO productDTO, User seller, Category category) {
         this.productID = productDTO.getProductID();
@@ -87,7 +93,7 @@ public class Product {
         this.location = productDTO.getLocation();
         this.category = category;
         this.price = productDTO.getPrice();
-        // this.image = productDTO.getPenaltyPoints();
+        // this.image = productDTO.getImage();
         this.canDeliver = productDTO.getCanDeliver();
     }
 }
