@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -74,8 +75,8 @@ public class Product {
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private Collection<Favorite> favorite;
 
-    @OneToOne(mappedBy = "product", fetch=FetchType.EAGER)
-    private Collection<Order> order;
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Order order;
 
     public Product(ProductDTO productDTO, User seller, Category category) {
         this.productID = productDTO.getProductID();
