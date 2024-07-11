@@ -24,13 +24,13 @@ public class ProductDTO {
     private String description;
 
     @lombok.NonNull
-    private Float weight;
+    private Double weight;
 
     @lombok.NonNull
     private Integer location;
 
     @lombok.NonNull
-    private Integer category;
+    private Integer categoryID;
 
     @lombok.NonNull
     private BigDecimal price;

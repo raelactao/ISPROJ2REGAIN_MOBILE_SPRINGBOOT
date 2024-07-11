@@ -2,6 +2,7 @@ package com.isproj2.regainmobile.model;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Optional;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
 
@@ -48,15 +49,15 @@ public class Product {
 
     @lombok.NonNull
     @Column(name = "weight")
-    private Float weight;
+    private Double weight;
 
     @lombok.NonNull
     @Column(name = "location")
     private Integer location;
 
-    @lombok.NonNull
-    @Column(name = "category")
-    private Integer category;
+    @ManyToOne
+    @JoinColumn(name = "category", referencedColumnName = "category_id", nullable = false)
+    private Category category;
 
     @lombok.NonNull
     @Column(name = "price")
@@ -70,20 +71,20 @@ public class Product {
     @Column(name = "can_deliver")
     private Boolean canDeliver;
 
-    @OneToMany(mappedBy = "product", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private Collection<Favorite> favorite;
 
     @OneToOne(mappedBy = "product", fetch=FetchType.EAGER)
     private Collection<Order> order;
 
-    public Product(ProductDTO productDTO, User seller) {
+    public Product(ProductDTO productDTO, User seller, Category category) {
         this.productID = productDTO.getProductID();
         this.seller = seller;
         this.productName = productDTO.getProductName();
         this.description = productDTO.getDescription();
         this.weight = productDTO.getWeight();
         this.location = productDTO.getLocation();
-        this.category = productDTO.getCategory();
+        this.category = category;
         this.price = productDTO.getPrice();
         // this.image = productDTO.getPenaltyPoints();
         this.canDeliver = productDTO.getCanDeliver();
