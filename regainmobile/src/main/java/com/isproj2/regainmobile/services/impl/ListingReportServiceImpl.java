@@ -20,51 +20,54 @@ import com.isproj2.regainmobile.repo.ReportCategoryRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.ListingReportService;
 
-
-
 @Service
 public class ListingReportServiceImpl implements ListingReportService {
 
-    @Autowired
-    private ListingReportRepository listingReportRepository;
+        @Autowired
+        private ListingReportRepository listingReportRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+        @Autowired
+        private ProductRepository productRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Autowired
-    private ReportCategoryRepository reportCategoryRepository;
+        @Autowired
+        private ReportCategoryRepository reportCategoryRepository;
 
-    @Override
-    @Transactional
-    public ListingReportDTO createListingReport(ListingReportDTO listingReportDTO) {
-        User reporter = userRepository.findById(listingReportDTO.getReporterID())
-                .orElseThrow(() -> new ResourceNotFoundException("Reporter not found with id " + listingReportDTO.getReporterID()));
+        @Override
+        @Transactional
+        public ListingReportDTO createListingReport(ListingReportDTO listingReportDTO) {
+                User reporter = userRepository.findById(listingReportDTO.getReporterID())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Reporter not found with id " + listingReportDTO.getReporterID()));
 
-        Product reportedListing = productRepository.findById(listingReportDTO.getReportedListingID())
-                .orElseThrow(() -> new ResourceNotFoundException("Reported Listing not found with id " + listingReportDTO.getReportedListingID()));
+                Product reportedListing = productRepository.findById(listingReportDTO.getReportedListingID())
+                                .orElseThrow(() -> new ResourceNotFoundException("Reported Listing not found with id "
+                                                + listingReportDTO.getReportedListingID()));
 
-        ReportCategory reasonCategory = reportCategoryRepository.findById(listingReportDTO.getReasonCategoryID())
-                .orElseThrow(() -> new ResourceNotFoundException("Reason Category not found with id " + listingReportDTO.getReasonCategoryID()));
-        
-        ListingReport listingReport = new ListingReport(listingReportDTO, reporter, reportedListing, reasonCategory);
-        listingReport.setTimeStamp(LocalDateTime.now());
-        listingReportRepository.save(listingReport);
-        return listingReportDTO;
-    }   
+                ReportCategory reasonCategory = reportCategoryRepository
+                                .findById(listingReportDTO.getReasonCategoryID())
+                                .orElseThrow(() -> new ResourceNotFoundException("Reason Category not found with id "
+                                                + listingReportDTO.getReasonCategoryID()));
 
-    @Override
-    public List<ListingReportDTO> getAllListingReports() {
-        return listingReportRepository.findAll().stream()
-            .map(listingReport -> new ListingReportDTO(listingReport.getReportID(),
-                    listingReport.getReporter().getId(), listingReport.getReportedListing().getProductID(),
-                    listingReport.getReasonCategory().getReportCategoryID(),
-                    listingReport.getReportReply(), listingReport.getDetails(),
-                    listingReport.getTimeStamp(), listingReport.getReportStatus()))
-            .collect(Collectors.toList());
-    }
+                ListingReport listingReport = new ListingReport(listingReportDTO, reporter, reportedListing,
+                                reasonCategory);
+                listingReport.setTimeStamp(LocalDateTime.now());
+                listingReportRepository.save(listingReport);
+                return listingReportDTO;
+        }
 
-    
+        @Override
+        public List<ListingReportDTO> getAllListingReports() {
+                return listingReportRepository.findAll().stream()
+                                .map(listingReport -> new ListingReportDTO(listingReport.getReportID(),
+                                                listingReport.getReporter().getUserID(),
+                                                listingReport.getReportedListing().getProductID(),
+                                                listingReport.getReasonCategory().getReportCategoryID(),
+                                                listingReport.getReportReply(), listingReport.getDetails(),
+                                                listingReport.getTimeStamp(), listingReport.getReportStatus()))
+                                .collect(Collectors.toList());
+        }
+
 }

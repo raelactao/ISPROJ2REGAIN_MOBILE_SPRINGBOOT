@@ -19,74 +19,83 @@ import com.isproj2.regainmobile.services.OfferService;
 @Service
 public class OfferServiceImpl implements OfferService {
 
-    @Autowired
-    private OfferRepository offerRepository;
+        @Autowired
+        private OfferRepository offerRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+        @Autowired
+        private ProductRepository productRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Override
-    public OfferDTO createOffer(OfferDTO offerDTO) {
-        User buyer = userRepository.findById(offerDTO.getBuyerID())
-                .orElseThrow(() -> new ResourceNotFoundException("Buyer not found with id " + offerDTO.getBuyerID()));
-        
-        User seller = userRepository.findById(offerDTO.getSellerID())
-                .orElseThrow(() -> new ResourceNotFoundException("Seller not found with id " + offerDTO.getSellerID()));
+        @Override
+        public OfferDTO createOffer(OfferDTO offerDTO) {
+                User buyer = userRepository.findById(offerDTO.getBuyerID())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Buyer not found with id " + offerDTO.getBuyerID()));
 
-        Product product = productRepository.findById(offerDTO.getProductID())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + offerDTO.getProductID()));
+                User seller = userRepository.findById(offerDTO.getSellerID())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Seller not found with id " + offerDTO.getSellerID()));
 
-        Offer offer = new Offer(offerDTO, buyer, product, seller);
-        offerRepository.save(offer);
-        return offerDTO;
-    }
+                Product product = productRepository.findById(offerDTO.getProductID())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Product not found with id " + offerDTO.getProductID()));
 
-    @Override
-    public OfferDTO updateOffer(Integer offerId, OfferDTO offerDTO) {
-        Offer offer = offerRepository.findById(offerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + offerId));
-
-        User buyer = userRepository.findById(offerDTO.getBuyerID())
-                .orElseThrow(() -> new ResourceNotFoundException("Buyer not found with id " + offerDTO.getBuyerID()));
-        
-        User seller = userRepository.findById(offerDTO.getSellerID())
-                .orElseThrow(() -> new ResourceNotFoundException("Seller not found with id " + offerDTO.getSellerID()));
-
-        Product product = productRepository.findById(offerDTO.getProductID())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + offerDTO.getProductID()));
-
-        offer.setProduct(product);
-        offer.setBuyer(buyer);
-        offer.setOfferValue(offerDTO.getOfferValue());
-        offer.setIsAccepted(offerDTO.getIsAccepted());
-        offer.setSeller(seller);
-
-        offerRepository.save(offer);
-        return offerDTO;
-    }
-
-    @Override
-    public void deleteOffer(Integer offerId) {
-        if (!offerRepository.existsById(offerId)) {
-            throw new ResourceNotFoundException("Offer not found with id " + offerId);
+                Offer offer = new Offer(offerDTO, buyer, product, seller);
+                offerRepository.save(offer);
+                return offerDTO;
         }
-        offerRepository.deleteById(offerId);
-    }
 
-    @Override
-    public OfferDTO getOfferById(Integer offerId) {
-        Offer offer = offerRepository.findById(offerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + offerId));
-        return new OfferDTO(offer.getOfferID(), offer.getProduct().getProductID(), offer.getBuyer().getId(), offer.getOfferValue(), offer.getIsAccepted(), offer.getSeller().getId());
-    }
+        @Override
+        public OfferDTO updateOffer(Integer offerId, OfferDTO offerDTO) {
+                Offer offer = offerRepository.findById(offerId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + offerId));
 
-    @Override
-    public List<OfferDTO> getAllOffers() {
-        return offerRepository.findAll().stream()
-            .map(offer -> new OfferDTO(offer.getOfferID(), offer.getProduct().getProductID(), offer.getBuyer().getId(), offer.getOfferValue(), offer.getIsAccepted(), offer.getSeller().getId()))
-            .collect(Collectors.toList());
-    }
+                User buyer = userRepository.findById(offerDTO.getBuyerID())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Buyer not found with id " + offerDTO.getBuyerID()));
+
+                User seller = userRepository.findById(offerDTO.getSellerID())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Seller not found with id " + offerDTO.getSellerID()));
+
+                Product product = productRepository.findById(offerDTO.getProductID())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Product not found with id " + offerDTO.getProductID()));
+
+                offer.setProduct(product);
+                offer.setBuyer(buyer);
+                offer.setOfferValue(offerDTO.getOfferValue());
+                offer.setIsAccepted(offerDTO.getIsAccepted());
+                offer.setSeller(seller);
+
+                offerRepository.save(offer);
+                return offerDTO;
+        }
+
+        @Override
+        public void deleteOffer(Integer offerId) {
+                if (!offerRepository.existsById(offerId)) {
+                        throw new ResourceNotFoundException("Offer not found with id " + offerId);
+                }
+                offerRepository.deleteById(offerId);
+        }
+
+        @Override
+        public OfferDTO getOfferById(Integer offerId) {
+                Offer offer = offerRepository.findById(offerId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + offerId));
+                return new OfferDTO(offer.getOfferID(), offer.getProduct().getProductID(), offer.getBuyer().getUserID(),
+                                offer.getOfferValue(), offer.getIsAccepted(), offer.getSeller().getUserID());
+        }
+
+        @Override
+        public List<OfferDTO> getAllOffers() {
+                return offerRepository.findAll().stream()
+                                .map(offer -> new OfferDTO(offer.getOfferID(), offer.getProduct().getProductID(),
+                                                offer.getBuyer().getUserID(), offer.getOfferValue(),
+                                                offer.getIsAccepted(), offer.getSeller().getUserID()))
+                                .collect(Collectors.toList());
+        }
 }

@@ -34,7 +34,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Integer id;
+    private Integer userID;
 
     // @Column(name = "role_type")
     // private Long role;
@@ -80,32 +80,32 @@ public class User {
     @Column(name = "js_name", nullable = true)
     private String junkshopName;
 
-    @OneToMany(mappedBy = "seller", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "seller", fetch = FetchType.EAGER)
     private Collection<Product> product;
 
-    @OneToMany(mappedBy = "user", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Collection<Favorite> favorite;
 
-    @OneToMany(mappedBy = "user", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Collection<Address> address;
 
-    @OneToMany(mappedBy = "buyer", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "buyer", fetch = FetchType.EAGER)
     private Collection<Order> order;
 
-    @OneToMany(mappedBy = "buyer", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "buyer", fetch = FetchType.EAGER)
     private Collection<Offer> offer;
 
-    @OneToMany(mappedBy = "seller", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "seller", fetch = FetchType.EAGER)
     private Collection<Offer> offer2;
 
-    @OneToMany(mappedBy = "reporter", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "reporter", fetch = FetchType.EAGER)
     private Collection<ListingReport> listingReport;
 
     @OneToMany(mappedBy = "reporter", fetch = FetchType.EAGER)
     private Collection<EQListingReport> eqlistingReport;
 
     public User(UserDTO userDTO) {
-        this.id = userDTO.getId();
+        this.userID = userDTO.getId();
         this.lastName = userDTO.getLastName();
         this.firstName = userDTO.getFirstName();
         this.username = userDTO.getUsername();
@@ -121,6 +121,5 @@ public class User {
     public void setRole(Role role) {
         this.role = role;
     }
-
 
 }

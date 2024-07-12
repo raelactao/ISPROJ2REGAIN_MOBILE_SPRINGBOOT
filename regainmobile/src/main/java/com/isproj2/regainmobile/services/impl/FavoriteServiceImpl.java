@@ -36,7 +36,8 @@ public class FavoriteServiceImpl implements FavoriteService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + favoriteDTO.getUserID()));
 
         Product product = productRepository.findById(favoriteDTO.getProductID())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + favoriteDTO.getProductID()));
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("Product not found with id " + favoriteDTO.getProductID()));
 
         Favorite favorite = new Favorite(favoriteDTO, user, product);
         favoriteRepository.save(favorite);
@@ -52,7 +53,7 @@ public class FavoriteServiceImpl implements FavoriteService {
     public FavoriteDTO getFavoriteById(Integer favoriteId) {
         Favorite favorite = favoriteRepository.findById(favoriteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Favorite not found with id " + favoriteId));
-        return new FavoriteDTO(favorite.getFavoriteID(), favorite.getUser().getId(), 
-                favorite.getProduct().getProductID(),favorite.getIsFavorite());
+        return new FavoriteDTO(favorite.getFavoriteID(), favorite.getUser().getUserID(),
+                favorite.getProduct().getProductID(), favorite.getIsFavorite());
     }
 }

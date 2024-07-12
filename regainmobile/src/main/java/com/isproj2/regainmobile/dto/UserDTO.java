@@ -52,7 +52,7 @@ public class UserDTO {
     private String junkshopName;
 
     public UserDTO(User user) {
-        this.id = user.getId();
+        this.id = user.getUserID();
         this.role = user.getRole().getName();
         this.lastName = user.getLastName();
         this.firstName = user.getFirstName();
