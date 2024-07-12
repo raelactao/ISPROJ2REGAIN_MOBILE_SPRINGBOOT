@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.ListingReportDTO;
 import com.isproj2.regainmobile.services.ListingReportService;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/listingreports")
@@ -19,7 +21,7 @@ public class ListingReportController {
 
     @Autowired
     private ListingReportService listingReportService;
-    
+
     @PostMapping("/add")
     public ResponseEntity<ListingReportDTO> createListingReport(@RequestBody ListingReportDTO listingReportDTO) {
         ListingReportDTO createdListingReport = listingReportService.createListingReport(listingReportDTO);
@@ -31,4 +33,11 @@ public class ListingReportController {
         List<ListingReportDTO> listingReports = listingReportService.getAllListingReports();
         return ResponseEntity.ok(listingReports);
     }
+
+    @GetMapping("/list/{userID}")
+    public ResponseEntity<List<ListingReportDTO>> getMethodName(@PathVariable("userID") Integer userID) {
+        List<ListingReportDTO> listingReportsOnSeller = listingReportService.getListingReportsByReportedUser(userID);
+        return ResponseEntity.ok(listingReportsOnSeller);
+    }
+
 }

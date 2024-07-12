@@ -38,45 +38,44 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         // CREATES ROLES UPON RUNNING
         createRoleIfNotFound("ROLE_ADMIN");
         createRoleIfNotFound("ROLE_USER");
-        createRoleIfNotFound("ROLE_USER_HOUSEHOLD");
-        createRoleIfNotFound("ROLE_USER_JUNKSHOP");
+        createRoleIfNotFound("ROLE_USER_WS");
 
-        //Pickup/Drop-off
+        // Pickup/Drop-off
         createRateTagIfNotFound("On-time Pickup");
         createRateTagIfNotFound("Delayed Pickup");
         createRateTagIfNotFound("Convenient Drop-off Location");
         createRateTagIfNotFound("Missed Pickup");
-        //Product Quality
+        // Product Quality
         createRateTagIfNotFound("Accurate Description");
         createRateTagIfNotFound("Misrepresented Item");
         createRateTagIfNotFound("High-quality Recyclables");
         createRateTagIfNotFound("Low-quality waste");
-        //Pricing
+        // Pricing
         createRateTagIfNotFound("Fair Pricing");
         createRateTagIfNotFound("Overpriced Items");
         createRateTagIfNotFound("Good Value");
-        //Overall Experience
-        createRateTagIfNotFound("Smooth Transaction");        
+        // Overall Experience
+        createRateTagIfNotFound("Smooth Transaction");
         createRateTagIfNotFound("Complicated Process");
         createRateTagIfNotFound("Highly Satisfied");
         createRateTagIfNotFound("Disappointed");
-        //Payment
+        // Payment
         createRateTagIfNotFound("Prompt Payment");
         createRateTagIfNotFound("Delayed Payment");
-        //Condition of Waste
+        // Condition of Waste
         createRateTagIfNotFound("Well-sorted Waste");
         createRateTagIfNotFound("Clean Recylables");
         createRateTagIfNotFound("Contaminated Waste");
         createRateTagIfNotFound("Mixed Quality Items");
 
-        //Report Categories
+        // Report Categories
         createReportCategoryIfNotFound("Suspicious Account");
         createReportCategoryIfNotFound("Fake Location");
         createReportCategoryIfNotFound("Item Wrongly Categorized");
         createReportCategoryIfNotFound("Selling Prohibited Items");
         createReportCategoryIfNotFound("Mispriced Listings");
         createReportCategoryIfNotFound("Offensive Behavior/Content");
-        
+
         alreadySetup = true;
     }
 
@@ -105,7 +104,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Transactional
     ReportCategory createReportCategoryIfNotFound(String name) {
 
-        ReportCategory reportCategory= reportCategoryRepository.findByName(name);
+        ReportCategory reportCategory = reportCategoryRepository.findByName(name);
         if (reportCategory == null) {
             reportCategory = new ReportCategory(name);
             reportCategoryRepository.save(reportCategory);

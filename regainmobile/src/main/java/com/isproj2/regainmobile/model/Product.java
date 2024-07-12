@@ -49,7 +49,7 @@ public class Product {
     private String description;
 
     @lombok.NonNull
-    @Column(name = "weight")
+    @Column(name = "weight", length = 10, precision = 2)
     private Double weight;
 
     @lombok.NonNull
