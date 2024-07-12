@@ -109,6 +109,9 @@ public class User {
     @OneToMany(mappedBy = "reportedUser", fetch = FetchType.EAGER)
     private Collection<UserReport> userReport2;
 
+    @OneToMany(mappedBy = "rentee", fetch = FetchType.EAGER)
+    private Collection<Booking> booking;
+
     public User(UserDTO userDTO) {
         this.userID = userDTO.getId();
         this.lastName = userDTO.getLastName();
