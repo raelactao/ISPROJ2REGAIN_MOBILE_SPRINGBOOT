@@ -59,6 +59,9 @@ public class Equipment {
     @OneToMany(mappedBy = "reportedEQListing", fetch = FetchType.EAGER)
     private Collection<EQListingReport> eqlistingReport;
 
+    @OneToMany(mappedBy = "equipment", fetch = FetchType.EAGER)
+    private Collection<Booking> booking;
+
     // @Lob
     // @Column(name = "image")
     // private byte[] image;
