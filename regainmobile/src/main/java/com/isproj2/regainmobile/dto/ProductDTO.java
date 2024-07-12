@@ -17,7 +17,6 @@ public class ProductDTO {
 
     private Integer productID;
 
-    @lombok.NonNull
     private Integer sellerID;
 
     @lombok.NonNull
