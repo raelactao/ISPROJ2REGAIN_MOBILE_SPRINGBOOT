@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import com.isproj2.regainmobile.dto.UserDTO;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -103,6 +102,12 @@ public class User {
 
     @OneToMany(mappedBy = "reporter", fetch = FetchType.EAGER)
     private Collection<EQListingReport> eqlistingReport;
+
+    @OneToMany(mappedBy = "reporter", fetch = FetchType.EAGER)
+    private Collection<UserReport> userReport;
+
+    @OneToMany(mappedBy = "reportedUser", fetch = FetchType.EAGER)
+    private Collection<UserReport> userReport2;
 
     public User(UserDTO userDTO) {
         this.userID = userDTO.getId();

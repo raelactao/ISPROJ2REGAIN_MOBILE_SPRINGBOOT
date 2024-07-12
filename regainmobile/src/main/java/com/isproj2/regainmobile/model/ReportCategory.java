@@ -2,7 +2,6 @@ package com.isproj2.regainmobile.model;
 
 import java.util.Collection;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -35,6 +34,9 @@ public class ReportCategory {
 
     @OneToMany(mappedBy = "reasonCategory", fetch = FetchType.EAGER)
     private Collection<EQListingReport> eqlistingReport;
+
+    @OneToMany(mappedBy = "reasonCategory", fetch = FetchType.EAGER)
+    private Collection<UserReport> userReport;
 
     public ReportCategory (String category) {
         this.name = category;
