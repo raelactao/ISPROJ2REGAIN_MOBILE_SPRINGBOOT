@@ -20,50 +20,55 @@ import com.isproj2.regainmobile.repo.ReportCategoryRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.EQListingReportService;
 
-
-
 @Service
-public class EQListingReportServiceImpl implements EQListingReportService{
+public class EQListingReportServiceImpl implements EQListingReportService {
 
-    @Autowired
-    private EQListingReportRepository eqlistingReportRepository;
+        @Autowired
+        private EQListingReportRepository eqlistingReportRepository;
 
-    @Autowired
-    private EquipmentRepository equipmentRepository;
+        @Autowired
+        private EquipmentRepository equipmentRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Autowired
-    private ReportCategoryRepository reportCategoryRepository;
+        @Autowired
+        private ReportCategoryRepository reportCategoryRepository;
 
-    @Override
-    @Transactional
-    public EQListingReportDTO createEQListingReport(EQListingReportDTO eqListingReportDTO) {
-        User reporter = userRepository.findById(eqListingReportDTO.getReporterID())
-                .orElseThrow(() -> new ResourceNotFoundException("Reporter not found with id " + eqListingReportDTO.getReporterID()));
+        @Override
+        @Transactional
+        public EQListingReportDTO createEQListingReport(EQListingReportDTO eqListingReportDTO) {
+                User reporter = userRepository.findById(eqListingReportDTO.getReporterID())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Reporter not found with id " + eqListingReportDTO.getReporterID()));
 
-        Equipment reportedEQListing = equipmentRepository.findById(eqListingReportDTO.getReportedEQListingID())
-                .orElseThrow(() -> new ResourceNotFoundException("Reported Equipment Listing not found with id " + eqListingReportDTO.getReportedEQListingID()));
+                Equipment reportedEQListing = equipmentRepository.findById(eqListingReportDTO.getReportedEQListingID())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Reported Equipment Listing not found with id "
+                                                                + eqListingReportDTO.getReportedEQListingID()));
 
-        ReportCategory reasonCategory = reportCategoryRepository.findById(eqListingReportDTO.getReasonCategoryID())
-                .orElseThrow(() -> new ResourceNotFoundException("Reason Category not found with id " + eqListingReportDTO.getReasonCategoryID()));
-        
-        EQListingReport eqListingReport = new EQListingReport(eqListingReportDTO, reporter, reportedEQListing, reasonCategory);
-        eqListingReport.setTimeStamp(LocalDateTime.now());
-        eqlistingReportRepository.save(eqListingReport);
-        return eqListingReportDTO;
-    }
+                ReportCategory reasonCategory = reportCategoryRepository
+                                .findById(eqListingReportDTO.getReasonCategoryID())
+                                .orElseThrow(() -> new ResourceNotFoundException("Reason Category not found with id "
+                                                + eqListingReportDTO.getReasonCategoryID()));
 
-    @Override
-    public List<EQListingReportDTO> getAllEQListingReports() {
-        return eqlistingReportRepository.findAll().stream()
-            .map(eqListingReport -> new EQListingReportDTO(eqListingReport.getReportID(),
-                    eqListingReport.getReporter().getId(), eqListingReport.getReportedEQListing().getEquipmentID(),
-                    eqListingReport.getReasonCategory().getReportCategoryID(),
-                    eqListingReport.getReportReply(), eqListingReport.getDetails(),
-                    eqListingReport.getTimeStamp(), eqListingReport.getReportStatus()))
-            .collect(Collectors.toList());
-    }
-    
+                EQListingReport eqListingReport = new EQListingReport(eqListingReportDTO, reporter, reportedEQListing,
+                                reasonCategory);
+                eqListingReport.setTimeStamp(LocalDateTime.now());
+                eqlistingReportRepository.save(eqListingReport);
+                return eqListingReportDTO;
+        }
+
+        @Override
+        public List<EQListingReportDTO> getAllEQListingReports() {
+                return eqlistingReportRepository.findAll().stream()
+                                .map(eqListingReport -> new EQListingReportDTO(eqListingReport.getReportID(),
+                                                eqListingReport.getReporter().getUserID(),
+                                                eqListingReport.getReportedEQListing().getEquipmentID(),
+                                                eqListingReport.getReasonCategory().getReportCategoryID(),
+                                                eqListingReport.getReportReply(), eqListingReport.getDetails(),
+                                                eqListingReport.getTimeStamp(), eqListingReport.getReportStatus()))
+                                .collect(Collectors.toList());
+        }
+
 }

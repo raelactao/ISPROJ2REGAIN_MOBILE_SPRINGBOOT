@@ -2,6 +2,8 @@ package com.isproj2.regainmobile.dto;
 
 import java.math.BigDecimal;
 
+import com.isproj2.regainmobile.model.Product;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,4 +40,17 @@ public class ProductDTO {
 
     @lombok.NonNull
     private Boolean canDeliver;
+
+    public ProductDTO(Product product) {
+        this.productID = product.getProductID();
+        this.sellerID = product.getSeller().getUserID();
+        this.productName = product.getProductName();
+        this.description = product.getDescription();
+        this.weight = product.getWeight();
+        this.location = product.getLocation();
+        this.categoryID = product.getCategory().getCategoryID();
+        this.price = product.getPrice();
+        this.canDeliver = product.getCanDeliver();
+    }
+
 }

@@ -47,6 +47,6 @@ public class AddressServiceImpl implements AddressService {
                 .orElseThrow(() -> new ResourceNotFoundException("Address not found with id " + addressId));
         return new AddressDTO(address.getAddressID(), address.getUnitNumber(), address.getStreet(),
                 address.getBarangay(), address.getCity(), address.getProvince(), address.getZipCode(),
-                address.getUser().getId());
+                address.getUser().getUserID());
     }
 }
