@@ -1,5 +1,6 @@
 package com.isproj2.regainmobile.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -106,6 +107,25 @@ public class ProductServiceImpl implements ProductService {
                                                 product.getCategory().getCategoryID(), product.getPrice(),
                                                 product.getCanDeliver()))
                                 .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<ProductDTO> getProductsByUser(Integer userId) {
+                List<ProductDTO> sellerProducts = new ArrayList<ProductDTO>();
+
+                User seller = userRepository.findById(userId)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Seller not found with id " + userId));
+
+                List<Product> products = productRepository.findBySeller(seller);
+                for (Product product : products) {
+                        ProductDTO newProd = new ProductDTO(product);
+                        sellerProducts.add(newProd);
+                }
+                // List<ProductDTO> sellerProducts =
+
+                // TODO Auto-generated method stub
+                return sellerProducts;
         }
 
 }
