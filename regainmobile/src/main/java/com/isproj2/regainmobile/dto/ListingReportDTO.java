@@ -2,6 +2,8 @@ package com.isproj2.regainmobile.dto;
 
 import java.time.LocalDateTime;
 
+import com.isproj2.regainmobile.model.ListingReport;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,4 +33,16 @@ public class ListingReportDTO {
 
     @lombok.NonNull
     private String reportStatus;
+
+    public ListingReportDTO(ListingReport listReport) {
+        this.reportID = listReport.getReportID();
+        this.reporterID = listReport.getReporter().getUserID();
+        this.reportedListingID = listReport.getReportedListing().getProductID();
+        this.reasonCategoryID = listReport.getReasonCategory().getReportCategoryID();
+        this.reportReply = listReport.getReportReply();
+        this.details = listReport.getDetails();
+        this.timeStamp = listReport.getTimeStamp();
+        this.reportStatus = listReport.getReportStatus();
+    }
+
 }

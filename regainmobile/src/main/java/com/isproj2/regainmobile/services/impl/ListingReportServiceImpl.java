@@ -1,6 +1,7 @@
 package com.isproj2.regainmobile.services.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,6 +69,32 @@ public class ListingReportServiceImpl implements ListingReportService {
                                                 listingReport.getReportReply(), listingReport.getDetails(),
                                                 listingReport.getTimeStamp(), listingReport.getReportStatus()))
                                 .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<ListingReportDTO> getListingReportsByReportedUser(Integer reportedId) {
+
+                List<ListingReportDTO> reportsByReportedSeller = new ArrayList<ListingReportDTO>();
+
+                User reportedSeller = userRepository.findById(reportedId)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Seller of reported list not found with id "
+                                                                + reportedId));
+
+                List<Product> userProducts = productRepository.findBySeller(reportedSeller);
+                List<ListingReport> allListingReports = listingReportRepository.findAll();
+
+                // not the most efficient
+                for (ListingReport report : allListingReports) {
+                        for (Product product : userProducts) {
+                                if (product.equals(report.getReportedListing())) {
+                                        ListingReportDTO newReport = new ListingReportDTO(report);
+                                        reportsByReportedSeller.add(newReport);
+                                }
+                        }
+                }
+
+                return reportsByReportedSeller;
         }
 
 }

@@ -122,9 +122,7 @@ public class ProductServiceImpl implements ProductService {
                         ProductDTO newProd = new ProductDTO(product);
                         sellerProducts.add(newProd);
                 }
-                // List<ProductDTO> sellerProducts =
 
-                // TODO Auto-generated method stub
                 return sellerProducts;
         }
 

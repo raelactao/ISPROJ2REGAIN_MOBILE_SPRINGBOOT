@@ -42,7 +42,7 @@ public class ListingReport {
     @JoinColumn(name = "reason_category", referencedColumnName = "report_category_id", nullable = false)
     private ReportCategory reasonCategory;
 
-    @lombok.NonNull
+    // @lombok.NonNull
     @Column(name = "report_reply")
     private String reportReply;
 
@@ -51,13 +51,14 @@ public class ListingReport {
 
     @lombok.NonNull
     @Column(name = "time_stamp")
-    private LocalDateTime timeStamp;
+    private LocalDateTime timeStamp = LocalDateTime.now();
 
     @lombok.NonNull
-    @Column(name = "report_status")
+    @Column(name = "report_status", columnDefinition = "Pending")
     private String reportStatus;
 
-    public ListingReport(ListingReportDTO listingReportDTO, User reporter, Product reportedListing, ReportCategory reasonCategory) {
+    public ListingReport(ListingReportDTO listingReportDTO, User reporter, Product reportedListing,
+            ReportCategory reasonCategory) {
         this.reportID = listingReportDTO.getReportID();
         this.reporter = reporter;
         this.reportedListing = reportedListing;
@@ -67,5 +68,5 @@ public class ListingReport {
         this.timeStamp = listingReportDTO.getTimeStamp();
         this.reportStatus = listingReportDTO.getReportStatus();
     }
-    
+
 }
