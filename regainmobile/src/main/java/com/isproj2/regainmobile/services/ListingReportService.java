@@ -10,4 +10,5 @@ public interface ListingReportService {
     List<ListingReportDTO> getAllListingReports();
 
     List<ListingReportDTO> getListingReportsByReportedUser(Integer reportedId);
+
 }

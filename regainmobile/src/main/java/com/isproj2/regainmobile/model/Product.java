@@ -48,9 +48,9 @@ public class Product {
     @Column(name = "weight", length = 10, precision = 2)
     private Double weight;
 
-    @lombok.NonNull
-    @Column(name = "location")
-    private Integer location;
+    @ManyToOne
+    @JoinColumn(name = "location", referencedColumnName = "address_id", nullable = false)
+    private Address location;
 
     @ManyToOne
     @JoinColumn(name = "category", referencedColumnName = "category_id", nullable = false)
@@ -65,7 +65,7 @@ public class Product {
     // private byte[] image;
 
     @lombok.NonNull
-    @Column(name = "can_deliver")
+    @Column(name = "can_deliver", columnDefinition = "tinyint(1) default 1")
     private Boolean canDeliver;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
@@ -80,15 +80,15 @@ public class Product {
     @OneToMany(mappedBy = "reportedListing", fetch = FetchType.EAGER)
     private Collection<ListingReport> listingReport;
 
-    public Product(ProductDTO productDTO, User seller, Category category) {
+    public Product(ProductDTO productDTO, User seller, Address location, Category category) {
         this.productID = productDTO.getProductID();
         this.seller = seller;
         this.productName = productDTO.getProductName();
         this.description = productDTO.getDescription();
-        this.weight = productDTO.getWeight();
-        this.location = productDTO.getLocation();
+        this.weight = Double.parseDouble(productDTO.getWeight());
+        this.location = location;
         this.category = category;
-        this.price = productDTO.getPrice();
+        this.price = new BigDecimal(productDTO.getPrice());
         // this.image = productDTO.getImage();
         this.canDeliver = productDTO.getCanDeliver();
     }

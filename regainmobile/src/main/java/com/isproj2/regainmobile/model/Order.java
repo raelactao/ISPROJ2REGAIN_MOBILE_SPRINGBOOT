@@ -25,7 +25,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
-@Table(name="orders")
+@Table(name = "orders")
 @Entity
 public class Order {
 
@@ -68,7 +68,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "address", referencedColumnName = "address_id", nullable = false)
-    private Address address;    
+    private Address address;
 
     public Order(OrderDTO orderDTO, User user, Address address, Product product) {
         this.orderID = orderDTO.getOrderID();
