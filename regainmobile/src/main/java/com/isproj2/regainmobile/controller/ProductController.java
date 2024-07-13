@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
+import com.isproj2.regainmobile.dto.ViewProductDTO;
 import com.isproj2.regainmobile.services.ProductService;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/products")
@@ -59,4 +61,11 @@ public class ProductController {
         List<ProductDTO> products = productService.getProductsByUser(userId);
         return ResponseEntity.ok(products);
     }
+
+    @GetMapping("/viewlist/{id}")
+    public ResponseEntity<List<ViewProductDTO>> getAllProductsByUserFavorites(@PathVariable("id") Integer userId) {
+        List<ViewProductDTO> productsWithFavorites = productService.getViewProducts(userId);
+        return ResponseEntity.ok(productsWithFavorites);
+    }
+
 }

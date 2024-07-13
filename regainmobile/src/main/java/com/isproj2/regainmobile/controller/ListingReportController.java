@@ -35,7 +35,7 @@ public class ListingReportController {
     }
 
     @GetMapping("/list/{userID}")
-    public ResponseEntity<List<ListingReportDTO>> getMethodName(@PathVariable("userID") Integer userID) {
+    public ResponseEntity<List<ListingReportDTO>> getReportsByReportedSeller(@PathVariable("userID") Integer userID) {
         List<ListingReportDTO> listingReportsOnSeller = listingReportService.getListingReportsByReportedUser(userID);
         return ResponseEntity.ok(listingReportsOnSeller);
     }

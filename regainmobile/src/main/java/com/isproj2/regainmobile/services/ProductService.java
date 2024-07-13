@@ -3,6 +3,7 @@ package com.isproj2.regainmobile.services;
 import java.util.List;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
+import com.isproj2.regainmobile.dto.ViewProductDTO;
 
 public interface ProductService {
     ProductDTO createProduct(ProductDTO productDTO);
@@ -16,4 +17,6 @@ public interface ProductService {
     List<ProductDTO> getAllProducts();
 
     List<ProductDTO> getProductsByUser(Integer userId);
+
+    List<ViewProductDTO> getViewProducts(Integer userId);
 }

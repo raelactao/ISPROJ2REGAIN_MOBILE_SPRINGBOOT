@@ -60,8 +60,11 @@ public class Address {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "address", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "address", fetch = FetchType.EAGER)
     private Collection<Order> order;
+
+    @OneToMany(mappedBy = "location", fetch = FetchType.EAGER)
+    private Collection<Product> products;
 
     public Address(AddressDTO addressDTO, User user) {
         this.addressID = addressDTO.getAddressID();

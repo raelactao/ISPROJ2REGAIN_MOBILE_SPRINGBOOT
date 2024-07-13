@@ -25,7 +25,7 @@ public class ProductDTO {
     private String description;
 
     @lombok.NonNull
-    private Double weight;
+    private String weight;
 
     @lombok.NonNull
     private Integer location;
@@ -34,7 +34,7 @@ public class ProductDTO {
     private Integer categoryID;
 
     @lombok.NonNull
-    private BigDecimal price;
+    private String price;
     // private byte[] image;
 
     @lombok.NonNull
@@ -45,10 +45,10 @@ public class ProductDTO {
         this.sellerID = product.getSeller().getUserID();
         this.productName = product.getProductName();
         this.description = product.getDescription();
-        this.weight = product.getWeight();
-        this.location = product.getLocation();
+        this.weight = product.getWeight().toString();
+        this.location = product.getLocation().getAddressID();
         this.categoryID = product.getCategory().getCategoryID();
-        this.price = product.getPrice();
+        this.price = product.getPrice().toString();
         this.canDeliver = product.getCanDeliver();
     }
 

@@ -14,7 +14,7 @@ import com.isproj2.regainmobile.dto.AddressDTO;
 import com.isproj2.regainmobile.services.AddressService;
 
 @RestController
-@RequestMapping("/api/addresses") 
+@RequestMapping("/api/addresses")
 public class AddressController {
 
     @Autowired
