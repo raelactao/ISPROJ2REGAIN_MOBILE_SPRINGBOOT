@@ -1,5 +1,6 @@
 package com.isproj2.regainmobile.services.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,11 @@ import com.isproj2.regainmobile.dto.OrderDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Address;
 import com.isproj2.regainmobile.model.Order;
+import com.isproj2.regainmobile.model.OrderLog;
 import com.isproj2.regainmobile.model.Product;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.repo.AddressRepository;
+import com.isproj2.regainmobile.repo.OrderLogRepository;
 import com.isproj2.regainmobile.repo.OrderRepository;
 import com.isproj2.regainmobile.repo.ProductRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
@@ -32,6 +35,9 @@ public class OrderServiceImpl implements OrderService {
 
         @Autowired
         private AddressRepository addressRepository;
+
+        @Autowired
+        private OrderLogRepository orderLogRepository;
 
         @Override
         @Transactional
@@ -54,17 +60,47 @@ public class OrderServiceImpl implements OrderService {
 
         @Override
         @Transactional
-        public OrderDTO updateOrderStatus(Integer orderId, String status) {
+        public OrderDTO updateOrderStatus(Integer orderId, String newStatus, Integer updatedByUserID) {
                 Order order = orderRepository.findById(orderId)
                                 .orElseThrow(() -> new RuntimeException("Order not found"));
+                                
+                User updatedByUser = userRepository.findById(updatedByUserID)
+                                .orElseThrow(() -> new RuntimeException("User not found"));
 
-                order.setCurrentStatus(status);
+                // Log the previous status
+                String prevStatus = order.getCurrentStatus();
+
+                //Update current status
+                order.setCurrentStatus(newStatus);
                 orderRepository.save(order);
 
-                return new OrderDTO(order.getOrderID(), order.getProduct().getProductID(),
-                                order.getBuyer().getUserID(), order.getOrderDate(), order.getDeliveryMethod(),
-                                order.getDeliveryDate(), order.getPaymentMethod(), order.getTotalAmount(),
-                                order.getCurrentStatus(), order.getAddress().getAddressID());
+                //Create and save the OrderLog
+                OrderLog orderLog = new OrderLog();
+                orderLog.setOrder(order);
+                orderLog.setPrevStatus(prevStatus);
+                orderLog.setDeliveryDate(order.getDeliveryDate());
+                orderLog.setUpdatedByUser(updatedByUser);
+                orderLog.setTimeStamp(LocalDateTime.now());
+
+                orderLogRepository.save(orderLog);
+
+                return convertToOrderDTO(order);
+
+        }
+
+        private OrderDTO convertToOrderDTO(Order order) {
+                return new OrderDTO(
+                    order.getOrderID(),
+                    order.getProduct().getProductID(),
+                    order.getBuyer().getUserID(),
+                    order.getOrderDate(),
+                    order.getDeliveryMethod(),
+                    order.getDeliveryDate(),
+                    order.getPaymentMethod(),
+                    order.getTotalAmount(),
+                    order.getCurrentStatus(),
+                    order.getAddress().getAddressID()
+                );
         }
 
         @Override
