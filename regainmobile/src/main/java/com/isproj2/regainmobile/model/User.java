@@ -112,6 +112,9 @@ public class User {
     @OneToMany(mappedBy = "rentee", fetch = FetchType.EAGER)
     private Collection<Booking> booking;
 
+    @OneToMany(mappedBy = "updatedByUser", fetch = FetchType.EAGER)
+    private Collection<OrderLog> orderLog;
+
     public User(UserDTO userDTO) {
         this.userID = userDTO.getId();
         this.lastName = userDTO.getLastName();
