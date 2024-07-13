@@ -1,7 +1,7 @@
 package com.isproj2.regainmobile.dto;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -29,7 +29,7 @@ public class OrderDTO {
     private String deliveryMethod;
 
     @lombok.NonNull
-    private Date deliveryDate;
+    private LocalDate deliveryDate;
 
     @lombok.NonNull
     private Integer paymentMethod;
