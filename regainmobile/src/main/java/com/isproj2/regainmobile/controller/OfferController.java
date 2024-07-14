@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.OfferDTO;
-import com.isproj2.regainmobile.model.Offer;
 import com.isproj2.regainmobile.services.OfferService;
 
 @RestController

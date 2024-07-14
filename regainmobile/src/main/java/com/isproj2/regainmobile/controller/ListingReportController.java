@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.ListingReportDTO;
 import com.isproj2.regainmobile.services.ListingReportService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/listingreports")

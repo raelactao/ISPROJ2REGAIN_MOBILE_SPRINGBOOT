@@ -1,7 +1,5 @@
 package com.isproj2.regainmobile.dto;
 
-import java.math.BigDecimal;
-
 import com.isproj2.regainmobile.model.Product;
 
 import lombok.AllArgsConstructor;

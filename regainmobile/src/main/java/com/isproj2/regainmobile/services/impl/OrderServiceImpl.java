@@ -1,6 +1,5 @@
 package com.isproj2.regainmobile.services.impl;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.isproj2.regainmobile.dto.OrderDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Address;
-import com.isproj2.regainmobile.model.Offer;
 import com.isproj2.regainmobile.model.Order;
 import com.isproj2.regainmobile.model.OrderLog;
 import com.isproj2.regainmobile.model.Product;

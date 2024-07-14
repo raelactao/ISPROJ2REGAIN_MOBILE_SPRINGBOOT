@@ -1,21 +1,18 @@
 package com.isproj2.regainmobile.services.impl;
 
-import com.isproj2.regainmobile.dto.FavoriteDTO;
-import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
-import com.isproj2.regainmobile.model.Favorite;
-import com.isproj2.regainmobile.model.User;
-import com.isproj2.regainmobile.model.Product;
-import com.isproj2.regainmobile.repo.FavoriteRepository;
-import com.isproj2.regainmobile.repo.ProductRepository;
-import com.isproj2.regainmobile.repo.UserRepository;
-import com.isproj2.regainmobile.services.FavoriteService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.isproj2.regainmobile.dto.FavoriteDTO;
+import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
+import com.isproj2.regainmobile.model.Favorite;
+import com.isproj2.regainmobile.model.Product;
+import com.isproj2.regainmobile.model.User;
+import com.isproj2.regainmobile.repo.FavoriteRepository;
+import com.isproj2.regainmobile.repo.ProductRepository;
+import com.isproj2.regainmobile.repo.UserRepository;
+import com.isproj2.regainmobile.services.FavoriteService;
 
 @Service
 @Transactional

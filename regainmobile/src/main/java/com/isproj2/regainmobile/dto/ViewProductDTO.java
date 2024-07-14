@@ -2,14 +2,11 @@ package com.isproj2.regainmobile.dto;
 
 import java.math.BigDecimal;
 
-import com.isproj2.regainmobile.model.Favorite;
 import com.isproj2.regainmobile.model.Product;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
