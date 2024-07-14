@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.isproj2.regainmobile.dto.CategoryDTO;
-import com.isproj2.regainmobile.model.Category;
 import com.isproj2.regainmobile.repo.CategoryRepository;
 import com.isproj2.regainmobile.services.CategoryService;
 

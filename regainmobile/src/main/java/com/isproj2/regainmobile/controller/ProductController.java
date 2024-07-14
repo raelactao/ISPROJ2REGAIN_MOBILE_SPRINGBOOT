@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.isproj2.regainmobile.dto.ProductDTO;
 import com.isproj2.regainmobile.dto.ViewProductDTO;
 import com.isproj2.regainmobile.services.ProductService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/products")

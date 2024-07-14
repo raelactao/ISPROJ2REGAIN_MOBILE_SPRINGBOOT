@@ -4,11 +4,6 @@ import java.math.BigDecimal;
 
 import com.isproj2.regainmobile.model.User;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
