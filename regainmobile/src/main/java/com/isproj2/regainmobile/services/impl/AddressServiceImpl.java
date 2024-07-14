@@ -1,5 +1,6 @@
 package com.isproj2.regainmobile.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,5 +49,21 @@ public class AddressServiceImpl implements AddressService {
         return new AddressDTO(address.getAddressID(), address.getUnitNumber(), address.getStreet(),
                 address.getBarangay(), address.getCity(), address.getProvince(), address.getZipCode(),
                 address.getUser().getUserID());
+    }
+
+    @Override
+    public List<AddressDTO> getAddressByUser(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+
+        List<Address> addresses = addressRepository.findByUser(user);
+        List<AddressDTO> dtoList = new ArrayList<AddressDTO>();
+
+        for (Address address : addresses) {
+            dtoList.add(new AddressDTO(address));
+        }
+
+        return dtoList;
+
     }
 }

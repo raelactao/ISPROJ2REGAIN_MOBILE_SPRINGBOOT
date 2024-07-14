@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "address")
 @Entity
@@ -32,8 +34,7 @@ public class Address {
     @Column(name = "address_id")
     private Integer addressID;
 
-    @lombok.NonNull
-    @Column(name = "unit_number")
+    @Column(name = "unit_number", nullable = true)
     private String unitNumber;
 
     @lombok.NonNull
