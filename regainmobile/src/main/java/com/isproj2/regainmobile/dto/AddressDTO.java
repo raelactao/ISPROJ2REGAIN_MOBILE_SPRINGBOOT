@@ -1,19 +1,22 @@
 package com.isproj2.regainmobile.dto;
 
+import com.isproj2.regainmobile.model.Address;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
 public class AddressDTO {
-    
+
     private Integer addressID;
 
-    @lombok.NonNull
     private String unitNumber;
 
     @lombok.NonNull
@@ -32,4 +35,16 @@ public class AddressDTO {
     private String zipCode;
 
     private Integer userID;
+
+    public AddressDTO(Address address) {
+        this.addressID = address.getAddressID();
+        this.unitNumber = address.getUnitNumber();
+        this.street = address.getStreet();
+        this.barangay = address.getBarangay();
+        this.city = address.getCity();
+        this.province = address.getProvince();
+        this.zipCode = address.getZipCode();
+        this.userID = address.getUser().getUserID();
+    }
+
 }
