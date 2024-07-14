@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.OfferDTO;
+import com.isproj2.regainmobile.model.Offer;
 import com.isproj2.regainmobile.services.OfferService;
 
 @RestController
@@ -23,7 +24,7 @@ public class OfferController {
     @Autowired
     private OfferService offerService;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<OfferDTO> createOffer(@RequestBody OfferDTO offerDTO) {
         OfferDTO createdOffer = offerService.createOffer(offerDTO);
         return ResponseEntity.ok(createdOffer);
@@ -47,9 +48,21 @@ public class OfferController {
         return ResponseEntity.ok(offerDTO);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<OfferDTO>> getAllOffers() {
         List<OfferDTO> offers = offerService.getAllOffers();
+        return ResponseEntity.ok(offers);
+    }
+
+    @GetMapping("/buyer/{buyerID}")
+    public ResponseEntity<List<OfferDTO>> getOffersByBuyer(@PathVariable Integer buyerID) {
+        List<OfferDTO> offers = offerService.getOffersByBuyer(buyerID);
+        return ResponseEntity.ok(offers);
+    }
+
+    @GetMapping("/seller/{sellerID}")
+    public ResponseEntity<List<OfferDTO>> getOffersBySeller(@PathVariable Integer sellerID) {
+        List<OfferDTO> offers = offerService.getOffersBySeller(sellerID);
         return ResponseEntity.ok(offers);
     }
 }
