@@ -159,6 +159,12 @@ public class ProductServiceImpl implements ProductService {
                 Collections.reverse(products);
                 List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
 
+                // boolean favorited = false;
+                // List<Product> favoritedProducts = products.stream()
+                // .distinct()
+                // .filter(userFaves::contains)
+                // .collect(Collectors.toList());
+
                 for (Product product : products) {
                         boolean favorited = false;
 
