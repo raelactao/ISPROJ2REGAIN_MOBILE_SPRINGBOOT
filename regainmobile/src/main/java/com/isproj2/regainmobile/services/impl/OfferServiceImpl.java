@@ -100,17 +100,17 @@ public class OfferServiceImpl implements OfferService {
         }
 
         @Override
-        public List<OfferDTO> getOffersByBuyer(Integer buyerID) {
-                User buyer = userRepository.findById(buyerID)
-                                .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + buyerID));
+        public List<OfferDTO> getOffersByBuyer(Integer buyerId) {
+                User buyer = userRepository.findById(buyerId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + buyerId));
                 List<Offer> offers = offerRepository.findByBuyer(buyer);
                 return offers.stream().map(this::convertToDTO).collect(Collectors.toList());
         }
 
         @Override
-        public List<OfferDTO> getOffersBySeller(Integer sellerID) {
-                User seller = userRepository.findById(sellerID)
-                                .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + sellerID));
+        public List<OfferDTO> getOffersBySeller(Integer sellerId) {
+                User seller = userRepository.findById(sellerId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + sellerId));
                 List<Offer> offers = offerRepository.findBySeller(seller);
                 return offers.stream().map(this::convertToDTO).collect(Collectors.toList());
         }

@@ -11,6 +11,6 @@ public interface OfferService {
     void deleteOffer(Integer offerId);
     OfferDTO getOfferById(Integer offerId);
     List<OfferDTO> getAllOffers();
-    List<OfferDTO> getOffersByBuyer(Integer buyerID);
-    List<OfferDTO> getOffersBySeller(Integer sellerID);
+    List<OfferDTO> getOffersByBuyer(Integer buyerId);
+    List<OfferDTO> getOffersBySeller(Integer sellerId);
 }
