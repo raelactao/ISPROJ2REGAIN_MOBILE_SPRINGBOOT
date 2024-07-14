@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.isproj2.regainmobile.dto.OfferDTO;
 import com.isproj2.regainmobile.dto.OrderDTO;
 import com.isproj2.regainmobile.dto.OrderStatusUpdateRequest;
+import com.isproj2.regainmobile.model.Order;
 import com.isproj2.regainmobile.services.OrderService;
 
 
@@ -52,5 +53,11 @@ public class OrderController {
     public ResponseEntity<List<OrderDTO>> getOrdersByBuyer(@PathVariable Integer buyerId) {
         List<OrderDTO> orders = orderService.getOrdersByBuyer(buyerId);
         return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<List<OrderDTO>> getOrdersBySeller(@PathVariable Integer sellerId) {
+        List<OrderDTO> orders = orderService.getOrdersBySeller(sellerId);
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 }

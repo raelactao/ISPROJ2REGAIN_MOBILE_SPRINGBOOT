@@ -124,4 +124,27 @@ public class OrderServiceImpl implements OrderService {
                 List<Order> orders = orderRepository.findByBuyer(buyer);
                 return orders.stream().map(this::convertToOrderDTO).collect(Collectors.toList());
         }
+
+        @Override
+        public List<OrderDTO> getOrdersBySeller(Integer sellerID) {
+                List<Order> orders = orderRepository.findByProductSellerUserID(sellerID);
+                return orders.stream()
+                        .map(this::convertToDTO)
+                        .collect(Collectors.toList());
+        }
+
+        private OrderDTO convertToDTO(Order order) {
+                OrderDTO orderDTO = new OrderDTO();
+                orderDTO.setOrderID(order.getOrderID());
+                orderDTO.setProductID(order.getProduct().getProductID());
+                orderDTO.setBuyerID(order.getBuyer().getUserID());
+                orderDTO.setOrderDate(order.getOrderDate());
+                orderDTO.setDeliveryMethod(order.getDeliveryMethod());
+                orderDTO.setDeliveryDate(order.getDeliveryDate());
+                orderDTO.setPaymentMethod(order.getPaymentMethod());
+                orderDTO.setTotalAmount(order.getTotalAmount());
+                orderDTO.setCurrentStatus(order.getCurrentStatus());
+                orderDTO.setAddressID(order.getAddress().getAddressID());
+                return orderDTO;
+        }
 }
