@@ -1,6 +1,7 @@
 package com.isproj2.regainmobile.dto;
 
 import com.isproj2.regainmobile.model.Address;
+import jakarta.persistence.Column;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
