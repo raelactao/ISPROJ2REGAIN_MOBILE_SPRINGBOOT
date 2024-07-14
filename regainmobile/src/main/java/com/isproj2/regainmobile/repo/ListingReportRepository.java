@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface ListingReportRepository extends JpaRepository<ListingReport, Integer> {
     List<ListingReport> findByReportedListing(Product reportedListing);
+
+    List<ListingReport> findByReportedListingSellerUserID(Integer sellerID);
 }

@@ -12,4 +12,5 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     // Custom queries can be defined here if needed
     List<Product> findBySeller(User seller);
+
 }

@@ -13,6 +13,7 @@ import com.isproj2.regainmobile.model.User;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findByBuyer(User buyer);
-    
+
     List<Order> findByProductSellerUserID(Integer sellerId);
+
 }

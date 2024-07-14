@@ -158,14 +158,9 @@ public class ProductServiceImpl implements ProductService {
                 List<Product> products = productRepository.findAll();
                 Collections.reverse(products);
                 List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
-                // int counter = 0;
-
-                // products.intersection
 
                 for (Product product : products) {
                         boolean favorited = false;
-                        // int lastInd = viewProducts.size() - 1;
-                        // counter++;
 
                         // check for user's faved products among all products
                         for (Favorite fave : userFaves) {
@@ -176,22 +171,7 @@ public class ProductServiceImpl implements ProductService {
 
                         ViewProductDTO viewProd = new ViewProductDTO(product, favorited);
 
-                        // ViewProductDTO viewProd = new ViewProductDTO(
-                        // product.getProductID(),
-                        // product.getProductName(),
-                        // product.getLocation().getCity(),
-                        // product.getPrice(),
-                        // product.getSeller().getUsername(),
-                        // // product.getDescription(),
-                        // product.getWeight(),
-                        // product.getCategory().getName(),
-                        // product.getCanDeliver(),
-                        // favorited);
                         viewProducts.add(viewProd);
-                        // if (viewProducts.isEmpty()) {
-                        // viewProducts.add(viewProd);
-                        // } else
-                        // viewProducts.add(0, viewProd);
 
                 }
                 return viewProducts;

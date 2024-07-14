@@ -76,23 +76,30 @@ public class ListingReportServiceImpl implements ListingReportService {
 
                 List<ListingReportDTO> reportsByReportedSeller = new ArrayList<ListingReportDTO>();
 
-                User reportedSeller = userRepository.findById(reportedId)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Seller of reported list not found with id "
-                                                                + reportedId));
+                List<ListingReport> listReportsBySeller = listingReportRepository
+                                .findByReportedListingSellerUserID(reportedId);
 
-                List<Product> userProducts = productRepository.findBySeller(reportedSeller);
-                List<ListingReport> allListingReports = listingReportRepository.findAll();
-
-                // not the most efficient
-                for (ListingReport report : allListingReports) {
-                        for (Product product : userProducts) {
-                                if (product.equals(report.getReportedListing())) {
-                                        ListingReportDTO newReport = new ListingReportDTO(report);
-                                        reportsByReportedSeller.add(newReport);
-                                }
-                        }
+                for (ListingReport report : listReportsBySeller) {
+                        reportsByReportedSeller.add(new ListingReportDTO(report));
                 }
+
+                // User reportedSeller = userRepository.findById(reportedId)
+                // .orElseThrow(() -> new ResourceNotFoundException(
+                // "Seller of reported list not found with id "
+                // + reportedId));
+
+                // List<Product> userProducts = productRepository.findBySeller(reportedSeller);
+                // List<ListingReport> allListingReports = listingReportRepository.findAll();
+
+                // // not the most efficient
+                // for (ListingReport report : allListingReports) {
+                // for (Product product : userProducts) {
+                // if (product.equals(report.getReportedListing())) {
+                // ListingReportDTO newReport = new ListingReportDTO(report);
+                // reportsByReportedSeller.add(newReport);
+                // }
+                // }
+                // }
 
                 return reportsByReportedSeller;
         }
