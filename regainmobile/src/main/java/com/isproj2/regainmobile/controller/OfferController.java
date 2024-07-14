@@ -54,15 +54,15 @@ public class OfferController {
         return ResponseEntity.ok(offers);
     }
 
-    @GetMapping("/buyer/{buyerID}")
-    public ResponseEntity<List<OfferDTO>> getOffersByBuyer(@PathVariable Integer buyerID) {
-        List<OfferDTO> offers = offerService.getOffersByBuyer(buyerID);
+    @GetMapping("/buyer/{buyerId}")
+    public ResponseEntity<List<OfferDTO>> getOffersByBuyer(@PathVariable Integer buyerId) {
+        List<OfferDTO> offers = offerService.getOffersByBuyer(buyerId);
         return ResponseEntity.ok(offers);
     }
 
-    @GetMapping("/seller/{sellerID}")
-    public ResponseEntity<List<OfferDTO>> getOffersBySeller(@PathVariable Integer sellerID) {
-        List<OfferDTO> offers = offerService.getOffersBySeller(sellerID);
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<List<OfferDTO>> getOffersBySeller(@PathVariable Integer sellerId) {
+        List<OfferDTO> offers = offerService.getOffersBySeller(sellerId);
         return ResponseEntity.ok(offers);
     }
 }

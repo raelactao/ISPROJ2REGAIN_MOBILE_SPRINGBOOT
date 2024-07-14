@@ -2,6 +2,8 @@ package com.isproj2.regainmobile.services.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.isproj2.regainmobile.dto.OrderDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Address;
+import com.isproj2.regainmobile.model.Offer;
 import com.isproj2.regainmobile.model.Order;
 import com.isproj2.regainmobile.model.OrderLog;
 import com.isproj2.regainmobile.model.Product;
@@ -112,5 +115,13 @@ public class OrderServiceImpl implements OrderService {
                                 order.getBuyer().getUserID(), order.getOrderDate(), order.getDeliveryMethod(),
                                 order.getDeliveryDate(), order.getPaymentMethod(), order.getTotalAmount(),
                                 order.getCurrentStatus(), order.getAddress().getAddressID());
+        }
+
+        @Override
+        public List<OrderDTO> getOrdersByBuyer(Integer buyerId) {
+                User buyer = userRepository.findById(buyerId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + buyerId));
+                List<Order> orders = orderRepository.findByBuyer(buyer);
+                return orders.stream().map(this::convertToOrderDTO).collect(Collectors.toList());
         }
 }
