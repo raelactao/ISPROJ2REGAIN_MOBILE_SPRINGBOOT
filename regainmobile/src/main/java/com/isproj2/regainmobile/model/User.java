@@ -115,11 +115,12 @@ public class User {
     @OneToMany(mappedBy = "updatedByUser", fetch = FetchType.EAGER)
     private Collection<OrderLog> orderLog;
 
-    public User(UserDTO userDTO) {
+    public User(UserDTO userDTO, Role role) {
         this.userID = userDTO.getId();
         this.lastName = userDTO.getLastName();
         this.firstName = userDTO.getFirstName();
         this.username = userDTO.getUsername();
+        this.role = role;
         this.contactNumber = userDTO.getContactNumber();
         this.password = userDTO.getPassword();
         this.email = userDTO.getEmail();
