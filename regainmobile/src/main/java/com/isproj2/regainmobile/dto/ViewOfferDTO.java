@@ -15,12 +15,16 @@ public class ViewOfferDTO {
 
     Integer productID;
 
+    @lombok.NonNull
     String buyerName;
 
+    @lombok.NonNull
     String offerValue;
 
+    @lombok.NonNull
     Boolean isAccepted;
 
+    @lombok.NonNull
     String sellerName;
     
 } 
