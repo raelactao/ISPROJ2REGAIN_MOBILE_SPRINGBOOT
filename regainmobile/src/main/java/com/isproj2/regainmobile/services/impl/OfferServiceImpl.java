@@ -1,5 +1,6 @@
 package com.isproj2.regainmobile.services.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.isproj2.regainmobile.dto.OfferDTO;
+import com.isproj2.regainmobile.dto.ViewOfferDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Offer;
 import com.isproj2.regainmobile.model.Product;
@@ -66,7 +68,7 @@ public class OfferServiceImpl implements OfferService {
 
                 offer.setProduct(product);
                 offer.setBuyer(buyer);
-                offer.setOfferValue(offerDTO.getOfferValue());
+                offer.setOfferValue(new BigDecimal(offerDTO.getOfferValue()));
                 offer.setIsAccepted(offerDTO.getIsAccepted());
                 offer.setSeller(seller);
 
@@ -87,14 +89,14 @@ public class OfferServiceImpl implements OfferService {
                 Offer offer = offerRepository.findById(offerId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + offerId));
                 return new OfferDTO(offer.getOfferID(), offer.getProduct().getProductID(), offer.getBuyer().getUserID(),
-                                offer.getOfferValue(), offer.getIsAccepted(), offer.getSeller().getUserID());
+                                offer.getOfferValue().toString(), offer.getIsAccepted(), offer.getSeller().getUserID());
         }
 
         @Override
         public List<OfferDTO> getAllOffers() {
                 return offerRepository.findAll().stream()
                                 .map(offer -> new OfferDTO(offer.getOfferID(), offer.getProduct().getProductID(),
-                                                offer.getBuyer().getUserID(), offer.getOfferValue(),
+                                                offer.getBuyer().getUserID(), offer.getOfferValue().toString(),
                                                 offer.getIsAccepted(), offer.getSeller().getUserID()))
                                 .collect(Collectors.toList());
         }
@@ -120,9 +122,50 @@ public class OfferServiceImpl implements OfferService {
                     offer.getOfferID(),
                     offer.getProduct().getProductID(),
                     offer.getBuyer().getUserID(),
-                    offer.getOfferValue(),
+                    offer.getOfferValue().toString(),
                     offer.getIsAccepted(),
                     offer.getSeller().getUserID()
                 );
+        }
+
+        @Override
+        public List<ViewOfferDTO> getAllViewOffers() {
+                List<Offer> offers = offerRepository.findAll();
+                return offers.stream()
+                        .map(this::convertToViewOfferDTO)
+                        .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<ViewOfferDTO> getViewOffersByBuyer(Integer buyerId) {
+                User buyer = userRepository.findById(buyerId)
+                                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + buyerId));
+
+                List<Offer> offers = offerRepository.findByBuyer(buyer);
+                return offers.stream()
+                        .map(this::convertToViewOfferDTO)
+                        .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<ViewOfferDTO> getViewOffersByProductID(Integer productId) {
+                Product product = productRepository.findById(productId)
+                                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + productId));
+
+                List<Offer> offers = offerRepository.findByProduct(product);
+                return offers.stream()
+                        .map(this::convertToViewOfferDTO)
+                        .collect(Collectors.toList());
+        }
+
+        private ViewOfferDTO convertToViewOfferDTO(Offer offer) {
+                ViewOfferDTO dto = new ViewOfferDTO();
+                dto.setOfferID(offer.getOfferID());
+                dto.setProductID(offer.getProduct().getProductID());
+                dto.setBuyerName(offer.getBuyer().getUsername()); // Example: Assuming User has a username
+                dto.setOfferValue(offer.getOfferValue().toString());
+                dto.setIsAccepted(offer.getIsAccepted());
+                dto.setSellerName(offer.getSeller().getUsername()); // Example: Assuming User has a username
+                return dto;
         }
 }

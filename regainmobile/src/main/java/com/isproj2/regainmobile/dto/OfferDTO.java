@@ -20,7 +20,7 @@ public class OfferDTO {
     private Integer buyerID;
 
     @lombok.NonNull
-    private BigDecimal offerValue;
+    private String offerValue;
 
     @lombok.NonNull
     private Boolean isAccepted;
