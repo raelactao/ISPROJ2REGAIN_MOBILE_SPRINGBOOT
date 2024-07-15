@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     // private final Long TEMP_ROLE = (long) 2;
 
     @Override
-    public void addUser(UserDTO userDTO) throws IllegalArgumentException {
+    public void addUser(UserDTO userDTO) {
         // user.setRole(TEMP_ROLE);
         // UserDTO newUser = new UserDTO();
 
