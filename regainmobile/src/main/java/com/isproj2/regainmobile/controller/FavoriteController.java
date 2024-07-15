@@ -24,11 +24,18 @@ public class FavoriteController {
     @Autowired
     private FavoriteService favoriteService;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<FavoriteDTO> createFavorite(@RequestBody FavoriteDTO favoriteDTO) {
         FavoriteDTO createdFavorite = favoriteService.createFavorite(favoriteDTO);
         return ResponseEntity.ok(createdFavorite);
     }
+
+    // @PostMapping("/add/{prodId}/{}")
+    // public ResponseEntity<FavoriteDTO> addFavorite(@PathVariable FavoriteDTO
+    // favoriteDTO) {
+    // FavoriteDTO createdFavorite = favoriteService.addFavorite(favoriteDTO);
+    // return ResponseEntity.ok(createdFavorite);
+    // }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFavorite(@PathVariable("id") Integer favoriteId) {

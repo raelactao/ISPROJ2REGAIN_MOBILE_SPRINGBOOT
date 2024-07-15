@@ -1,16 +1,21 @@
 package com.isproj2.regainmobile.dto;
 
-import java.math.BigDecimal;
+// import java.math.BigDecimal;
+import java.math.MathContext;
 
 import com.isproj2.regainmobile.model.User;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
 
     // make sure the properties of the receiving class in the controller
@@ -18,7 +23,6 @@ public class UserDTO {
 
     private Integer id;
 
-    @lombok.NonNull
     private String role;
 
     private String lastName;
@@ -28,7 +32,6 @@ public class UserDTO {
     @lombok.NonNull
     private String username;
 
-    @lombok.NonNull
     private String contactNumber;
 
     @lombok.NonNull
@@ -36,11 +39,11 @@ public class UserDTO {
 
     private String email;
 
-    private String accountStatus = "Active";
+    private String accountStatus;
 
-    private int penaltyPoints = 0;
+    private int penaltyPoints;
 
-    private BigDecimal commissionBalance = new BigDecimal(0.0);
+    private String commissionBalance = "0.00";
 
     // private byte[] image;
 
@@ -57,7 +60,7 @@ public class UserDTO {
         this.email = user.getEmail();
         this.accountStatus = user.getAccountStatus();
         this.penaltyPoints = user.getPenaltyPoints();
-        this.commissionBalance = user.getCommissionBalance();
+        this.commissionBalance = user.getCommissionBalance().round(new MathContext(2)).toString();
         this.junkshopName = user.getJunkshopName();
     }
 }
