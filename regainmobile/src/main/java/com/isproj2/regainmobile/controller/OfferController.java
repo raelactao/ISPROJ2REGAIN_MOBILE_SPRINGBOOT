@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.OfferDTO;
+import com.isproj2.regainmobile.dto.ViewOfferDTO;
 import com.isproj2.regainmobile.services.OfferService;
 
 @RestController
@@ -63,5 +64,23 @@ public class OfferController {
     public ResponseEntity<List<OfferDTO>> getOffersBySeller(@PathVariable Integer sellerId) {
         List<OfferDTO> offers = offerService.getOffersBySeller(sellerId);
         return ResponseEntity.ok(offers);
+    }
+
+    @GetMapping("/viewalloffers")
+    public ResponseEntity<List<ViewOfferDTO>> getAllViewOffers() {
+        List<ViewOfferDTO> viewOffers = offerService.getAllViewOffers();
+        return ResponseEntity.ok(viewOffers);
+    }
+
+    @GetMapping("/buyer/{buyerId}/viewoffers")
+    public ResponseEntity<List<ViewOfferDTO>> getViewOffersByBuyer(@PathVariable Integer buyerId) {
+        List<ViewOfferDTO> viewOffers = offerService.getViewOffersByBuyer(buyerId);
+        return ResponseEntity.ok(viewOffers);
+    }
+
+    @GetMapping("/product/{productId}/viewoffers")
+    public ResponseEntity<List<ViewOfferDTO>> getViewOffersByProductID(@PathVariable Integer productId) {
+        List<ViewOfferDTO> viewOffers = offerService.getViewOffersByProductID(productId);
+        return ResponseEntity.ok(viewOffers);
     }
 }

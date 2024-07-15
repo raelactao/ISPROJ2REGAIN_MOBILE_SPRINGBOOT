@@ -54,7 +54,7 @@ public class Offer {
         this.offerID = offerDTO.getOfferID();
         this.product = product;
         this.buyer = buyer;
-        this.offerValue = offerDTO.getOfferValue();
+        this.offerValue = new BigDecimal(offerDTO.getOfferValue());
         this.isAccepted = offerDTO.getIsAccepted();
         this.seller = seller;
     }
