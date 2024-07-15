@@ -47,4 +47,11 @@ public class Favorite {
         this.isFavorite = favoriteDTO.getIsFavorite();
     }
 
+    public Favorite(User user, Product product) {
+        // this.favoriteID = favoriteDTO.getFavoriteID();
+        this.user = user;
+        this.product = product;
+        this.isFavorite = true;
+    }
+
 }

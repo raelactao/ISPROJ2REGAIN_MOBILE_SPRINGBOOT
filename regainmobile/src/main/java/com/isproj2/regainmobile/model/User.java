@@ -63,13 +63,13 @@ public class User {
     @Column(name = "email", nullable = true)
     private String email;
 
-    @Column(name = "acc_status")
+    @Column(name = "acc_status", columnDefinition = "default 'Active'")
     private String accountStatus = "Active";
 
     @Column(name = "penalty_points")
     private int penaltyPoints = 0;
 
-    @Column(name = "commission_balance")
+    @Column(name = "commission_balance", length = 38, precision = 4, columnDefinition = "default 0.00")
     private BigDecimal commissionBalance = new BigDecimal(0.0);
 
     // @Lob
@@ -125,7 +125,7 @@ public class User {
         this.email = userDTO.getEmail();
         this.accountStatus = userDTO.getAccountStatus();
         this.penaltyPoints = userDTO.getPenaltyPoints();
-        this.commissionBalance = userDTO.getCommissionBalance();
+        this.commissionBalance = new BigDecimal(userDTO.getCommissionBalance());
         this.junkshopName = userDTO.getJunkshopName();
     }
 

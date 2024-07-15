@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.isproj2.regainmobile.dto.FavoriteDTO;
+import com.isproj2.regainmobile.dto.ProductDTO;
 import com.isproj2.regainmobile.dto.ViewProductDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Favorite;
@@ -39,8 +40,6 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Autowired
     private ProductRepository productRepository;
 
-    // possibly won't be used since technically only Product and User are needed as
-    // argument
     @Override
     public FavoriteDTO createFavorite(FavoriteDTO favoriteDTO) {
         User user = userRepository.findById(favoriteDTO.getUserID())
@@ -51,8 +50,8 @@ public class FavoriteServiceImpl implements FavoriteService {
                         () -> new ResourceNotFoundException("Product not found with id " + favoriteDTO.getProductID()));
 
         Favorite favorite = new Favorite(favoriteDTO, user, product);
-        favoriteRepository.save(favorite);
-        return favoriteDTO;
+        Favorite savedFave = favoriteRepository.save(favorite);
+        return new FavoriteDTO(savedFave);
     }
 
     @Override
@@ -81,4 +80,5 @@ public class FavoriteServiceImpl implements FavoriteService {
         }
         return dtoList;
     }
+
 }
