@@ -1,12 +1,12 @@
 package com.isproj2.regainmobile.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.validation.ValidationErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.UserDTO;
-import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.ResponseModel;
 import com.isproj2.regainmobile.services.UserService;
 
@@ -28,7 +28,7 @@ public class LoginController {
 
         try {
             loginUser = userService.login(userDTO);
-        } catch (RuntimeException e) {
+        } catch (ValidationException e) {
             return new ResponseModel<UserDTO>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), userDTO);
         }
 

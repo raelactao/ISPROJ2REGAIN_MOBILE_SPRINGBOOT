@@ -7,6 +7,8 @@ public interface UserService {
 
     void addUser(UserDTO user);
 
+    UserDTO updateUser(UserDTO user);
+
     UserDTO login(UserDTO user);
 
     // UserDTO getUserById(Integer userId);

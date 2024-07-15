@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.isproj2.regainmobile.dto.UserDTO;
+import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
+import com.isproj2.regainmobile.model.Role;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.repo.RoleRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
@@ -37,8 +39,11 @@ public class UserServiceImpl implements UserService {
             throw new ValidationException(errorMessage);
         }
 
-        User user = new User(userDTO);
-        user.setRole(_roleRepository.findByName(userDTO.getRole()));
+        Role role = _roleRepository.findByName(userDTO.getRole());
+        // .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " +
+        // userDTO.getRole()));
+
+        User user = new User(userDTO, role);
         _userRepository.save(user);
 
         return;
@@ -52,12 +57,45 @@ public class UserServiceImpl implements UserService {
         User user = _userRepository.findByUsername(userDTO.getUsername())
                 .orElseThrow(() -> new ResourceAccessException(errorMessage));
 
+        Role role = _roleRepository.findByName(user.getRole().getName());
+
         if (user.getPassword().matches(userDTO.getPassword())) {
-            return new UserDTO(user);
+            UserDTO loginUser = new UserDTO(user);
+            loginUser.setRole(role.getName());
+            return loginUser;
         } else {
             throw new ValidationException(errorMessage);
         }
 
+    }
+
+    @Override
+    public UserDTO updateUser(UserDTO userDTO) {
+
+        // String errorMessage = "Username or Contact Number already exists";
+
+        User user = _userRepository.findById(userDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " + userDTO.getId()));
+
+        Role role = _roleRepository.findByName(user.getRole().getName());
+        // .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " +
+        // userDTO.getRole()));
+
+        // boolean usernameAlreadyExists =
+        // _userRepository.existsByUsername(userDTO.getUsername());
+        // boolean contactNumberAlreadyExists =
+        // _userRepository.existsByContactNumber(userDTO.getContactNumber());
+
+        // if (usernameAlreadyExists &&
+        // !(user.getUsername().equals(userDTO.getUsername()))) {
+        // throw new ValidationException(errorMessage);
+        // } else if (contactNumberAlreadyExists
+        // && !(user.getContactNumber().equals(userDTO.getContactNumber()))) {
+        // throw new ValidationException(errorMessage);
+        // }
+
+        User updatedUser = new User(userDTO, role);
+        return new UserDTO(_userRepository.save(updatedUser));
     }
 
     // @Override
