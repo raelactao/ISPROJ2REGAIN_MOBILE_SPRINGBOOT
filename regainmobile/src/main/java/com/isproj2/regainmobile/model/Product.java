@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import com.isproj2.regainmobile.dto.ProductDTO;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -68,7 +69,7 @@ public class Product {
     @Column(name = "can_deliver", columnDefinition = "tinyint(1) default 1")
     private Boolean canDeliver;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Collection<Favorite> favorite;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.EAGER)

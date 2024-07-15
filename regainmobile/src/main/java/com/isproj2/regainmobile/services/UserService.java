@@ -1,11 +1,13 @@
 package com.isproj2.regainmobile.services;
 
 import com.isproj2.regainmobile.dto.UserDTO;
-import com.isproj2.regainmobile.model.User;
+// import com.isproj2.regainmobile.model.User;
 
 public interface UserService {
 
-    User addUser(UserDTO user);
+    void addUser(UserDTO user);
 
-    User getUserById(Integer userId);
+    UserDTO login(UserDTO user);
+
+    // UserDTO getUserById(Integer userId);
 }

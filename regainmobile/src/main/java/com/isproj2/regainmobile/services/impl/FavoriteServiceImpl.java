@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.isproj2.regainmobile.dto.FavoriteDTO;
+import com.isproj2.regainmobile.dto.ProductDTO;
+import com.isproj2.regainmobile.dto.ViewProductDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Favorite;
 import com.isproj2.regainmobile.model.Product;
@@ -13,6 +15,17 @@ import com.isproj2.regainmobile.repo.FavoriteRepository;
 import com.isproj2.regainmobile.repo.ProductRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.FavoriteService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.swing.text.View;
 
 @Service
 @Transactional
@@ -37,8 +50,8 @@ public class FavoriteServiceImpl implements FavoriteService {
                         () -> new ResourceNotFoundException("Product not found with id " + favoriteDTO.getProductID()));
 
         Favorite favorite = new Favorite(favoriteDTO, user, product);
-        favoriteRepository.save(favorite);
-        return favoriteDTO;
+        Favorite savedFave = favoriteRepository.save(favorite);
+        return new FavoriteDTO(savedFave);
     }
 
     @Override
@@ -53,4 +66,19 @@ public class FavoriteServiceImpl implements FavoriteService {
         return new FavoriteDTO(favorite.getFavoriteID(), favorite.getUser().getUserID(),
                 favorite.getProduct().getProductID(), favorite.getIsFavorite());
     }
+
+    @Override
+    public List<ViewProductDTO> getFavoritesByUser(Integer userId) {
+        List<ViewProductDTO> dtoList = new ArrayList<ViewProductDTO>();
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+        List<Favorite> favoritesOfUser = favoriteRepository.findByUser(user);
+        Collections.reverse(favoritesOfUser);
+        for (Favorite fave : favoritesOfUser) {
+            dtoList.add(new ViewProductDTO(fave.getProduct(), fave.getIsFavorite()));
+        }
+        return dtoList;
+    }
+
 }
