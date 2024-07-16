@@ -183,4 +183,31 @@ public class ProductServiceImpl implements ProductService {
 
         }
 
+        @Override
+        public List<ViewProductDTO> getViewProductsByUser(Integer userId) {
+                List<ViewProductDTO> sellerProducts = new ArrayList<ViewProductDTO>();
+
+                User seller = userRepository.findById(userId)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Seller not found with id " + userId));
+
+                List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
+
+                List<Product> products = productRepository.findBySeller(seller);
+                for (Product product : products) {
+                        boolean favorited = false;
+
+                        // check for user's faved products among all products
+                        for (Favorite fave : userFaves) {
+                                if (fave.getProduct().equals(product)) {
+                                        favorited = true;
+                                }
+                        }
+                        ViewProductDTO newProd = new ViewProductDTO(product, favorited);
+                        sellerProducts.add(newProd);
+                }
+
+                return sellerProducts;
+        }
+
 }

@@ -30,14 +30,14 @@ public class ProductController {
         return ResponseEntity.ok(createdProduct);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable("id") Integer productId,
             @RequestBody ProductDTO productDTO) {
         ProductDTO updatedProduct = productService.updateProduct(productId, productDTO);
         return ResponseEntity.ok(updatedProduct);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable("id") Integer productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.noContent().build();
@@ -60,6 +60,12 @@ public class ProductController {
         List<ProductDTO> products = productService.getProductsByUser(userId);
         return ResponseEntity.ok(products);
     }
+    // @GetMapping("/list/{id}")
+    // public ResponseEntity<List<ViewProductDTO>>
+    // getAllProductsByUser(@PathVariable("id") Integer userId) {
+    // List<ViewProductDTO> products = productService.getViewProductsByUser(userId);
+    // return ResponseEntity.ok(products);
+    // }
 
     @GetMapping("/viewlist/{id}")
     public ResponseEntity<List<ViewProductDTO>> getAllProductsByUserFavorites(@PathVariable("id") Integer userId) {

@@ -81,4 +81,18 @@ public class FavoriteServiceImpl implements FavoriteService {
         return dtoList;
     }
 
+    @Override
+    public void deleteFavoriteByUserProduct(Integer userId, Integer productId) {
+
+        List<Favorite> userFaves = favoriteRepository.findByUserUserID(userId);
+        List<Favorite> faveProducts = favoriteRepository.findByProductProductID(productId);
+        userFaves.retainAll(faveProducts);
+
+        for (Favorite fave : userFaves) {
+            favoriteRepository.deleteById(fave.getFavoriteID());
+        }
+
+        return;
+    }
+
 }
