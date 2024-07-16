@@ -30,21 +30,48 @@ public class OfferServiceImpl implements OfferService {
         @Autowired
         private UserRepository userRepository;
 
-        @Override
-        public OfferDTO createOffer(OfferDTO offerDTO) {
-                User buyer = userRepository.findById(offerDTO.getBuyerID())
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Buyer not found with id " + offerDTO.getBuyerID()));
+        // @Override
+        // public OfferDTO createOffer(OfferDTO offerDTO) {
+        //         User buyer = userRepository.findById(offerDTO.getBuyerID())
+        //                         .orElseThrow(() -> new ResourceNotFoundException(
+        //                                         "Buyer not found with id " + offerDTO.getBuyerID()));
 
-                User seller = userRepository.findById(offerDTO.getSellerID())
+        //         User seller = userRepository.findById(offerDTO.getSellerID())
+        //                         .orElseThrow(() -> new ResourceNotFoundException(
+        //                                         "Seller not found with id " + offerDTO.getSellerID()));
+
+        //         Product product = productRepository.findById(offerDTO.getProductID())
+        //                         .orElseThrow(() -> new ResourceNotFoundException(
+        //                                         "Product not found with id " + offerDTO.getProductID()));
+
+        //         Offer offer = new Offer(offerDTO, buyer, product, seller);
+        //         offerRepository.save(offer);
+        //         return offerDTO;
+        // }
+
+        @Override
+        public ViewOfferDTO addOffer(ViewOfferDTO offerDTO) {
+                User buyer = userRepository.findByUsername(offerDTO.getBuyerName())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Seller not found with id " + offerDTO.getSellerID()));
+                                                "Buyer not found with id " + offerDTO.getBuyerName()));
+
+                User seller = userRepository.findByUsername(offerDTO.getSellerName())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Seller not found with id " + offerDTO.getSellerName()));
 
                 Product product = productRepository.findById(offerDTO.getProductID())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Product not found with id " + offerDTO.getProductID()));
 
-                Offer offer = new Offer(offerDTO, buyer, product, seller);
+                Offer offer = new Offer(
+                        offerDTO.getOfferID(),
+                        product,
+                        buyer,
+                        new BigDecimal(offerDTO.getOfferValue()),
+                        offerDTO.getIsAccepted(),
+                        seller
+                );
+
                 offerRepository.save(offer);
                 return offerDTO;
         }

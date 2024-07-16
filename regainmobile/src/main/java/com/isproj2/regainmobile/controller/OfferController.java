@@ -25,8 +25,8 @@ public class OfferController {
     private OfferService offerService;
 
     @PostMapping("/add")
-    public ResponseEntity<OfferDTO> createOffer(@RequestBody OfferDTO offerDTO) {
-        OfferDTO createdOffer = offerService.createOffer(offerDTO);
+    public ResponseEntity<ViewOfferDTO> addOffer(@RequestBody ViewOfferDTO offerDTO) {
+        ViewOfferDTO createdOffer = offerService.addOffer(offerDTO);
         return ResponseEntity.ok(createdOffer);
     }
 

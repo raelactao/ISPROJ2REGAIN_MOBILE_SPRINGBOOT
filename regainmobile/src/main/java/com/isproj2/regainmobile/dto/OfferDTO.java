@@ -26,4 +26,9 @@ public class OfferDTO {
     private Boolean isAccepted;
 
     private Integer sellerID;
+
+    // public OfferDTO(ViewOfferDTO viewoffer) {
+        
+    // }
+
 }
