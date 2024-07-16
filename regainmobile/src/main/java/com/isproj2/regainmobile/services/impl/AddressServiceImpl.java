@@ -47,7 +47,7 @@ public class AddressServiceImpl implements AddressService {
     public void deleteAddress(Integer addressId) {
         List<Product> prodListWithAddress = productRepository.findByLocationAddressID(addressId);
         if (!prodListWithAddress.isEmpty()) {
-            throw new ValidationException();
+            throw new ValidationException("Unable to delete this address");
         }
         addressRepository.deleteById(addressId);
     }
