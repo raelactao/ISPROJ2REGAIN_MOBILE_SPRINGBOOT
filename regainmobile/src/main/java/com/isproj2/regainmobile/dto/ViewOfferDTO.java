@@ -1,5 +1,7 @@
 package com.isproj2.regainmobile.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,5 +28,8 @@ public class ViewOfferDTO {
 
     @lombok.NonNull
     String sellerName;
+
+
+    
     
 } 

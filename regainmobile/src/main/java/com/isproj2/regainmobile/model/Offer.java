@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "offer")
 @Entity
@@ -54,8 +56,10 @@ public class Offer {
         this.offerID = offerDTO.getOfferID();
         this.product = product;
         this.buyer = buyer;
-        this.offerValue = new BigDecimal(offerDTO.getOfferValue());
+        this.offerValue = new BigDecimal(offerDTO.getOfferValue().toString());
         this.isAccepted = offerDTO.getIsAccepted();
         this.seller = seller;
     }
+
+    
 }
