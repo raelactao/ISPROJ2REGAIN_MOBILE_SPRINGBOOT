@@ -11,6 +11,8 @@ public interface FavoriteService {
 
     void deleteFavorite(Integer favoriteId);
 
+    void deleteFavoriteByUserProduct(Integer userId, Integer productId);
+
     FavoriteDTO getFavoriteById(Integer favoriteId);
 
     List<ViewProductDTO> getFavoritesByUser(Integer userId);

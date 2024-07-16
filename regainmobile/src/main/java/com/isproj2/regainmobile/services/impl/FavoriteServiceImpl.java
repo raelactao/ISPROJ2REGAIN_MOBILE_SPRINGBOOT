@@ -16,16 +16,16 @@ import com.isproj2.regainmobile.repo.ProductRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.FavoriteService;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.stereotype.Service;
+// import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+// import java.util.stream.Collectors;
 
-import javax.swing.text.View;
+// import javax.swing.text.View;
 
 @Service
 @Transactional
@@ -79,6 +79,20 @@ public class FavoriteServiceImpl implements FavoriteService {
             dtoList.add(new ViewProductDTO(fave.getProduct(), fave.getIsFavorite()));
         }
         return dtoList;
+    }
+
+    @Override
+    public void deleteFavoriteByUserProduct(Integer userId, Integer productId) {
+
+        List<Favorite> userFaves = favoriteRepository.findByUserUserID(userId);
+        List<Favorite> faveProducts = favoriteRepository.findByProductProductID(productId);
+        userFaves.retainAll(faveProducts);
+
+        for (Favorite fave : userFaves) {
+            favoriteRepository.deleteById(fave.getFavoriteID());
+        }
+
+        return;
     }
 
 }

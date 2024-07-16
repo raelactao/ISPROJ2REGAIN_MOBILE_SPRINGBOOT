@@ -18,5 +18,7 @@ public interface ProductService {
 
     List<ProductDTO> getProductsByUser(Integer userId);
 
+    List<ViewProductDTO> getViewProductsByUser(Integer userId);
+
     List<ViewProductDTO> getViewProducts(Integer userId);
 }
