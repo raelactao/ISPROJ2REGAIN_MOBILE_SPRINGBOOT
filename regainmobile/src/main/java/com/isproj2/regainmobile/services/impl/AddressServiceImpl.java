@@ -10,12 +10,15 @@ import org.springframework.stereotype.Service;
 import com.isproj2.regainmobile.dto.AddressDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Address;
+import com.isproj2.regainmobile.model.Product;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.repo.AddressRepository;
+import com.isproj2.regainmobile.repo.ProductRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.AddressService;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.ValidationException;
 
 @Service
 @Transactional
@@ -26,6 +29,9 @@ public class AddressServiceImpl implements AddressService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public AddressDTO createAddress(AddressDTO addressDTO) {
@@ -39,6 +45,10 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public void deleteAddress(Integer addressId) {
+        List<Product> prodListWithAddress = productRepository.findByLocationAddressID(addressId);
+        if (!prodListWithAddress.isEmpty()) {
+            throw new ValidationException("Unable to delete this address");
+        }
         addressRepository.deleteById(addressId);
     }
 
