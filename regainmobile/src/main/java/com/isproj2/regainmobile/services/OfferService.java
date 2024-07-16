@@ -7,7 +7,7 @@ import com.isproj2.regainmobile.dto.ViewOfferDTO;
 
 public interface OfferService {
     // OfferDTO createOffer(OfferDTO offerDTO);
-    OfferDTO updateOffer(Integer offerId, OfferDTO offerDTO);
+    ViewOfferDTO updateOffer(Integer offerId, ViewOfferDTO offerDTO);
     void deleteOffer(Integer offerId);
     OfferDTO getOfferById(Integer offerId);
     List<OfferDTO> getAllOffers();

@@ -31,8 +31,8 @@ public class OfferController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OfferDTO> updateOffer(@PathVariable("id") Integer offerId, @RequestBody OfferDTO offerDTO) {
-        OfferDTO updatedOffer = offerService.updateOffer(offerId, offerDTO);
+    public ResponseEntity<ViewOfferDTO> updateOffer(@PathVariable("id") Integer offerId, @RequestBody ViewOfferDTO offerDTO) {
+        ViewOfferDTO updatedOffer = offerService.updateOffer(offerId, offerDTO);
         return ResponseEntity.ok(updatedOffer);
     }
 

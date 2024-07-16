@@ -77,17 +77,17 @@ public class OfferServiceImpl implements OfferService {
         }
 
         @Override
-        public OfferDTO updateOffer(Integer offerId, OfferDTO offerDTO) {
+        public ViewOfferDTO updateOffer(Integer offerId, ViewOfferDTO offerDTO) {
                 Offer offer = offerRepository.findById(offerId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + offerId));
 
-                User buyer = userRepository.findById(offerDTO.getBuyerID())
+                User buyer = userRepository.findByUsername(offerDTO.getBuyerName())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Buyer not found with id " + offerDTO.getBuyerID()));
+                                                "Buyer not found with id " + offerDTO.getBuyerName()));
 
-                User seller = userRepository.findById(offerDTO.getSellerID())
+                User seller = userRepository.findByUsername(offerDTO.getSellerName())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Seller not found with id " + offerDTO.getSellerID()));
+                                                "Seller not found with id " + offerDTO.getSellerName()));
 
                 Product product = productRepository.findById(offerDTO.getProductID())
                                 .orElseThrow(() -> new ResourceNotFoundException(
