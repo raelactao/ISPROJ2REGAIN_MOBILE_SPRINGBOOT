@@ -27,7 +27,7 @@ public class ViewProductDTO {
 
     private String sellerUsername; // user
 
-    // private String description;
+    private String description;
 
     private String weight;
 
@@ -40,7 +40,7 @@ public class ViewProductDTO {
     public ViewProductDTO(Integer productID, @NonNull String productName,
             @NonNull String city,
             @NonNull BigDecimal price, @NonNull String username,
-            // String description,
+            String description,
             @NonNull Double weight,
             String name, @NonNull Boolean canDeliver, @NonNull Boolean isFavorite) {
         this.productID = productID;
@@ -48,7 +48,7 @@ public class ViewProductDTO {
         this.location = city;
         this.price = price.toString();
         this.sellerUsername = username;
-        // this.description = description;
+        this.description = description;
         this.weight = weight.toString();
         this.category = name;
         this.canDeliver = canDeliver;
@@ -61,7 +61,7 @@ public class ViewProductDTO {
         this.location = product.getLocation().getCity();
         this.price = product.getPrice().toString();
         this.sellerUsername = product.getSeller().getUsername();
-        // this.description = product.getDescription();
+        this.description = product.getDescription();
         this.weight = product.getWeight().toString();
         this.category = product.getCategory().getName();
         this.canDeliver = product.getCanDeliver();
