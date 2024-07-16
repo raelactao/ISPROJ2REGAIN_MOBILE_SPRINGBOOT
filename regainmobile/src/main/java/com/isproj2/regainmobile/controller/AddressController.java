@@ -17,6 +17,8 @@ import com.isproj2.regainmobile.dto.AddressDTO;
 import com.isproj2.regainmobile.model.ResponseModel;
 import com.isproj2.regainmobile.services.AddressService;
 
+import jakarta.validation.ValidationException;
+
 @RestController
 @RequestMapping("/api/addresses")
 public class AddressController {
@@ -32,7 +34,12 @@ public class AddressController {
 
     @DeleteMapping("/{id}")
     public ResponseModel<Void> deleteAddress(@PathVariable("id") Integer addressId) {
-        addressService.deleteAddress(addressId);
+        try {
+            addressService.deleteAddress(addressId);
+        } catch (ValidationException e) {
+            return new ResponseModel<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
+
         return new ResponseModel<>(HttpStatus.OK.value(), "Address deleted");
     }
 
