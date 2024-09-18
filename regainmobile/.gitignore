@@ -30,7 +30,9 @@ build/
 !**/src/test/**/build/
 
 ### Project ###
-**/src/main/**/application.properties
+**/src/main/resources/application.properties
+!**/src/main/resources/static/
+!**/src/main/resources/templates/
 
 ### VS Code ###
 .vscode/
