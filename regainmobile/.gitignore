@@ -31,8 +31,8 @@ build/
 
 ### Project ###
 **/src/main/resources/application.properties
-!**/src/main/resources/static/*
-!**/src/main/resources/templates/*
+!**/src/main/resources/static/
+!**/src/main/resources/templates/
 
 ### VS Code ###
 .vscode/
