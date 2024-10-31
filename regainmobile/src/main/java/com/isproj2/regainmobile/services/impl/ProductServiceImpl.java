@@ -194,6 +194,8 @@ public class ProductServiceImpl implements ProductService {
                 List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
 
                 List<Product> products = productRepository.findBySeller(seller);
+
+                // not the most efficient
                 for (Product product : products) {
                         boolean favorited = false;
 

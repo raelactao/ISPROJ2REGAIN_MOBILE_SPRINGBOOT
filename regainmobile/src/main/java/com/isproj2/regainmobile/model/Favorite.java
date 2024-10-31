@@ -54,4 +54,10 @@ public class Favorite {
         this.isFavorite = true;
     }
 
+    public Favorite(User user, Product product, Boolean isFavorite) {
+        this.user = user;
+        this.product = product;
+        this.isFavorite = isFavorite;
+    }
+
 }
