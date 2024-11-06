@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.isproj2.regainmobile.dto.UserDTO;
+import com.isproj2.regainmobile.exceptions.AuthenticationException;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
+import com.isproj2.regainmobile.exceptions.UserAlreadyExistsException;
 import com.isproj2.regainmobile.model.Role;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.repo.RoleRepository;
@@ -25,18 +27,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleRepository _roleRepository;
 
-    // private final Long TEMP_ROLE = (long) 2;
-
     @Override
     public void addUser(UserDTO userDTO) {
-        // user.setRole(TEMP_ROLE);
-        // UserDTO newUser = new UserDTO();
-
-        String errorMessage = "Username or Contact Number already exists";
 
         if (_userRepository.existsByUsername(userDTO.getUsername())
                 || _userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new ValidationException(errorMessage);
+            throw new UserAlreadyExistsException();
         }
 
         Role role = _roleRepository.findByName(userDTO.getRole());
@@ -52,10 +48,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO login(UserDTO userDTO) {
 
-        String errorMessage = "Invalid credentials";
+        // String errorMessage = "User does not exist";
 
         User user = _userRepository.findByUsername(userDTO.getUsername())
-                .orElseThrow(() -> new ResourceAccessException(errorMessage));
+                .orElseThrow(() -> new AuthenticationException());
 
         Role role = _roleRepository.findByName(user.getRole().getName());
 
@@ -64,7 +60,7 @@ public class UserServiceImpl implements UserService {
             loginUser.setRole(role.getName());
             return loginUser;
         } else {
-            throw new ValidationException(errorMessage);
+            throw new AuthenticationException();
         }
 
     }

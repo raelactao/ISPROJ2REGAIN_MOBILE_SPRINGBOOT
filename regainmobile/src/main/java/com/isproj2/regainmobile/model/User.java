@@ -17,6 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 @Entity
 public class User {
@@ -53,15 +55,15 @@ public class User {
 
     @lombok.NonNull
     @Email
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
     @lombok.NonNull
-    @Column(name = "pass")
+    @Column(name = "pass", nullable = false)
     private String password;
 
-    @Column(name = "acc_status", columnDefinition = "default 'Active'")
-    private String accountStatus = "Active";
+    @Column(name = "acc_status", columnDefinition = "default 'Pending'")
+    private String accountStatus = "Pending";
 
     @Column(name = "penalty_points")
     private int penaltyPoints = 0;
