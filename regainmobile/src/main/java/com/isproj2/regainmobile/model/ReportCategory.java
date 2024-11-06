@@ -20,7 +20,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "reportcategories")
 public class ReportCategory {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "report_category_id")
@@ -29,16 +29,13 @@ public class ReportCategory {
     @Column(name = "category")
     private String name;
 
-    @OneToMany(mappedBy = "reasonCategory", fetch=FetchType.EAGER)
-    private Collection<ListingReport> listingReport;
-
     @OneToMany(mappedBy = "reasonCategory", fetch = FetchType.EAGER)
-    private Collection<EQListingReport> eqlistingReport;
+    private Collection<ListingReport> listingReport;
 
     @OneToMany(mappedBy = "reasonCategory", fetch = FetchType.EAGER)
     private Collection<UserReport> userReport;
 
-    public ReportCategory (String category) {
+    public ReportCategory(String category) {
         this.name = category;
     }
 }

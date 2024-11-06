@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
         String errorMessage = "Username or Contact Number already exists";
 
         if (_userRepository.existsByUsername(userDTO.getUsername())
-                || _userRepository.existsByContactNumber(userDTO.getContactNumber())) {
+                || _userRepository.existsByEmail(userDTO.getEmail())) {
             throw new ValidationException(errorMessage);
         }
 
