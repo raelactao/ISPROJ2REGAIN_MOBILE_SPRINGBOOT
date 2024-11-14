@@ -16,7 +16,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "ratetags")
 public class RateTag {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rate_tags_id")
@@ -25,7 +25,7 @@ public class RateTag {
     @Column(name = "tag")
     private String name;
 
-    public RateTag (String tag) {
+    public RateTag(String tag) {
         this.name = tag;
     }
 }

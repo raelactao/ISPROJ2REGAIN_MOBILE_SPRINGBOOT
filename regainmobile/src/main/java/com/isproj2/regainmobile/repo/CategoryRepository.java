@@ -9,4 +9,6 @@ import com.isproj2.regainmobile.model.Category;
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     Category findByCategoryID(Integer categoryID);
+
+    Category findByName(String name);
 }

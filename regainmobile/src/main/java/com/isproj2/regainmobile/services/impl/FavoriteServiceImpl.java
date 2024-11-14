@@ -53,12 +53,24 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         Favorite favorite = new Favorite(favoriteDTO, user, product);
         List<Favorite> favoritesOfUser = favoriteRepository.findByUser(user);
-        if (!favoritesOfUser.contains(favorite)) {
-            Favorite savedFave = favoriteRepository.save(favorite);
-            return new FavoriteDTO(savedFave);
-        } else {
-            throw new ValidationException();
+        if (favoritesOfUser.isEmpty())
+            favoriteRepository.save(favorite);
+
+        for (Favorite fave : favoritesOfUser) {
+            if (fave.getProduct().equals(product)) {
+                throw new ValidationException();
+            } else {
+                favoriteRepository.save(favorite);
+            }
         }
+
+        return favoriteDTO;
+        // if (!favoritesOfUser.contains(favorite.getProduct())) {
+        // Favorite savedFave = favoriteRepository.save(favorite);
+        // return new FavoriteDTO(savedFave);
+        // } else {
+        // throw new ValidationException();
+        // }
 
     }
 

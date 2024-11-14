@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.UserDTO;
 import com.isproj2.regainmobile.exceptions.AuthenticationException;
+import com.isproj2.regainmobile.exceptions.UserAccountNotActiveException;
 import com.isproj2.regainmobile.model.ResponseModel;
 import com.isproj2.regainmobile.services.UserService;
 
@@ -30,6 +31,10 @@ public class LoginController {
             loginUser = userService.login(userDTO);
         } catch (AuthenticationException e) {
             return new ResponseModel<UserDTO>(HttpStatus.BAD_REQUEST.value(), e.getMessage(), userDTO);
+        } catch (UserAccountNotActiveException e) {
+            return new ResponseModel<UserDTO>(HttpStatus.FORBIDDEN.value(), e.getMessage(), userDTO);
+        } catch (RuntimeException e) {
+            return new ResponseModel<UserDTO>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), userDTO);
         }
 
         return new ResponseModel<UserDTO>(HttpStatus.OK.value(), "User logged in succesfully", loginUser);

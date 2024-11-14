@@ -67,6 +67,12 @@ public class ProductController {
     // return ResponseEntity.ok(products);
     // }
 
+    @GetMapping("/userviewlist/{id}")
+    public ResponseEntity<List<ViewProductDTO>> getViewProductsByUser(@PathVariable("id") Integer userId) {
+        List<ViewProductDTO> products = productService.getViewProductsByUser(userId);
+        return ResponseEntity.ok(products);
+    }
+
     @GetMapping("/viewlist/{id}")
     public ResponseEntity<List<ViewProductDTO>> getAllProductsByUserFavorites(@PathVariable("id") Integer userId) {
         List<ViewProductDTO> productsWithFavorites = productService.getViewProducts(userId);

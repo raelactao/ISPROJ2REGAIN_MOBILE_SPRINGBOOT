@@ -1,6 +1,7 @@
 package com.isproj2.regainmobile.model;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Collection;
 import com.isproj2.regainmobile.dto.ProductDTO;
 
@@ -46,8 +47,8 @@ public class Product {
     private String description;
 
     @lombok.NonNull
-    @Column(name = "weight", length = 10, precision = 2)
-    private Double weight;
+    @Column(name = "weight", columnDefinition = "Decimal(10,2)")
+    private BigDecimal weight;
 
     @ManyToOne
     @JoinColumn(name = "location", referencedColumnName = "address_id", nullable = false)
@@ -58,7 +59,7 @@ public class Product {
     private Category category;
 
     @lombok.NonNull
-    @Column(name = "price")
+    @Column(name = "price", columnDefinition = "Decimal(19,2)")
     private BigDecimal price;
 
     // @Lob
@@ -66,7 +67,7 @@ public class Product {
     // private byte[] image;
 
     @lombok.NonNull
-    @Column(name = "can_deliver", columnDefinition = "tinyint(1) default 1")
+    @Column(name = "can_deliver", columnDefinition = "tinyint(1) default '0'")
     private Boolean canDeliver;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -86,7 +87,7 @@ public class Product {
         this.seller = seller;
         this.productName = productDTO.getProductName();
         this.description = productDTO.getDescription();
-        this.weight = Double.parseDouble(productDTO.getWeight());
+        this.weight = new BigDecimal(productDTO.getWeight());
         this.location = location;
         this.category = category;
         this.price = new BigDecimal(productDTO.getPrice());

@@ -3,6 +3,7 @@ package com.isproj2.regainmobile.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 
 import com.isproj2.regainmobile.dto.OrderDTO;
@@ -46,7 +47,7 @@ public class Order {
 
     @lombok.NonNull
     @Column(name = "order_date")
-    private LocalDateTime orderDate;
+    private LocalDateTime orderDate = LocalDateTime.now(ZoneId.of("GMT+8"));
 
     @lombok.NonNull
     @Column(name = "delivery_method")
@@ -61,7 +62,7 @@ public class Order {
     private Integer paymentMethod;
 
     @lombok.NonNull
-    @Column(name = "total_amount")
+    @Column(name = "total_amount", columnDefinition = "Decimal(19,2)")
     private BigDecimal totalAmount;
 
     @lombok.NonNull
@@ -74,7 +75,6 @@ public class Order {
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private Collection<OrderLog> orderLog;
-
 
     public Order(OrderDTO orderDTO, User user, Address address, Product product) {
         this.orderID = orderDTO.getOrderID();

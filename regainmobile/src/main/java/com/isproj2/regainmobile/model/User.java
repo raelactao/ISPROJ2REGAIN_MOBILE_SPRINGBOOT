@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import java.util.Collection;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.isproj2.regainmobile.dto.UserDTO;
 
 import jakarta.persistence.Column;
@@ -62,6 +64,7 @@ public class User {
     @Column(name = "pass", nullable = false)
     private String password;
 
+    @Value("${some.key:Pending}")
     @Column(name = "acc_status", columnDefinition = "default 'Pending'")
     private String accountStatus = "Pending";
 

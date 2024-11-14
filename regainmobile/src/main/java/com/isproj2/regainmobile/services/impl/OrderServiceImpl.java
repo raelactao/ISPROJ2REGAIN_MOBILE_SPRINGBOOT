@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
         public OrderDTO updateOrderStatus(Integer orderId, String newStatus, Integer updatedByUserID) {
                 Order order = orderRepository.findById(orderId)
                                 .orElseThrow(() -> new RuntimeException("Order not found"));
-                                
+
                 User updatedByUser = userRepository.findById(updatedByUserID)
                                 .orElseThrow(() -> new RuntimeException("User not found"));
 

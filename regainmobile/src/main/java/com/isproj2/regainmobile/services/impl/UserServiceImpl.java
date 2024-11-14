@@ -9,6 +9,7 @@ import org.springframework.web.client.ResourceAccessException;
 import com.isproj2.regainmobile.dto.UserDTO;
 import com.isproj2.regainmobile.exceptions.AuthenticationException;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
+import com.isproj2.regainmobile.exceptions.UserAccountNotActiveException;
 import com.isproj2.regainmobile.exceptions.UserAlreadyExistsException;
 import com.isproj2.regainmobile.model.Role;
 import com.isproj2.regainmobile.model.User;
@@ -55,10 +56,13 @@ public class UserServiceImpl implements UserService {
 
         Role role = _roleRepository.findByName(user.getRole().getName());
 
-        if (user.getPassword().matches(userDTO.getPassword())) {
+        if (user.getPassword().matches(userDTO.getPassword()) && user.getAccountStatus().equals("Active")) {
             UserDTO loginUser = new UserDTO(user);
             loginUser.setRole(role.getName());
             return loginUser;
+        } else if (user.getPassword().matches(userDTO.getPassword())
+                && user.getAccountStatus().equals("Pending")) {
+            throw new UserAccountNotActiveException();
         } else {
             throw new AuthenticationException();
         }
