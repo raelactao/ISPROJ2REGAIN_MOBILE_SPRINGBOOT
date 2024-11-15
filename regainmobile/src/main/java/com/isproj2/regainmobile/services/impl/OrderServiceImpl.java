@@ -57,9 +57,11 @@ public class OrderServiceImpl implements OrderService {
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Product not found with id " + orderDTO.getProductID()));
 
-                Address address = addressRepository.findById(orderDTO.getAddressID())
+                Integer productID = product.getLocation().getAddressID();
+
+                Address address = addressRepository.findByAddressID(productID)
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Address not found with id " + orderDTO.getAddressID()));
+                                                "Address not found with id " + product.getLocation().getAddressID()));
 
                 // Payment payment =
                 // paymentRepository.findById(orderDTO.getPaymentMethod().getId())

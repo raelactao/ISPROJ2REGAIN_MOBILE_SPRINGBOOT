@@ -25,6 +25,8 @@ public class ViewOfferDTO {
 
     Boolean isAccepted;
 
+    // add Boolean isOrdered
+
     @lombok.NonNull
     String sellerName;
 
