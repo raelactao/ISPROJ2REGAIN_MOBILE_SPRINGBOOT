@@ -15,21 +15,19 @@ public class ViewOfferDTO {
 
     Integer offerID;
 
-    Integer productID;
-
     @lombok.NonNull
     String buyerName;
+
+    ViewProductDTO product;
 
     @lombok.NonNull
     String offerValue;
 
-    @lombok.NonNull
     Boolean isAccepted;
+
+    // add Boolean isOrdered
 
     @lombok.NonNull
     String sellerName;
 
-
-    
-    
-} 
+}

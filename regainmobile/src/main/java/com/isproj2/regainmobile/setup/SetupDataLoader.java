@@ -7,9 +7,11 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import com.isproj2.regainmobile.model.Category;
 import com.isproj2.regainmobile.model.RateTag;
 import com.isproj2.regainmobile.model.ReportCategory;
 import com.isproj2.regainmobile.model.Role;
+import com.isproj2.regainmobile.repo.CategoryRepository;
 import com.isproj2.regainmobile.repo.RateTagRepository;
 import com.isproj2.regainmobile.repo.ReportCategoryRepository;
 import com.isproj2.regainmobile.repo.RoleRepository;
@@ -28,6 +30,9 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Autowired
     private ReportCategoryRepository reportCategoryRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (alreadySetup) {
@@ -39,6 +44,13 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         createRoleIfNotFound("ROLE_ADMIN");
         createRoleIfNotFound("ROLE_USER");
         createRoleIfNotFound("ROLE_USER_WS");
+
+        // CREATE PRODUCT CATEGORIES
+        createCategoryIfNotFound("Plastic");
+        createCategoryIfNotFound("Metal");
+        createCategoryIfNotFound("Paper");
+        createCategoryIfNotFound("Glass");
+        createCategoryIfNotFound("Electronics");
 
         // Pickup/Drop-off
         createRateTagIfNotFound("On-time Pickup");
@@ -90,6 +102,17 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             roleRepository.save(role);
         }
         return role;
+    }
+
+    @Transactional
+    Category createCategoryIfNotFound(String name) {
+
+        Category category = categoryRepository.findByName(name);
+        if (category == null) {
+            category = new Category(name);
+            categoryRepository.save(category);
+        }
+        return category;
     }
 
     @Transactional

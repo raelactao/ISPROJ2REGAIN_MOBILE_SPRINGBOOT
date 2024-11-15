@@ -7,6 +7,9 @@ import java.util.Collection;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import org.springframework.beans.factory.annotation.Value;
+
 import com.isproj2.regainmobile.dto.UserDTO;
 
 import jakarta.persistence.Column;
@@ -20,6 +23,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +33,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 @Entity
 public class User {
@@ -56,25 +61,20 @@ public class User {
     private String username;
 
     @lombok.NonNull
-    @Column(name = "contact_number", unique = true)
-    private String contactNumber;
-
-    @lombok.NonNull
-    @Column(name = "pass")
-    private String password;
-
     @Email
-    @Column(name = "email", nullable = true)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "acc_status", columnDefinition = "default 'Active'")
-    private String accountStatus = "Active";
+    @lombok.NonNull
+    @Column(name = "pass", nullable = false)
+    private String password;
+
+    @Value("${some.key:Pending}")
+    @Column(name = "acc_status", columnDefinition = "default 'Pending'")
+    private String accountStatus = "Pending";
 
     @Column(name = "penalty_points")
     private int penaltyPoints = 0;
-
-    @Column(name = "commission_balance", length = 38, precision = 4, columnDefinition = "default 0.00")
-    private BigDecimal commissionBalance = new BigDecimal(0.0);
 
     // @Lob
     // @Column(name = "profile_picture", columnDefinition = "BLOB", nullable = true)
@@ -105,16 +105,10 @@ public class User {
     private Collection<ListingReport> listingReport;
 
     @OneToMany(mappedBy = "reporter", fetch = FetchType.EAGER)
-    private Collection<EQListingReport> eqlistingReport;
-
-    @OneToMany(mappedBy = "reporter", fetch = FetchType.EAGER)
     private Collection<UserReport> userReport;
 
     @OneToMany(mappedBy = "reportedUser", fetch = FetchType.EAGER)
     private Collection<UserReport> userReport2;
-
-    @OneToMany(mappedBy = "rentee", fetch = FetchType.EAGER)
-    private Collection<Booking> booking;
 
     @OneToMany(mappedBy = "updatedByUser", fetch = FetchType.EAGER)
     private Collection<OrderLog> orderLog;
@@ -139,12 +133,10 @@ public class User {
         this.firstName = userDTO.getFirstName();
         this.username = userDTO.getUsername();
         this.role = role;
-        this.contactNumber = userDTO.getContactNumber();
         this.password = userDTO.getPassword();
         this.email = userDTO.getEmail();
         this.accountStatus = userDTO.getAccountStatus();
         this.penaltyPoints = userDTO.getPenaltyPoints();
-        this.commissionBalance = new BigDecimal(userDTO.getCommissionBalance());
         this.junkshopName = userDTO.getJunkshopName();
     }
 

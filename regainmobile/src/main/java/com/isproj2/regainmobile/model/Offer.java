@@ -41,11 +41,10 @@ public class Offer {
     private User buyer;
 
     @lombok.NonNull
-    @Column(name = "offer_value")
+    @Column(name = "offer_value", columnDefinition = "Decimal(19,2)")
     private BigDecimal offerValue;
 
-    @lombok.NonNull
-    @Column(name = "is_accepted")
+    @Column(name = "is_accepted", columnDefinition = "tinyint(1)", nullable = true)
     private Boolean isAccepted;
 
     @ManyToOne
@@ -61,5 +60,4 @@ public class Offer {
         this.seller = seller;
     }
 
-    
 }

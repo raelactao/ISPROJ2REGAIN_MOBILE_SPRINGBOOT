@@ -32,18 +32,14 @@ public class UserDTO {
     @lombok.NonNull
     private String username;
 
-    private String contactNumber;
+    private String email;
 
     @lombok.NonNull
     private String password;
 
-    private String email;
-
     private String accountStatus;
 
     private int penaltyPoints;
-
-    private String commissionBalance = "0.00";
 
     // private byte[] image;
 
@@ -55,12 +51,10 @@ public class UserDTO {
         this.lastName = user.getLastName();
         this.firstName = user.getFirstName();
         this.username = user.getUsername();
-        this.contactNumber = user.getContactNumber();
-        this.password = user.getPassword();
         this.email = user.getEmail();
+        this.password = user.getPassword();
         this.accountStatus = user.getAccountStatus();
         this.penaltyPoints = user.getPenaltyPoints();
-        this.commissionBalance = user.getCommissionBalance().round(new MathContext(2)).toString();
         this.junkshopName = user.getJunkshopName();
     }
 }

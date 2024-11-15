@@ -18,4 +18,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> globalExceptionHandler(Exception ex, WebRequest request) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<?> userAlreadyExistsException(UserAlreadyExistsException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
 }

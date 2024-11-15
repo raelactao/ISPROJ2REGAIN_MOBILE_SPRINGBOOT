@@ -37,7 +37,7 @@ public class Favorite {
     private Product product;
 
     @lombok.NonNull
-    @Column(name = "is_favorite", columnDefinition = "tinyint(1) default 1")
+    @Column(name = "is_favorite", columnDefinition = "tinyint(1) default '1'")
     private Boolean isFavorite;
 
     public Favorite(FavoriteDTO favoriteDTO, User user, Product product) {
@@ -52,6 +52,12 @@ public class Favorite {
         this.user = user;
         this.product = product;
         this.isFavorite = true;
+    }
+
+    public Favorite(User user, Product product, Boolean isFavorite) {
+        this.user = user;
+        this.product = product;
+        this.isFavorite = isFavorite;
     }
 
 }

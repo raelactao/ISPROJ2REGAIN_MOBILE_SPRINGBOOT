@@ -54,7 +54,7 @@ public class ListingReport {
     private LocalDateTime timeStamp = LocalDateTime.now();
 
     @lombok.NonNull
-    @Column(name = "report_status", columnDefinition = "Pending")
+    @Column(name = "report_status", columnDefinition = "Pending", nullable = false)
     private String reportStatus;
 
     public ListingReport(ListingReportDTO listingReportDTO, User reporter, Product reportedListing,

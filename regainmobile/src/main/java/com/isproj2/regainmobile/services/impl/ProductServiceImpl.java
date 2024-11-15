@@ -1,6 +1,7 @@
 package com.isproj2.regainmobile.services.impl;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,7 +84,7 @@ public class ProductServiceImpl implements ProductService {
                 product.setCategory(categ);
                 product.setProductName(productDTO.getProductName());
                 product.setDescription(productDTO.getDescription());
-                product.setWeight(Double.parseDouble(productDTO.getWeight()));
+                product.setWeight(new BigDecimal(productDTO.getWeight()));
                 product.setLocation(loc);
                 // product.setCategory(categoryRepository.findByCategoryID(productDTO.getCategoryID()));
                 product.setPrice(new BigDecimal(productDTO.getPrice()));
@@ -183,6 +184,7 @@ public class ProductServiceImpl implements ProductService {
 
         }
 
+        // get all products with ViewProductDTO according to user's favorites
         @Override
         public List<ViewProductDTO> getViewProductsByUser(Integer userId) {
                 List<ViewProductDTO> sellerProducts = new ArrayList<ViewProductDTO>();
@@ -194,6 +196,8 @@ public class ProductServiceImpl implements ProductService {
                 List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
 
                 List<Product> products = productRepository.findBySeller(seller);
+
+                // not the most efficient
                 for (Product product : products) {
                         boolean favorited = false;
 
