@@ -17,7 +17,6 @@ import com.isproj2.regainmobile.dto.FavoriteDTO;
 import com.isproj2.regainmobile.dto.ViewProductDTO;
 import com.isproj2.regainmobile.model.ResponseModel;
 import com.isproj2.regainmobile.services.FavoriteService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/favorites")

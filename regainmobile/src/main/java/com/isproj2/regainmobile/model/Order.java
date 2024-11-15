@@ -3,7 +3,9 @@ package com.isproj2.regainmobile.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
+import java.util.List;
 
 import com.isproj2.regainmobile.dto.OrderDTO;
 
@@ -56,12 +58,12 @@ public class Order {
     @Column(name = "delivery_date")
     private LocalDate deliveryDate;
 
-    @lombok.NonNull
-    @Column(name = "payment_method")
-    private Integer paymentMethod;
+    @ManyToOne
+    @JoinColumn(name = "payment_method", referencedColumnName = "payment_id")
+    private Payment paymentMethod;
 
     @lombok.NonNull
-    @Column(name = "total_amount")
+    @Column(name = "total_amount", columnDefinition = "Decimal(19,2)")
     private BigDecimal totalAmount;
 
     @lombok.NonNull
@@ -72,19 +74,21 @@ public class Order {
     @JoinColumn(name = "address", referencedColumnName = "address_id", nullable = false)
     private Address address;
 
+    @OneToMany(mappedBy = "order")
+    private List<Commissions> commissions;
+
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private Collection<OrderLog> orderLog;
 
-
-    public Order(OrderDTO orderDTO, User user, Address address, Product product) {
+    public Order(OrderDTO orderDTO, User user, Address address, Product product, Payment payment) {
         this.orderID = orderDTO.getOrderID();
         this.product = product;
         this.buyer = user;
         this.orderDate = orderDTO.getOrderDate();
         this.deliveryMethod = orderDTO.getDeliveryMethod();
         this.deliveryDate = orderDTO.getDeliveryDate();
-        this.paymentMethod = orderDTO.getPaymentMethod();
-        this.totalAmount = orderDTO.getTotalAmount();
+        this.paymentMethod = payment;
+        this.totalAmount = new BigDecimal(orderDTO.getTotalAmount());
         this.currentStatus = orderDTO.getCurrentStatus();
         this.address = address;
     }

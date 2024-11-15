@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.UserDTO;
+import com.isproj2.regainmobile.exceptions.UserAlreadyExistsException;
 import com.isproj2.regainmobile.model.ResponseModel;
 import com.isproj2.regainmobile.services.UserService;
 
@@ -25,7 +26,7 @@ public class RegistrationController {
 
         try {
             userService.addUser(user);
-        } catch (ValidationException e) {
+        } catch (UserAlreadyExistsException e) {
             return new ResponseModel<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
 

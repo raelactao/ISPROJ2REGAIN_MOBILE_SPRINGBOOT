@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.isproj2.regainmobile.dto.OfferDTO;
 import com.isproj2.regainmobile.dto.ViewOfferDTO;
+import com.isproj2.regainmobile.dto.ViewProductDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
+import com.isproj2.regainmobile.model.Favorite;
 import com.isproj2.regainmobile.model.Offer;
 import com.isproj2.regainmobile.model.Product;
 import com.isproj2.regainmobile.model.User;
+import com.isproj2.regainmobile.repo.FavoriteRepository;
 import com.isproj2.regainmobile.repo.OfferRepository;
 import com.isproj2.regainmobile.repo.ProductRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
@@ -30,47 +33,49 @@ public class OfferServiceImpl implements OfferService {
         @Autowired
         private UserRepository userRepository;
 
+        @Autowired
+        private FavoriteRepository favoriteRepository;
+
         // @Override
         // public OfferDTO createOffer(OfferDTO offerDTO) {
-        //         User buyer = userRepository.findById(offerDTO.getBuyerID())
-        //                         .orElseThrow(() -> new ResourceNotFoundException(
-        //                                         "Buyer not found with id " + offerDTO.getBuyerID()));
+        // User buyer = userRepository.findById(offerDTO.getBuyerID())
+        // .orElseThrow(() -> new ResourceNotFoundException(
+        // "Buyer not found with id " + offerDTO.getBuyerID()));
 
-        //         User seller = userRepository.findById(offerDTO.getSellerID())
-        //                         .orElseThrow(() -> new ResourceNotFoundException(
-        //                                         "Seller not found with id " + offerDTO.getSellerID()));
+        // User seller = userRepository.findById(offerDTO.getSellerID())
+        // .orElseThrow(() -> new ResourceNotFoundException(
+        // "Seller not found with id " + offerDTO.getSellerID()));
 
-        //         Product product = productRepository.findById(offerDTO.getProductID())
-        //                         .orElseThrow(() -> new ResourceNotFoundException(
-        //                                         "Product not found with id " + offerDTO.getProductID()));
+        // Product product = productRepository.findById(offerDTO.getProductID())
+        // .orElseThrow(() -> new ResourceNotFoundException(
+        // "Product not found with id " + offerDTO.getProductID()));
 
-        //         Offer offer = new Offer(offerDTO, buyer, product, seller);
-        //         offerRepository.save(offer);
-        //         return offerDTO;
+        // Offer offer = new Offer(offerDTO, buyer, product, seller);
+        // offerRepository.save(offer);
+        // return offerDTO;
         // }
 
         @Override
         public ViewOfferDTO addOffer(ViewOfferDTO offerDTO) {
                 User buyer = userRepository.findByUsername(offerDTO.getBuyerName())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Buyer not found with id " + offerDTO.getBuyerName()));
+                                                "Buyer not found with username " + offerDTO.getBuyerName()));
 
                 User seller = userRepository.findByUsername(offerDTO.getSellerName())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Seller not found with id " + offerDTO.getSellerName()));
+                                                "Seller not found with username " + offerDTO.getSellerName()));
 
-                Product product = productRepository.findById(offerDTO.getProductID())
+                Product product = productRepository.findById(offerDTO.getProduct().getProductID())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Product not found with id " + offerDTO.getProductID()));
+                                                "Product not found with id " + offerDTO.getProduct().getProductID()));
 
                 Offer offer = new Offer(
-                        offerDTO.getOfferID(),
-                        product,
-                        buyer,
-                        new BigDecimal(offerDTO.getOfferValue()),
-                        offerDTO.getIsAccepted(),
-                        seller
-                );
+                                offerDTO.getOfferID(),
+                                product,
+                                buyer,
+                                new BigDecimal(offerDTO.getOfferValue()),
+                                offerDTO.getIsAccepted(),
+                                seller);
 
                 offerRepository.save(offer);
                 return offerDTO;
@@ -83,15 +88,15 @@ public class OfferServiceImpl implements OfferService {
 
                 User buyer = userRepository.findByUsername(offerDTO.getBuyerName())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Buyer not found with id " + offerDTO.getBuyerName()));
+                                                "Buyer not found with username " + offerDTO.getBuyerName()));
 
                 User seller = userRepository.findByUsername(offerDTO.getSellerName())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Seller not found with id " + offerDTO.getSellerName()));
+                                                "Seller not found with username " + offerDTO.getSellerName()));
 
-                Product product = productRepository.findById(offerDTO.getProductID())
+                Product product = productRepository.findById(offerDTO.getProduct().getProductID())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Product not found with id " + offerDTO.getProductID()));
+                                                "Product not found with id " + offerDTO.getProduct().getProductID()));
 
                 offer.setProduct(product);
                 offer.setBuyer(buyer);
@@ -139,28 +144,28 @@ public class OfferServiceImpl implements OfferService {
         @Override
         public List<OfferDTO> getOffersBySeller(Integer sellerId) {
                 User seller = userRepository.findById(sellerId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Offer not found with id " + sellerId));
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Offer not found with id " + sellerId));
                 List<Offer> offers = offerRepository.findBySeller(seller);
                 return offers.stream().map(this::convertToDTO).collect(Collectors.toList());
         }
 
         private OfferDTO convertToDTO(Offer offer) {
                 return new OfferDTO(
-                    offer.getOfferID(),
-                    offer.getProduct().getProductID(),
-                    offer.getBuyer().getUserID(),
-                    offer.getOfferValue().toString(),
-                    offer.getIsAccepted(),
-                    offer.getSeller().getUserID()
-                );
+                                offer.getOfferID(),
+                                offer.getProduct().getProductID(),
+                                offer.getBuyer().getUserID(),
+                                offer.getOfferValue().toString(),
+                                offer.getIsAccepted(),
+                                offer.getSeller().getUserID());
         }
 
         @Override
         public List<ViewOfferDTO> getAllViewOffers() {
                 List<Offer> offers = offerRepository.findAll();
                 return offers.stream()
-                        .map(this::convertToViewOfferDTO)
-                        .collect(Collectors.toList());
+                                .map(this::convertToViewOfferDTO)
+                                .collect(Collectors.toList());
         }
 
         @Override
@@ -170,25 +175,34 @@ public class OfferServiceImpl implements OfferService {
 
                 List<Offer> offers = offerRepository.findByBuyer(buyer);
                 return offers.stream()
-                        .map(this::convertToViewOfferDTO)
-                        .collect(Collectors.toList());
+                                .map(this::convertToViewOfferDTO)
+                                .collect(Collectors.toList());
         }
 
         @Override
         public List<ViewOfferDTO> getViewOffersByProductID(Integer productId) {
                 Product product = productRepository.findById(productId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + productId));
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Product not found with id " + productId));
 
                 List<Offer> offers = offerRepository.findByProduct(product);
                 return offers.stream()
-                        .map(this::convertToViewOfferDTO)
-                        .collect(Collectors.toList());
+                                .map(this::convertToViewOfferDTO)
+                                .collect(Collectors.toList());
         }
 
         private ViewOfferDTO convertToViewOfferDTO(Offer offer) {
+                List<Favorite> favoritesList = favoriteRepository.findByUser(offer.getBuyer());
+                boolean faved = false;
+                for (Favorite fave : favoritesList) {
+                        if (offer.getProduct().equals(fave.getProduct())) {
+                                faved = true;
+                        }
+                }
+
                 ViewOfferDTO dto = new ViewOfferDTO();
                 dto.setOfferID(offer.getOfferID());
-                dto.setProductID(offer.getProduct().getProductID());
+                dto.setProduct(new ViewProductDTO(offer.getProduct(), faved));
                 dto.setBuyerName(offer.getBuyer().getUsername()); // Example: Assuming User has a username
                 dto.setOfferValue(offer.getOfferValue().toString());
                 dto.setIsAccepted(offer.getIsAccepted());

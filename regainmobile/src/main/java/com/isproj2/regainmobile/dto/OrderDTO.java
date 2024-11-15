@@ -3,12 +3,14 @@ package com.isproj2.regainmobile.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+
+import org.springframework.cglib.core.Local;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 @Getter
 @Setter
@@ -22,7 +24,6 @@ public class OrderDTO {
 
     private Integer buyerID;
 
-    @lombok.NonNull
     private LocalDateTime orderDate;
 
     @lombok.NonNull
@@ -31,14 +32,13 @@ public class OrderDTO {
     @lombok.NonNull
     private LocalDate deliveryDate;
 
-    @lombok.NonNull
-    private Integer paymentMethod;
+    private PaymentDTO paymentMethod;
 
     @lombok.NonNull
-    private BigDecimal totalAmount;
+    private String totalAmount;
 
     @lombok.NonNull
     private String currentStatus;
 
-    private Integer addressID;    
+    private Integer addressID;
 }

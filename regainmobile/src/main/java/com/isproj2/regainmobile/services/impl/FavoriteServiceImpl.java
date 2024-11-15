@@ -16,6 +16,8 @@ import com.isproj2.regainmobile.repo.ProductRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.FavoriteService;
 
+import jakarta.validation.ValidationException;
+
 // import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.stereotype.Service;
 // import org.springframework.transaction.annotation.Transactional;
@@ -50,8 +52,26 @@ public class FavoriteServiceImpl implements FavoriteService {
                         () -> new ResourceNotFoundException("Product not found with id " + favoriteDTO.getProductID()));
 
         Favorite favorite = new Favorite(favoriteDTO, user, product);
-        Favorite savedFave = favoriteRepository.save(favorite);
-        return new FavoriteDTO(savedFave);
+        List<Favorite> favoritesOfUser = favoriteRepository.findByUser(user);
+        if (favoritesOfUser.isEmpty())
+            favoriteRepository.save(favorite);
+
+        for (Favorite fave : favoritesOfUser) {
+            if (fave.getProduct().equals(product)) {
+                throw new ValidationException();
+            } else {
+                favoriteRepository.save(favorite);
+            }
+        }
+
+        return favoriteDTO;
+        // if (!favoritesOfUser.contains(favorite.getProduct())) {
+        // Favorite savedFave = favoriteRepository.save(favorite);
+        // return new FavoriteDTO(savedFave);
+        // } else {
+        // throw new ValidationException();
+        // }
+
     }
 
     @Override

@@ -68,4 +68,17 @@ public class ViewProductDTO {
         this.isFavorite = fave;
     }
 
+    // public ViewProductDTO(Product product) {
+    // this.productID = product.getProductID();
+    // this.productName = product.getProductName();
+    // this.location = product.getLocation().getCity();
+    // this.price = product.getPrice().toString();
+    // this.sellerUsername = product.getSeller().getUsername();
+    // this.description = product.getDescription();
+    // this.weight = product.getWeight().toString();
+    // this.category = product.getCategory().getName();
+    // this.canDeliver = product.getCanDeliver();
+    // this.isFavorite = false;
+    // }
+
 }

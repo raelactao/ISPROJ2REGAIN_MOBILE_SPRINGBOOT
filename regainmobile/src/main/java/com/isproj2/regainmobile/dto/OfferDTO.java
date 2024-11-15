@@ -28,7 +28,7 @@ public class OfferDTO {
     private Integer sellerID;
 
     // public OfferDTO(ViewOfferDTO viewoffer) {
-        
+
     // }
 
 }

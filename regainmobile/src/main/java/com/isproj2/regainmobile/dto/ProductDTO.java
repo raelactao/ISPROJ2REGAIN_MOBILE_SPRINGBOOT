@@ -1,5 +1,7 @@
 package com.isproj2.regainmobile.dto;
 
+import java.text.DecimalFormat;
+
 import com.isproj2.regainmobile.model.Product;
 
 import lombok.AllArgsConstructor;
@@ -43,7 +45,7 @@ public class ProductDTO {
         this.sellerID = product.getSeller().getUserID();
         this.productName = product.getProductName();
         this.description = product.getDescription();
-        this.weight = product.getWeight().toString();
+        this.weight = new DecimalFormat("0.00").format(product.getWeight());
         this.location = product.getLocation().getAddressID();
         this.categoryID = product.getCategory().getCategoryID();
         this.price = product.getPrice().toString();
