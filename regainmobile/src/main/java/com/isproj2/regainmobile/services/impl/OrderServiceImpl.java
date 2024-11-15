@@ -9,15 +9,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.isproj2.regainmobile.dto.OrderDTO;
+import com.isproj2.regainmobile.dto.PaymentDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Address;
 import com.isproj2.regainmobile.model.Order;
 import com.isproj2.regainmobile.model.OrderLog;
+import com.isproj2.regainmobile.model.Payment;
 import com.isproj2.regainmobile.model.Product;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.repo.AddressRepository;
 import com.isproj2.regainmobile.repo.OrderLogRepository;
 import com.isproj2.regainmobile.repo.OrderRepository;
+import com.isproj2.regainmobile.repo.PaymentRepository;
 import com.isproj2.regainmobile.repo.ProductRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.OrderService;
@@ -40,19 +43,37 @@ public class OrderServiceImpl implements OrderService {
         @Autowired
         private OrderLogRepository orderLogRepository;
 
+        @Autowired
+        private PaymentRepository paymentRepository;
+
         @Override
         @Transactional
         public OrderDTO createOrder(OrderDTO orderDTO) {
                 User buyer = userRepository.findById(orderDTO.getBuyerID())
-                                .orElseThrow(() -> new RuntimeException("Buyer not found"));
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Buyer not found with id " + orderDTO.getBuyerID()));
 
                 Product product = productRepository.findById(orderDTO.getProductID())
-                                .orElseThrow(() -> new RuntimeException("Product not found"));
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Product not found with id " + orderDTO.getProductID()));
 
                 Address address = addressRepository.findById(orderDTO.getAddressID())
-                                .orElseThrow(() -> new RuntimeException("Address not found"));
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Address not found with id " + orderDTO.getAddressID()));
 
-                Order order = new Order(orderDTO, buyer, address, product);
+                // Payment payment =
+                // paymentRepository.findById(orderDTO.getPaymentMethod().getId())
+                // .orElseThrow(() -> new ResourceNotFoundException(
+                // "Payment not found with id " + orderDTO.getPaymentMethod()));
+
+                Payment payment = new Payment(orderDTO.getPaymentMethod());
+                paymentRepository.save(payment);
+
+                if (orderDTO.getDeliveryMethod().equals("Cash on Delivery")) {
+
+                }
+
+                Order order = new Order(orderDTO, buyer, address, product, payment);
                 order.setOrderDate(LocalDateTime.now()); // Set current timestamp for order date
                 orderRepository.save(order);
 
@@ -71,11 +92,11 @@ public class OrderServiceImpl implements OrderService {
                 // Log the previous status
                 String prevStatus = order.getCurrentStatus();
 
-                //Update current status
+                // Update current status
                 order.setCurrentStatus(newStatus);
                 orderRepository.save(order);
 
-                //Create and save the OrderLog
+                // Create and save the OrderLog
                 OrderLog orderLog = new OrderLog();
                 orderLog.setOrder(order);
                 orderLog.setPrevStatus(prevStatus);
@@ -91,17 +112,16 @@ public class OrderServiceImpl implements OrderService {
 
         private OrderDTO convertToOrderDTO(Order order) {
                 return new OrderDTO(
-                    order.getOrderID(),
-                    order.getProduct().getProductID(),
-                    order.getBuyer().getUserID(),
-                    order.getOrderDate(),
-                    order.getDeliveryMethod(),
-                    order.getDeliveryDate(),
-                    order.getPaymentMethod(),
-                    order.getTotalAmount(),
-                    order.getCurrentStatus(),
-                    order.getAddress().getAddressID()
-                );
+                                order.getOrderID(),
+                                order.getProduct().getProductID(),
+                                order.getBuyer().getUserID(),
+                                order.getOrderDate(),
+                                order.getDeliveryMethod(),
+                                order.getDeliveryDate(),
+                                new PaymentDTO(order.getPaymentMethod()),
+                                order.getTotalAmount().toString(),
+                                order.getCurrentStatus(),
+                                order.getAddress().getAddressID());
         }
 
         @Override
@@ -111,7 +131,8 @@ public class OrderServiceImpl implements OrderService {
 
                 return new OrderDTO(order.getOrderID(), order.getProduct().getProductID(),
                                 order.getBuyer().getUserID(), order.getOrderDate(), order.getDeliveryMethod(),
-                                order.getDeliveryDate(), order.getPaymentMethod(), order.getTotalAmount(),
+                                order.getDeliveryDate(), new PaymentDTO(order.getPaymentMethod()),
+                                order.getTotalAmount().toString(),
                                 order.getCurrentStatus(), order.getAddress().getAddressID());
         }
 
@@ -127,8 +148,8 @@ public class OrderServiceImpl implements OrderService {
         public List<OrderDTO> getOrdersBySeller(Integer sellerID) {
                 List<Order> orders = orderRepository.findByProductSellerUserID(sellerID);
                 return orders.stream()
-                        .map(this::convertToDTO)
-                        .collect(Collectors.toList());
+                                .map(this::convertToDTO)
+                                .collect(Collectors.toList());
         }
 
         private OrderDTO convertToDTO(Order order) {
@@ -139,8 +160,8 @@ public class OrderServiceImpl implements OrderService {
                 orderDTO.setOrderDate(order.getOrderDate());
                 orderDTO.setDeliveryMethod(order.getDeliveryMethod());
                 orderDTO.setDeliveryDate(order.getDeliveryDate());
-                orderDTO.setPaymentMethod(order.getPaymentMethod());
-                orderDTO.setTotalAmount(order.getTotalAmount());
+                orderDTO.setPaymentMethod(new PaymentDTO(order.getPaymentMethod()));
+                orderDTO.setTotalAmount(order.getTotalAmount().toString());
                 orderDTO.setCurrentStatus(order.getCurrentStatus());
                 orderDTO.setAddressID(order.getAddress().getAddressID());
                 return orderDTO;

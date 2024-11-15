@@ -32,10 +32,10 @@ public class OrderDTO {
     @lombok.NonNull
     private LocalDate deliveryDate;
 
-    private Integer paymentMethod;
+    private PaymentDTO paymentMethod;
 
     @lombok.NonNull
-    private BigDecimal totalAmount;
+    private String totalAmount;
 
     @lombok.NonNull
     private String currentStatus;
