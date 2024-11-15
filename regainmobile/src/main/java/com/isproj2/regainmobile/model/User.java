@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 
 import java.util.Collection;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import org.springframework.beans.factory.annotation.Value;
 
 import com.isproj2.regainmobile.dto.UserDTO;
@@ -41,6 +45,7 @@ public class User {
 
     // @Column(name = "role_type")
     // private Long role;
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "role_type") // ** needs to be 'role_type' column as FK column in DB **
     private Role role; // property name must match with 'mappedBy' name in Role class
@@ -107,6 +112,20 @@ public class User {
 
     @OneToMany(mappedBy = "updatedByUser", fetch = FetchType.EAGER)
     private Collection<OrderLog> orderLog;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user1", fetch = FetchType.LAZY)
+    private Collection<ChatRoom> chatRoom;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user2", fetch = FetchType.LAZY)
+    private Collection<ChatRoom> chatRoom2;
+
+    @OneToMany(mappedBy = "sender", fetch = FetchType.EAGER)
+    private Collection<ChatMessage> chatMessage;
+
+    @OneToMany(mappedBy = "receiver", fetch = FetchType.EAGER)
+    private Collection<ChatMessage> chatMessage2;
 
     public User(UserDTO userDTO, Role role) {
         this.userID = userDTO.getId();
