@@ -17,7 +17,6 @@ import com.isproj2.regainmobile.dto.OrderDTO;
 import com.isproj2.regainmobile.dto.OrderStatusUpdateRequest;
 import com.isproj2.regainmobile.services.OrderService;
 
-
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -35,26 +34,29 @@ public class OrderController {
     public ResponseEntity<OrderDTO> updateOrderStatus(
             @PathVariable Integer orderID,
             @RequestBody OrderStatusUpdateRequest request) {
-        
-        OrderDTO updatedOrderDTO = orderService.updateOrderStatus(orderID, request.getNewStatus(), request.getUpdatedByUserID());
+
+        OrderDTO updatedOrderDTO = orderService.updateOrderStatus(orderID, request.getNewStatus(),
+                request.getUpdatedByUserID());
         return ResponseEntity.ok(updatedOrderDTO);
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable("id") Integer orderId) {
         OrderDTO orderDTO = orderService.getOrderById(orderId);
         return ResponseEntity.ok(orderDTO);
     }
 
-    @GetMapping("/buyer/{buyerId}")
-    public ResponseEntity<List<OrderDTO>> getOrdersByBuyer(@PathVariable Integer buyerId) {
-        List<OrderDTO> orders = orderService.getOrdersByBuyer(buyerId);
+    @GetMapping("/buyer/{buyerId}/{deliveryMethod}")
+    public ResponseEntity<List<OrderDTO>> getOrdersByBuyer(@PathVariable String deliveryMethod,
+            @PathVariable Integer buyerId) {
+        List<OrderDTO> orders = orderService.getOrdersByDeliveryBuyer(deliveryMethod, buyerId);
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/seller/{sellerId}")
-    public ResponseEntity<List<OrderDTO>> getOrdersBySeller(@PathVariable Integer sellerId) {
-        List<OrderDTO> orders = orderService.getOrdersBySeller(sellerId);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+    @GetMapping("/seller/{sellerId}/{deliveryMethod}")
+    public ResponseEntity<List<OrderDTO>> getOrdersBySeller(@PathVariable String deliveryMethod,
+            @PathVariable Integer sellerId) {
+        List<OrderDTO> orders = orderService.getOrdersByDeliverySeller(deliveryMethod, sellerId);
+        return ResponseEntity.ok(orders);
     }
 }

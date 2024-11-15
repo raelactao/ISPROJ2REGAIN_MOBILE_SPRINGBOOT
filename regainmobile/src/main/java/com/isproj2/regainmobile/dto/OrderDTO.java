@@ -7,6 +7,9 @@ import java.time.ZoneId;
 
 import org.springframework.cglib.core.Local;
 
+import com.isproj2.regainmobile.model.Address;
+import com.isproj2.regainmobile.model.Order;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,9 +23,13 @@ public class OrderDTO {
 
     private Integer orderID;
 
-    private Integer productID;
+    // private Integer productID;
+    private ViewProductDTO product;
+    // viewproduct (prodID, sellerUsername)
 
-    private Integer buyerID;
+    // private Integer buyerID;
+    // buyerUsername
+    private String buyerUsername;
 
     private LocalDateTime orderDate;
 
@@ -40,5 +47,19 @@ public class OrderDTO {
     @lombok.NonNull
     private String currentStatus;
 
-    private Integer addressID;
+    // private Integer addressID;
+    private AddressDTO address;
+    // Address address
+
+    public OrderDTO(Order order) {
+        this.orderID = order.getOrderID();
+        this.buyerUsername = order.getBuyer().getUsername();
+        this.orderDate = order.getOrderDate();
+        this.deliveryMethod = order.getDeliveryMethod();
+        this.deliveryDate = order.getDeliveryDate();
+        this.paymentMethod = new PaymentDTO(order.getPaymentMethod());
+        this.totalAmount = order.getTotalAmount().toString();
+        this.currentStatus = order.getCurrentStatus();
+        this.address = new AddressDTO(order.getAddress());
+    }
 }
