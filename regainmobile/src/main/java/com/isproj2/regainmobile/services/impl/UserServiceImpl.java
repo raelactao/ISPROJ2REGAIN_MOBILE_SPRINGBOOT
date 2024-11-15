@@ -97,7 +97,6 @@ public class UserServiceImpl implements UserService {
         User updatedUser = new User(userDTO, role);
         return new UserDTO(_userRepository.save(updatedUser));
     }
-
     // @Override
     // public UserDTO getUserById(Integer userId) {
     // Optional<User> user = _userRepository.findById(userId);
@@ -105,4 +104,15 @@ public class UserServiceImpl implements UserService {
     // found"));
     // }
 
+    @Override
+    public String getUsernameById(Integer userId) {
+        return _userRepository.findById(userId)
+            .map(User::getUsername) // Assuming User has a `getUsername()` method
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public User findById(Integer userId) {
+        return _userRepository.findById(userId).orElse(null);
+    }
 }
