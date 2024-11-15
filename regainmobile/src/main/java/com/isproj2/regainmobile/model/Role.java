@@ -2,6 +2,8 @@ package com.isproj2.regainmobile.model;
 
 import java.util.Collection;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,10 +29,11 @@ public class Role {
     private Integer roleID;
 
     // column name = 'role_type' must match FK column
-    @Column(name = "role_type", columnDefinition = "ROLE_USER")
+    @Column(name = "role_type", nullable = false)
     private String name;
 
     // mappedBy = 'role' must match with a property in User class
+    @JsonIgnore
     @OneToMany(mappedBy = "role", fetch = FetchType.EAGER)
     private Collection<User> users;
 
