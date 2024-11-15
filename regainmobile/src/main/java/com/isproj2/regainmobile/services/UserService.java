@@ -13,6 +13,8 @@ public interface UserService {
     String getUsernameById(Integer userId);
 
     User findById(Integer userId);
+    
+    Integer findUserIdByUsername(String username);
 
     // UserDTO getUserById(Integer userId);
 }

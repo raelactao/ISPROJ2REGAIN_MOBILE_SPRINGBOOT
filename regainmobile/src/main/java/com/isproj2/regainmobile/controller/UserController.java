@@ -2,6 +2,8 @@ package com.isproj2.regainmobile.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 // import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.UserDTO;
+import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.exceptions.UserAlreadyExistsException;
 import com.isproj2.regainmobile.model.ResponseModel;
+import com.isproj2.regainmobile.model.User;
 // import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.services.UserService;
 
@@ -35,6 +39,17 @@ public class UserController {
 
         return new ResponseModel<>(HttpStatus.OK.value(), "User saved", savedUser);
     }
+
+    @GetMapping("/seller/by-username/{username}")
+public ResponseModel<Integer> getSellerIdByUsername(@PathVariable String username) {
+    try {
+        Integer userId = userService.findUserIdByUsername(username);  // Fetch user ID by username
+        return new ResponseModel<>(HttpStatus.OK.value(), "Seller ID fetched successfully", userId);
+    } catch (ResourceNotFoundException e) {
+        return new ResponseModel<>(HttpStatus.NOT_FOUND.value(), e.getMessage(), null);
+    }
+}
+
 
     // @PostMapping("/add")
     // public ResponseModel<UserDTO> registerUser(@RequestBody UserDTO user) {

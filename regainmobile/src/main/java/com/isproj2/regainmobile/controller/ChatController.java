@@ -63,29 +63,28 @@ public class ChatController {
         }
     }
 
-@GetMapping("/user/{userId}/rooms")
-public ResponseEntity<Page<ChatRoomDTO>> getUserChatRooms(@PathVariable Integer userId, Pageable pageable) {
-    try {
-        System.out.println("Fetching chat rooms for user ID: " + userId);
-        
-        // Fetch paginated chat rooms for the user
-        Page<ChatRoomDTO> chatRooms = chatRoomService.getChatRoomsByUserId(userId, pageable);
-        
-        if (chatRooms.isEmpty()) {
-            System.out.println("No chat rooms found for user ID: " + userId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(chatRooms);
+    @GetMapping("/user/{userId}/rooms")
+    public ResponseEntity<Page<ChatRoomDTO>> getUserChatRooms(@PathVariable Integer userId, Pageable pageable) {
+        try {
+            System.out.println("Fetching chat rooms for user ID: " + userId);
+            
+            // Fetch paginated chat rooms for the user
+            Page<ChatRoomDTO> chatRooms = chatRoomService.getChatRoomsByUserId(userId, pageable);
+            
+            if (chatRooms.isEmpty()) {
+                System.out.println("No chat rooms found for user ID: " + userId);
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(chatRooms);
+            }
+            
+            System.out.println("Chat rooms fetched successfully for user ID: " + userId);
+            return ResponseEntity.ok(chatRooms);
+        } catch (ResourceNotFoundException ex) {
+            System.out.println("Resource not found: " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception ex) {
+            System.out.println("Unexpected error: " + ex.getMessage());
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        
-        System.out.println("Chat rooms fetched successfully for user ID: " + userId);
-        return ResponseEntity.ok(chatRooms);
-    } catch (ResourceNotFoundException ex) {
-        System.out.println("Resource not found: " + ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    } catch (Exception ex) {
-        System.out.println("Unexpected error: " + ex.getMessage());
-        ex.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
-}
-
 }
