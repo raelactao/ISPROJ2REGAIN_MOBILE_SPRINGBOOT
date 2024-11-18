@@ -1,6 +1,7 @@
 package com.isproj2.regainmobile.model;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -48,10 +49,10 @@ public class Order {
 
     @lombok.NonNull
     @Column(name = "order_date")
-    private LocalDateTime orderDate;
+    private Date orderDate;
 
     @lombok.NonNull
-    @Column(name = "delivery_method")
+    @Column(name = "delivery_method", length = 50)
     private String deliveryMethod;
 
     @lombok.NonNull
@@ -66,8 +67,11 @@ public class Order {
     @Column(name = "total_amount", columnDefinition = "Decimal(19,2)")
     private BigDecimal totalAmount;
 
+    @Column(name = "commission_fee", columnDefinition = "Decimal(19,2)")
+    private BigDecimal commissionFee;
+
     @lombok.NonNull
-    @Column(name = "current_status")
+    @Column(name = "current_status", length = 20)
     private String currentStatus;
 
     @ManyToOne

@@ -22,10 +22,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
-@Table(name="orderlog")
+@Table(name = "orderlog")
 @Entity
 public class OrderLog {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tracking_id")
@@ -40,13 +40,13 @@ public class OrderLog {
     private LocalDate deliveryDate;
 
     @lombok.NonNull
-    @Column(name = "prev_status")
+    @Column(name = "previous_status")
     private String prevStatus;
-    
+
     @ManyToOne
     @JoinColumn(name = "updated_by_user", referencedColumnName = "user_id", nullable = false)
-    private User updatedByUser; 
-    
+    private User updatedByUser;
+
     @lombok.NonNull
     @Column(name = "time_stamp")
     private LocalDateTime timeStamp;

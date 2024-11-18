@@ -31,30 +31,30 @@ public class ListingReport {
     private Integer reportID;
 
     @ManyToOne
-    @JoinColumn(name = "reporter", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "reporter", referencedColumnName = "user_id")
     private User reporter;
 
     @ManyToOne
-    @JoinColumn(name = "reported_listing", referencedColumnName = "product_id", nullable = false)
+    @JoinColumn(name = "reported_listing", referencedColumnName = "product_id")
     private Product reportedListing;
 
     @ManyToOne
-    @JoinColumn(name = "reason_category", referencedColumnName = "report_category_id", nullable = false)
+    @JoinColumn(name = "reason_category", referencedColumnName = "report_category_id")
     private ReportCategory reasonCategory;
 
     // @lombok.NonNull
-    @Column(name = "report_reply")
+    @Column(name = "report_reply", length = 255)
     private String reportReply;
 
-    @Column(name = "details")
+    @Column(name = "details", length = 255)
     private String details;
 
     @lombok.NonNull
     @Column(name = "time_stamp")
-    private LocalDateTime timeStamp = LocalDateTime.now();
+    private LocalDateTime timeStamp;
 
     @lombok.NonNull
-    @Column(name = "report_status", columnDefinition = "Pending", nullable = false)
+    @Column(name = "report_status", columnDefinition = "Pending", length = 20)
     private String reportStatus;
 
     public ListingReport(ListingReportDTO listingReportDTO, User reporter, Product reportedListing,

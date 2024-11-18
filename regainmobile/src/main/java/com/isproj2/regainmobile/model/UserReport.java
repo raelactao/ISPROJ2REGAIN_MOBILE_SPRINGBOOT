@@ -24,7 +24,7 @@ import lombok.Setter;
 @Table(name = "userreports")
 @Entity
 public class UserReport {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_report_id")
@@ -43,10 +43,10 @@ public class UserReport {
     private ReportCategory reasonCategory;
 
     @lombok.NonNull
-    @Column(name = "report_reply")
+    @Column(name = "report_reply", length = 255)
     private String reportReply;
 
-    @Column(name = "details")
+    @Column(name = "details", length = 255)
     private String details;
 
     @lombok.NonNull
@@ -54,7 +54,7 @@ public class UserReport {
     private LocalDateTime timeStamp;
 
     @lombok.NonNull
-    @Column(name = "user_report_status")
+    @Column(name = "user_report_status", length = 20)
     private String userReportStatus;
 
     public UserReport(UserReportDTO userReportDTO, User reporter, User reportedUser, ReportCategory reasonCategory) {

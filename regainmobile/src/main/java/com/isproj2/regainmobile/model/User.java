@@ -1,7 +1,7 @@
 package com.isproj2.regainmobile.model;
 
 import java.math.BigDecimal;
-
+import java.time.LocalDate;
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -21,6 +21,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -66,7 +67,7 @@ public class User {
     private String email;
 
     @lombok.NonNull
-    @Column(name = "pass", nullable = false)
+    @Column(name = "pass", nullable = false, length = 255)
     private String password;
 
     @Value("${some.key:Pending}")
@@ -76,9 +77,24 @@ public class User {
     @Column(name = "penalty_points")
     private int penaltyPoints = 0;
 
+    @Column(name = "contact_number", length = 50)
+    private String phone;
+
+    @Column(name = "profile_picture")
+    private byte[] profileImagePath;
+
+    @Column(name = "GCashQR")
+    private byte[] gcashQR;
+
+    @Column(name = "birthday")
+    private LocalDate birthday;
+
     // @Lob
     // @Column(name = "profile_picture", columnDefinition = "BLOB", nullable = true)
     // private byte[] image;
+
+    @OneToOne(mappedBy = "user")
+    private UserID userIDDetails;
 
     @Column(name = "js_name", nullable = true)
     private String junkshopName;

@@ -1,5 +1,7 @@
 package com.isproj2.regainmobile.services.impl;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
                 }
 
                 Order order = new Order(orderDTO, buyer, address, product, payment);
-                order.setOrderDate(LocalDateTime.now()); // Set current timestamp for order date
+                order.setOrderDate(Date.valueOf(LocalDate.now())); // Set current timestamp for order date
                 orderRepository.save(order);
 
                 return orderDTO;
