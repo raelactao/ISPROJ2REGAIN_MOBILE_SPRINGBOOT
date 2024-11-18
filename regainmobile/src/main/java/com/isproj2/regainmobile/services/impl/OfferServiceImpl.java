@@ -105,7 +105,7 @@ public class OfferServiceImpl implements OfferService {
 
                 List<Offer> offersByProduct = offerRepository.findByProduct(product);
 
-                if (offerDTO.getIsAccepted() == true) {
+                if (offerDTO.getIsAccepted() != null && offerDTO.getIsAccepted() == true) {
                         for (Offer otherOffer : offersByProduct) {
                                 otherOffer.setIsAccepted(false);
                                 offerRepository.save(otherOffer);
@@ -115,7 +115,10 @@ public class OfferServiceImpl implements OfferService {
                 offer.setProduct(product);
                 offer.setBuyer(buyer);
                 offer.setOfferValue(new BigDecimal(offerDTO.getOfferValue()));
-                offer.setIsAccepted(offerDTO.getIsAccepted());
+                if (offerDTO.getIsAccepted() != null) {
+                        offer.setIsAccepted(offerDTO.getIsAccepted());
+
+                }
                 offer.setSeller(seller);
 
                 offerRepository.save(offer);
