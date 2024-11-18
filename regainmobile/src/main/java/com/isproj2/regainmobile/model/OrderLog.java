@@ -40,7 +40,7 @@ public class OrderLog {
     private LocalDate deliveryDate;
 
     @lombok.NonNull
-    @Column(name = "previous_status")
+    @Column(name = "previous_status", length = 20)
     private String prevStatus;
 
     @ManyToOne

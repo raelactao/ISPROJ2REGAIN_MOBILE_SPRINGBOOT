@@ -35,7 +35,7 @@ public class Commissions {
     @JoinColumn(name = "order_id", referencedColumnName = "order_id")
     private Order order;
 
-    @Column(name = "commission_balance", length = 19, precision = 2)
+    @Column(name = "commission_balance", columnDefinition = "Decimal(19,2)")
     private BigDecimal commissionBalance;
 
     @Column(name = "status", length = 20)
