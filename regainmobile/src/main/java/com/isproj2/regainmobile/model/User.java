@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.isproj2.regainmobile.dto.UserDTO;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -93,7 +94,7 @@ public class User {
     // @Column(name = "profile_picture", columnDefinition = "BLOB", nullable = true)
     // private byte[] image;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private UserID userIDDetails;
 
     @Column(name = "js_name", nullable = true)
@@ -153,8 +154,29 @@ public class User {
         this.email = userDTO.getEmail();
         this.accountStatus = userDTO.getAccountStatus();
         this.penaltyPoints = userDTO.getPenaltyPoints();
+        this.phone = userDTO.getPhone();
+        // this.profileImagePath = userDTO.getProfileImagePath();
+        // this.gcashQR = userDTO.getGcashQR();
+        this.birthday = userDTO.getBirthday();
         this.junkshopName = userDTO.getJunkshopName();
     }
+
+    // public User(UserDTO userDTO) {
+    // this.userID = userDTO.getId();
+    // this.lastName = userDTO.getLastName();
+    // this.firstName = userDTO.getFirstName();
+    // this.username = userDTO.getUsername();
+    // this.role = userDTO.getRole();
+    // this.password = userDTO.getPassword();
+    // this.email = userDTO.getEmail();
+    // this.accountStatus = userDTO.getAccountStatus();
+    // this.penaltyPoints = userDTO.getPenaltyPoints();
+    // this.phone = userDTO.getPhone();
+    // // this.profileImagePath = userDTO.getProfileImagePath();
+    // // this.gcashQR = userDTO.getGcashQR();
+    // this.birthday = userDTO.getBirthday();
+    // this.junkshopName = userDTO.getJunkshopName();
+    // }
 
     public void setRole(Role role) {
         this.role = role;

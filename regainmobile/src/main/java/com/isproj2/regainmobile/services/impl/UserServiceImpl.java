@@ -7,13 +7,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
 import com.isproj2.regainmobile.dto.UserDTO;
+import com.isproj2.regainmobile.dto.UserIDDTO;
 import com.isproj2.regainmobile.exceptions.AuthenticationException;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.exceptions.UserAccountNotActiveException;
 import com.isproj2.regainmobile.exceptions.UserAlreadyExistsException;
 import com.isproj2.regainmobile.model.Role;
 import com.isproj2.regainmobile.model.User;
+import com.isproj2.regainmobile.model.UserID;
 import com.isproj2.regainmobile.repo.RoleRepository;
+import com.isproj2.regainmobile.repo.UserIDRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.UserService;
 
@@ -28,11 +31,14 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleRepository _roleRepository;
 
+    @Autowired
+    private UserIDRepository _IdRepository;
+
     @Override
     public void addUser(UserDTO userDTO) {
 
-        if (_userRepository.existsByUsername(userDTO.getUsername())
-                || _userRepository.existsByEmail(userDTO.getEmail())) {
+        if (_userRepository.existsByUsername(userDTO.getUsername().trim())
+                || _userRepository.existsByEmail(userDTO.getEmail().trim())) {
             throw new UserAlreadyExistsException();
         }
 
@@ -51,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
         // String errorMessage = "User does not exist";
 
-        User user = _userRepository.findByUsername(userDTO.getUsername())
+        User user = _userRepository.findByUsername(userDTO.getUsername().trim())
                 .orElseThrow(() -> new AuthenticationException());
 
         Role role = _roleRepository.findByName(user.getRole().getName());
@@ -107,21 +113,39 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getUsernameById(Integer userId) {
         return _userRepository.findById(userId)
-            .map(User::getUsername) // Assuming User has a `getUsername()` method
-            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .map(User::getUsername) // Assuming User has a `getUsername()` method
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
     public User findById(Integer userId) {
         return _userRepository.findById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
     }
 
     @Override
     public Integer findUserIdByUsername(String username) {
         User user = _userRepository.findByUsername(username)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
-        return user.getUserID();  // Assuming User has a getId() method
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        return user.getUserID(); // Assuming User has a getId() method
     }
-    
+
+    @Override
+    public void addUserIDDetails(UserIDDTO userID) {
+
+        User foundUser = _userRepository.findByUsername(userID.getUser().getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found with username " + userID.getUser().getUsername()));
+
+        User updatedUser = new User(userID.getUser(), foundUser.getRole());
+        updatedUser.setUserID(foundUser.getUserID());
+        updatedUser.setAccountStatus(foundUser.getAccountStatus());
+        _userRepository.save(updatedUser);
+
+        UserID newID = new UserID(updatedUser, userID);
+        _IdRepository.save(newID);
+
+        return;
+    }
+
 }

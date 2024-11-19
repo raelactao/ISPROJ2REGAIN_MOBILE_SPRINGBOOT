@@ -1,5 +1,7 @@
 package com.isproj2.regainmobile.model;
 
+import com.isproj2.regainmobile.dto.UserIDDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,5 +43,14 @@ public class UserID {
 
     @Column(name = "id_image")
     private byte[] idImage;
+
+    public UserID(User user, UserIDDTO dto) {
+        this.id = dto.getId();
+        this.user = user;
+        this.idType = dto.getIdType();
+        this.idNumber = dto.getIdNumber();
+        // this.idImage = dto.getIdImage();
+
+    }
 
 }

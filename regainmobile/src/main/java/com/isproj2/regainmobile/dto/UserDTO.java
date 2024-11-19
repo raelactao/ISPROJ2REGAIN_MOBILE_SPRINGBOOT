@@ -2,9 +2,11 @@ package com.isproj2.regainmobile.dto;
 
 // import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.LocalDate;
 
 import com.isproj2.regainmobile.model.User;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +43,17 @@ public class UserDTO {
 
     private int penaltyPoints;
 
-    // private byte[] image;
+    private String phone;
+
+    private String profileImagePath;
+
+    // private byte[] profileImagePath;
+
+    private String gcashQR;
+
+    // private byte[] gcashQR;
+
+    private LocalDate birthday;
 
     private String junkshopName;
 
@@ -55,6 +67,10 @@ public class UserDTO {
         this.password = user.getPassword();
         this.accountStatus = user.getAccountStatus();
         this.penaltyPoints = user.getPenaltyPoints();
+        this.phone = user.getPhone();
+        // this.profileImagePath = user.getProfileImagePath().toString();
+        // this.gcashQR = user.getGcashQR().toString();
+        this.birthday = user.getBirthday();
         this.junkshopName = user.getJunkshopName();
     }
 }
