@@ -21,7 +21,6 @@ import com.isproj2.regainmobile.repo.UserIDRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.UserService;
 
-import jakarta.validation.ValidationException;
 
 @Service
 public class UserServiceImpl implements UserService {
