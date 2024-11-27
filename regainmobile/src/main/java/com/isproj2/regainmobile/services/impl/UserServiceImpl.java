@@ -3,6 +3,7 @@ package com.isproj2.regainmobile.services.impl;
 // import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -34,6 +35,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserIDRepository _IdRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void addUser(UserDTO userDTO) {
 
@@ -47,6 +51,7 @@ public class UserServiceImpl implements UserService {
         // userDTO.getRole()));
 
         User user = new User(userDTO, role);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Hash the password
         _userRepository.save(user);
 
         return;
@@ -62,17 +67,28 @@ public class UserServiceImpl implements UserService {
 
         Role role = _roleRepository.findByName(user.getRole().getName());
 
-        if (user.getPassword().matches(userDTO.getPassword()) && user.getAccountStatus().equals("Active")) {
+        // if (user.getPassword().matches(userDTO.getPassword()) && user.getAccountStatus().equals("Active")) {
+        //     UserDTO loginUser = new UserDTO(user);
+        //     loginUser.setRole(role.getName());
+        //     return loginUser;
+        // } else if (user.getPassword().matches(userDTO.getPassword())
+        //         && user.getAccountStatus().equals("Pending")) {
+        //     throw new UserAccountNotActiveException();
+        // } else {
+        //     throw new AuthenticationException();
+        // }
+
+        if (passwordEncoder.matches(userDTO.getPassword(), user.getPassword()) // Match hashed password
+            && "Active".equals(user.getAccountStatus())) {
             UserDTO loginUser = new UserDTO(user);
-            loginUser.setRole(role.getName());
+            loginUser.setRole(user.getRole().getName());
             return loginUser;
-        } else if (user.getPassword().matches(userDTO.getPassword())
-                && user.getAccountStatus().equals("Pending")) {
+        } else if (passwordEncoder.matches(userDTO.getPassword(), user.getPassword())
+                && "Pending".equals(user.getAccountStatus())) {
             throw new UserAccountNotActiveException();
         } else {
             throw new AuthenticationException();
         }
-
     }
 
     @Override
