@@ -60,26 +60,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO login(UserDTO userDTO) {
 
-        // String errorMessage = "User does not exist";
-
         User user = _userRepository.findByUsername(userDTO.getUsername().trim())
                 .orElseThrow(() -> new AuthenticationException());
 
         Role role = _roleRepository.findByName(user.getRole().getName());
 
-        // if (user.getPassword().matches(userDTO.getPassword()) && user.getAccountStatus().equals("Active")) {
-        //     UserDTO loginUser = new UserDTO(user);
-        //     loginUser.setRole(role.getName());
-        //     return loginUser;
-        // } else if (user.getPassword().matches(userDTO.getPassword())
-        //         && user.getAccountStatus().equals("Pending")) {
-        //     throw new UserAccountNotActiveException();
-        // } else {
-        //     throw new AuthenticationException();
-        // }
-
         if (passwordEncoder.matches(userDTO.getPassword(), user.getPassword()) // Match hashed password
-            && "Active".equals(user.getAccountStatus())) {
+                && "Active".equals(user.getAccountStatus())) {
             UserDTO loginUser = new UserDTO(user);
             loginUser.setRole(user.getRole().getName());
             return loginUser;
@@ -103,28 +90,9 @@ public class UserServiceImpl implements UserService {
         // .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " +
         // userDTO.getRole()));
 
-        // boolean usernameAlreadyExists =
-        // _userRepository.existsByUsername(userDTO.getUsername());
-        // boolean contactNumberAlreadyExists =
-        // _userRepository.existsByContactNumber(userDTO.getContactNumber());
-
-        // if (usernameAlreadyExists &&
-        // !(user.getUsername().equals(userDTO.getUsername()))) {
-        // throw new ValidationException(errorMessage);
-        // } else if (contactNumberAlreadyExists
-        // && !(user.getContactNumber().equals(userDTO.getContactNumber()))) {
-        // throw new ValidationException(errorMessage);
-        // }
-
         User updatedUser = new User(userDTO, role);
         return new UserDTO(_userRepository.save(updatedUser));
     }
-    // @Override
-    // public UserDTO getUserById(Integer userId) {
-    // Optional<User> user = _userRepository.findById(userId);
-    // return user.orElseThrow(() -> new IllegalArgumentException("User not
-    // found"));
-    // }
 
     @Override
     public String getUsernameById(Integer userId) {
