@@ -214,4 +214,21 @@ public class ProductServiceImpl implements ProductService {
                 return sellerProducts;
         }
 
+        @Override
+        public List<ViewProductDTO> getViewProductsByCategory(String category, Integer userId) {
+        // Retrieve all products for the given category
+        List<Product> products = productRepository.findByCategoryName(category);
+        
+        // Fetch the user's favorites
+        List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
+        
+        // Convert products to ViewProductDTO and mark as favorite if applicable
+        return products.stream()
+                .map(product -> {
+                        boolean isFavorited = userFaves.stream()
+                                .anyMatch(fave -> fave.getProduct().equals(product));
+                        return new ViewProductDTO(product, isFavorited);
+                })
+                .collect(Collectors.toList());
+        }
 }

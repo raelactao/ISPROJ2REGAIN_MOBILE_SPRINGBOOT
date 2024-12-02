@@ -21,4 +21,7 @@ public interface ProductService {
     List<ViewProductDTO> getViewProductsByUser(Integer userId);
 
     List<ViewProductDTO> getViewProducts(Integer userId);
+
+    List<ViewProductDTO> getViewProductsByCategory(String category, Integer userId);
+
 }

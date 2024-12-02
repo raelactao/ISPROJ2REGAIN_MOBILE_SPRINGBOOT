@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
@@ -77,6 +78,11 @@ public class ProductController {
     public ResponseEntity<List<ViewProductDTO>> getAllProductsByUserFavorites(@PathVariable("id") Integer userId) {
         List<ViewProductDTO> productsWithFavorites = productService.getViewProducts(userId);
         return ResponseEntity.ok(productsWithFavorites);
+    }
+
+    @GetMapping("/view/filter")
+    public List<ViewProductDTO> getViewProductsByCategory(@RequestParam String category, @RequestParam Integer userId) {
+    return productService.getViewProductsByCategory(category, userId);
     }
 
 }
