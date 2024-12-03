@@ -24,4 +24,6 @@ public interface ProductService {
 
     List<ViewProductDTO> getViewProductsByCategory(String category, Integer userId);
 
+    List<ViewProductDTO> searchViewProducts(String searchTerm, Integer userId);
+
 }

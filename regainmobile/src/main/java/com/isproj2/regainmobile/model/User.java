@@ -81,11 +81,11 @@ public class User {
     @Column(name = "contact_number", length = 50)
     private String phone;
 
-    @Column(name = "profile_picture")
-    private byte[] profileImagePath;
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
 
-    @Column(name = "GCashQR")
-    private byte[] gcashQR;
+    @Column(name = "gcash_qr_url")
+    private String gcashQrUrl;
 
     @Column(name = "birthday")
     private LocalDate birthday;

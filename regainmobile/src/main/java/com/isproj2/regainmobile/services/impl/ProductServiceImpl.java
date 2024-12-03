@@ -231,4 +231,16 @@ public class ProductServiceImpl implements ProductService {
                 })
                 .collect(Collectors.toList());
         }
+
+        @Override
+        public List<ViewProductDTO> searchViewProducts(String searchTerm, Integer userId) {
+        // Retrieve all products for the user
+        List<ViewProductDTO> allProducts = getViewProducts(userId);
+
+        // Filter products based on the search term
+        return allProducts.stream()
+                .filter(product -> product.getProductName().toLowerCase().contains(searchTerm.toLowerCase())
+                        || (product.getDescription() != null && product.getDescription().toLowerCase().contains(searchTerm.toLowerCase())))
+                .collect(Collectors.toList());
+        }
 }

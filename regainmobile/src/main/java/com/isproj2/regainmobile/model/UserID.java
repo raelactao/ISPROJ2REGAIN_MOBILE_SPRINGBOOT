@@ -41,8 +41,8 @@ public class UserID {
     @Column(name = "id_number", length = 100)
     private String idNumber;
 
-    @Column(name = "id_image")
-    private byte[] idImage;
+    @Column(name = "id_image_url")
+    private String idImageUrl;
 
     public UserID(User user, UserIDDTO dto) {
         this.id = dto.getId();

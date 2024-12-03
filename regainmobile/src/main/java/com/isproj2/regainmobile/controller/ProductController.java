@@ -85,4 +85,10 @@ public class ProductController {
     return productService.getViewProductsByCategory(category, userId);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<ViewProductDTO>> searchProducts(
+            @RequestParam String query, @RequestParam Integer userId) {
+        List<ViewProductDTO> searchResults = productService.searchViewProducts(query, userId);
+        return ResponseEntity.ok(searchResults);
+    }
 }
