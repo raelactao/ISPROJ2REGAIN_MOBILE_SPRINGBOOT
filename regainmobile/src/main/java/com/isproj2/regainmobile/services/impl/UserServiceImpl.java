@@ -21,8 +21,6 @@ import com.isproj2.regainmobile.repo.UserIDRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.UserService;
 
-import jakarta.validation.ValidationException;
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -64,6 +62,18 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new AuthenticationException());
 
         Role role = _roleRepository.findByName(user.getRole().getName());
+
+        // if (user.getPassword().matches(userDTO.getPassword()) &&
+        // user.getAccountStatus().equals("Active")) {
+        // UserDTO loginUser = new UserDTO(user);
+        // loginUser.setRole(role.getName());
+        // return loginUser;
+        // } else if (user.getPassword().matches(userDTO.getPassword())
+        // && user.getAccountStatus().equals("Pending")) {
+        // throw new UserAccountNotActiveException();
+        // } else {
+        // throw new AuthenticationException();
+        // }
 
         if (passwordEncoder.matches(userDTO.getPassword(), user.getPassword()) // Match hashed password
                 && "Active".equals(user.getAccountStatus())) {
@@ -121,13 +131,21 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User not found with username " + userID.getUser().getUsername()));
 
-        User updatedUser = new User(userID.getUser(), foundUser.getRole());
-        updatedUser.setUserID(foundUser.getUserID());
-        updatedUser.setAccountStatus(foundUser.getAccountStatus());
-        _userRepository.save(updatedUser);
+        // String dtoPassword = passwordEncoder.encode(userID.getUser().getPassword());
 
-        UserID newID = new UserID(updatedUser, userID);
-        _IdRepository.save(newID);
+        if (passwordEncoder.matches(userID.getUser().getPassword(), foundUser.getPassword())) {
+            User updatedUser = new User(userID.getUser(), foundUser.getRole());
+            String dtoEncoded = passwordEncoder.encode(userID.getUser().getPassword());
+            updatedUser.setPassword(dtoEncoded);
+            updatedUser.setUserID(foundUser.getUserID());
+            updatedUser.setAccountStatus(foundUser.getAccountStatus());
+            _userRepository.save(updatedUser);
+
+            UserID newID = new UserID(updatedUser, userID);
+            _IdRepository.save(newID);
+        } else {
+            throw new AuthenticationException();
+        }
 
         return;
     }
