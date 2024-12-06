@@ -28,16 +28,16 @@ public class Payment {
     @Column(name = "payment_type")
     private String paymentType;
 
-    @Column(name = "amount_paid")
+    @Column(name = "amount_paid", columnDefinition = "Decimal(19,2)")
     private BigDecimal amountPaid;
 
-    @Column(name = "reference_number")
+    @Column(name = "reference_number", length = 30)
     private String referenceNumber;
 
-    @Column(name = "status")
+    @Column(name = "status", length = 20)
     private String status;
 
-    @Column(name = "remarks")
+    @Column(name = "remarks", length = 100)
     private String remarks;
 
     public Payment(PaymentDTO dto) {

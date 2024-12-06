@@ -62,9 +62,8 @@ public class Product {
     @Column(name = "price", columnDefinition = "Decimal(19,2)")
     private BigDecimal price;
 
-    // @Lob
-    // @Column(name = "image")
-    // private byte[] image;
+    @Column(name = "image")
+    private String imagePath;
 
     @lombok.NonNull
     @Column(name = "can_deliver", columnDefinition = "tinyint(1) default '0'")

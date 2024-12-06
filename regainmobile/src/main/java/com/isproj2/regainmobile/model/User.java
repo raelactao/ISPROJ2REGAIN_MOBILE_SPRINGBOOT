@@ -1,7 +1,7 @@
 package com.isproj2.regainmobile.model;
 
 import java.math.BigDecimal;
-
+import java.time.LocalDate;
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.isproj2.regainmobile.dto.UserDTO;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,6 +22,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -66,7 +68,7 @@ public class User {
     private String email;
 
     @lombok.NonNull
-    @Column(name = "pass", nullable = false)
+    @Column(name = "pass", nullable = false, length = 255)
     private String password;
 
     @Value("${some.key:Pending}")
@@ -76,9 +78,24 @@ public class User {
     @Column(name = "penalty_points")
     private int penaltyPoints = 0;
 
+    @Column(name = "contact_number", length = 50)
+    private String phone;
+
+    @Column(name = "profile_picture")
+    private byte[] profileImagePath;
+
+    @Column(name = "GCashQR")
+    private byte[] gcashQR;
+
+    @Column(name = "birthday")
+    private LocalDate birthday;
+
     // @Lob
     // @Column(name = "profile_picture", columnDefinition = "BLOB", nullable = true)
     // private byte[] image;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private UserID userIDDetails;
 
     @Column(name = "js_name", nullable = true)
     private String junkshopName;
@@ -137,8 +154,29 @@ public class User {
         this.email = userDTO.getEmail();
         this.accountStatus = userDTO.getAccountStatus();
         this.penaltyPoints = userDTO.getPenaltyPoints();
+        this.phone = userDTO.getPhone();
+        // this.profileImagePath = userDTO.getProfileImagePath();
+        // this.gcashQR = userDTO.getGcashQR();
+        this.birthday = userDTO.getBirthday();
         this.junkshopName = userDTO.getJunkshopName();
     }
+
+    // public User(UserDTO userDTO) {
+    // this.userID = userDTO.getId();
+    // this.lastName = userDTO.getLastName();
+    // this.firstName = userDTO.getFirstName();
+    // this.username = userDTO.getUsername();
+    // this.role = userDTO.getRole();
+    // this.password = userDTO.getPassword();
+    // this.email = userDTO.getEmail();
+    // this.accountStatus = userDTO.getAccountStatus();
+    // this.penaltyPoints = userDTO.getPenaltyPoints();
+    // this.phone = userDTO.getPhone();
+    // // this.profileImagePath = userDTO.getProfileImagePath();
+    // // this.gcashQR = userDTO.getGcashQR();
+    // this.birthday = userDTO.getBirthday();
+    // this.junkshopName = userDTO.getJunkshopName();
+    // }
 
     public void setRole(Role role) {
         this.role = role;

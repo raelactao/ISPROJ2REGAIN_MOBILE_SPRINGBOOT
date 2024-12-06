@@ -29,7 +29,7 @@ public class Role {
     private Integer roleID;
 
     // column name = 'role_type' must match FK column
-    @Column(name = "role_type", nullable = false)
+    @Column(name = "role_type", length = 20)
     private String name;
 
     // mappedBy = 'role' must match with a property in User class

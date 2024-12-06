@@ -13,10 +13,12 @@ import com.isproj2.regainmobile.dto.ViewProductDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Favorite;
 import com.isproj2.regainmobile.model.Offer;
+import com.isproj2.regainmobile.model.Order;
 import com.isproj2.regainmobile.model.Product;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.repo.FavoriteRepository;
 import com.isproj2.regainmobile.repo.OfferRepository;
+import com.isproj2.regainmobile.repo.OrderRepository;
 import com.isproj2.regainmobile.repo.ProductRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.OfferService;
@@ -35,6 +37,9 @@ public class OfferServiceImpl implements OfferService {
 
         @Autowired
         private FavoriteRepository favoriteRepository;
+
+        @Autowired
+        private OrderRepository orderRepository;
 
         // @Override
         // public OfferDTO createOffer(OfferDTO offerDTO) {
@@ -98,10 +103,22 @@ public class OfferServiceImpl implements OfferService {
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Product not found with id " + offerDTO.getProduct().getProductID()));
 
+                List<Offer> offersByProduct = offerRepository.findByProduct(product);
+
+                if (offerDTO.getIsAccepted() != null && offerDTO.getIsAccepted() == true) {
+                        for (Offer otherOffer : offersByProduct) {
+                                otherOffer.setIsAccepted(false);
+                                offerRepository.save(otherOffer);
+                        }
+                }
+
                 offer.setProduct(product);
                 offer.setBuyer(buyer);
                 offer.setOfferValue(new BigDecimal(offerDTO.getOfferValue()));
-                offer.setIsAccepted(offerDTO.getIsAccepted());
+                if (offerDTO.getIsAccepted() != null) {
+                        offer.setIsAccepted(offerDTO.getIsAccepted());
+
+                }
                 offer.setSeller(seller);
 
                 offerRepository.save(offer);
@@ -151,6 +168,7 @@ public class OfferServiceImpl implements OfferService {
         }
 
         private OfferDTO convertToDTO(Offer offer) {
+
                 return new OfferDTO(
                                 offer.getOfferID(),
                                 offer.getProduct().getProductID(),
@@ -170,6 +188,7 @@ public class OfferServiceImpl implements OfferService {
 
         @Override
         public List<ViewOfferDTO> getViewOffersByBuyer(Integer buyerId) {
+
                 User buyer = userRepository.findById(buyerId)
                                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + buyerId));
 
@@ -192,6 +211,11 @@ public class OfferServiceImpl implements OfferService {
         }
 
         private ViewOfferDTO convertToViewOfferDTO(Offer offer) {
+                Boolean isOrdered = false;
+                // if (offer.getIsAccepted()) {
+                // isOrdered = true;
+                // }
+
                 List<Favorite> favoritesList = favoriteRepository.findByUser(offer.getBuyer());
                 boolean faved = false;
                 for (Favorite fave : favoritesList) {
@@ -200,12 +224,22 @@ public class OfferServiceImpl implements OfferService {
                         }
                 }
 
+                List<Order> orderList = orderRepository.findByBuyer(offer.getBuyer());
+
+                for (Order order : orderList) {
+                        if (offer.getProduct().equals(order.getProduct())) {
+                                isOrdered = true;
+                        }
+
+                }
+
                 ViewOfferDTO dto = new ViewOfferDTO();
                 dto.setOfferID(offer.getOfferID());
                 dto.setProduct(new ViewProductDTO(offer.getProduct(), faved));
                 dto.setBuyerName(offer.getBuyer().getUsername()); // Example: Assuming User has a username
                 dto.setOfferValue(offer.getOfferValue().toString());
                 dto.setIsAccepted(offer.getIsAccepted());
+                dto.setIsOrdered(isOrdered);
                 dto.setSellerName(offer.getSeller().getUsername()); // Example: Assuming User has a username
                 return dto;
         }

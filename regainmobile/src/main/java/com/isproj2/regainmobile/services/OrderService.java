@@ -7,8 +7,16 @@ import com.isproj2.regainmobile.dto.ViewOfferDTO;
 
 public interface OrderService {
     OrderDTO createOrder(OrderDTO orderDTO);
+
     OrderDTO updateOrderStatus(Integer orderId, String newStatus, Integer updatedByUserID);
+
     OrderDTO getOrderById(Integer orderId);
+
     List<OrderDTO> getOrdersByBuyer(Integer buyerId);
+
     List<OrderDTO> getOrdersBySeller(Integer sellerID);
+
+    List<OrderDTO> getOrdersByDeliveryBuyer(String deliveryMethod, Integer userId);
+
+    List<OrderDTO> getOrdersByDeliverySeller(String deliveryMethod, Integer userId);
 }

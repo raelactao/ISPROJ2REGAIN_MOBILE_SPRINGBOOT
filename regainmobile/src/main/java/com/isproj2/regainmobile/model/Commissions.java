@@ -35,13 +35,13 @@ public class Commissions {
     @JoinColumn(name = "order_id", referencedColumnName = "order_id")
     private Order order;
 
-    @Column(name = "commission_balance", length = 38, precision = 4)
+    @Column(name = "commission_balance", columnDefinition = "Decimal(19,2)")
     private BigDecimal commissionBalance;
 
-    @Column(name = "status")
+    @Column(name = "status", length = 20)
     private String status;
 
-    @Column(name = "remarks")
+    @Column(name = "remarks", length = 100)
     private String remarks;
 
     @ManyToOne

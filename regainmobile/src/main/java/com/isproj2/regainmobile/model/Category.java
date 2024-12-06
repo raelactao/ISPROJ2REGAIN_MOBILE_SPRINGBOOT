@@ -32,7 +32,7 @@ public class Category {
 
     @lombok.NonNull
     // column name = 'category_name' must match FK column
-    @Column(name = "category_name")
+    @Column(name = "category_name", length = 20)
     private String name;
 
     // mappedBy = 'category' must match with a property in Product class

@@ -1,7 +1,6 @@
 package com.isproj2.regainmobile.dto;
 
 import com.isproj2.regainmobile.model.Favorite;
-import com.isproj2.regainmobile.model.Product;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
