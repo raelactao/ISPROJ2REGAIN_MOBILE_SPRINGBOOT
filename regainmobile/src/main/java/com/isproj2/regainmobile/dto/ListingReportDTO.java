@@ -23,7 +23,6 @@ public class ListingReportDTO {
 
     private Integer reasonCategoryID;
 
-    @lombok.NonNull
     private String reportReply;
 
     private String details;
@@ -32,7 +31,7 @@ public class ListingReportDTO {
     private LocalDateTime timeStamp;
 
     @lombok.NonNull
-    private String reportStatus;
+    private String reportStatus = "Pending";
 
     public ListingReportDTO(ListingReport listReport) {
         this.reportID = listReport.getReportID();
