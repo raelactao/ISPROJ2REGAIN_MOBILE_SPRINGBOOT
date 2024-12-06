@@ -42,7 +42,6 @@ public class UserReport {
     @JoinColumn(name = "reason_category", referencedColumnName = "report_category_id", nullable = false)
     private ReportCategory reasonCategory;
 
-    @lombok.NonNull
     @Column(name = "report_reply")
     private String reportReply;
 
