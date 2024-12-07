@@ -1,7 +1,11 @@
 package com.isproj2.regainmobile.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +26,6 @@ import com.isproj2.regainmobile.services.UserService;
 
 import jakarta.validation.ValidationException;
 
-// import org.springframework.web.bind.annotation.GetMapping;
-//hlello world
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -53,19 +55,6 @@ public class UserController {
         }
     }
 
-    // @PostMapping("/add")
-    // public ResponseModel<UserDTO> registerUser(@RequestBody UserDTO user) {
-    // // UserDTO savedUser = userService.addUser(user);
-    // UserDTO savedUser;
-    // try {
-    // savedUser = userService.addUser(user);
-    // } catch (ValidationException e) {
-    // return new ResponseModel<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-    // }
-
-    // return new ResponseModel<>(HttpStatus.OK.value(), "User saved", savedUser);
-    // }
-
     @PostMapping("/addID")
     public ResponseModel<UserIDDTO> addUserID(@RequestBody UserIDDTO idDTO) {
         // UserIDDTO addedID;
@@ -79,4 +68,25 @@ public class UserController {
 
     }
 
+    @GetMapping("/{id}/penalty-points")
+    public ResponseModel<Integer> getPenaltyPoints(@PathVariable Integer id) {
+        try {
+            Integer penaltyPoints = userService.getPenaltyPointsByUserId(id);
+            if (penaltyPoints == null) {
+                penaltyPoints = 0; // Default to 0 if null
+            }
+            return new ResponseModel<>(HttpStatus.OK.value(), "Penalty points fetched successfully", penaltyPoints);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseModel<>(HttpStatus.NOT_FOUND.value(), e.getMessage(), null);
+        } catch (Exception e) {
+            return new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null);
+        }
+    }
+
+
+    @GetMapping("/{userId}/reports")
+    public ResponseEntity<Map<String, List<?>>> getUserAndListingReports(@PathVariable Integer userId) {
+        Map<String, List<?>> combinedReports = userService.getUserAndListingReports(userId);
+        return ResponseEntity.ok(combinedReports);
+    }
 }
