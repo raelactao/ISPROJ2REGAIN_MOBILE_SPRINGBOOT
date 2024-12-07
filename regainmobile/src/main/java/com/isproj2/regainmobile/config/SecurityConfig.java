@@ -15,33 +15,59 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${spring.websecurity.debug:false}")
-    boolean webSecurityDebug;
+        @Value("${spring.websecurity.debug:false}")
+        boolean webSecurityDebug;
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.debug(webSecurityDebug);
-    }
+        @Bean
+        public WebSecurityCustomizer webSecurityCustomizer() {
+                return (web) -> web.debug(webSecurityDebug);
+        }
 
-    @Bean
-    BCryptPasswordEncoder BCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        BCryptPasswordEncoder BCryptPasswordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .authorizeHttpRequests(
-                        authz -> authz
-                                .requestMatchers("/api/register", "/api/login").permitAll()
-                                .requestMatchers("/api/user/addID").permitAll()
-                                .requestMatchers("/api/user/update").hasAnyRole("USER", "USER_WS", "ADMIN")
-                                .requestMatchers(new AntPathRequestMatcher("/api/products/viewlist/{id}", "GET"))
-                                .hasAnyRole("USER", "USER_WS", "ADMIN")
-                                .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
-                .build();
-    }
+        @Bean
+        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                return http
+                                .authorizeHttpRequests(
+                                                authz -> authz
+                                                                .requestMatchers("/api/register", "/api/login")
+                                                                .permitAll()
+                                                                .requestMatchers("/api/user/addID").permitAll()
+                                                                .requestMatchers("/api/user/update").permitAll()
+                                                                .requestMatchers(new AntPathRequestMatcher(
+                                                                                "/api/products/viewlist/{id}", "GET"))
+                                                                .permitAll()
+                                                                .requestMatchers("/api/addresses/*",
+                                                                                "/api/addresses/user/{id}")
+                                                                .permitAll()
+                                                                .requestMatchers("/api/category/list").permitAll()
+                                                                .requestMatchers("/api/chat/*").permitAll()
+                                                                .requestMatchers("/api/favorites/*",
+                                                                                "/api/favorites/list/{id}",
+                                                                                "/api/favorites/delete/{userId}/{productId}")
+                                                                .permitAll()
+                                                                .requestMatchers("/api/green_zone/*").permitAll()
+                                                                .requestMatchers("/api/listingreports/*").permitAll()
+                                                                .requestMatchers("/api/products/*",
+                                                                                "/api/products/update/{id}",
+                                                                                "/api/products/delete/{id}")
+                                                                .permitAll()
+                                                                .requestMatchers("/api/offers/*").permitAll()
+                                                                .requestMatchers(new AntPathRequestMatcher(
+                                                                                "/api/offers/{id}", "PUT"))
+                                                                .permitAll()
+                                                                .requestMatchers(new AntPathRequestMatcher(
+                                                                                "/api/offers/{id}", "DELETE"))
+                                                                .permitAll()
+                                                                .requestMatchers("/api/orders/*").permitAll()
+                                                                .requestMatchers("/api/userreports/*").permitAll()
+                                                                .anyRequest().authenticated())
+                                .httpBasic(Customizer.withDefaults())
+                                .csrf(csrf -> csrf.disable())
+                                .build();
+        }
 
 }

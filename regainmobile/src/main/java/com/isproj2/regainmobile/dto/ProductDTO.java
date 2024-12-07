@@ -40,6 +40,8 @@ public class ProductDTO {
     @lombok.NonNull
     private Boolean canDeliver;
 
+    private String status;
+
     public ProductDTO(Product product) {
         this.productID = product.getProductID();
         this.sellerID = product.getSeller().getUserID();
@@ -50,6 +52,7 @@ public class ProductDTO {
         this.categoryID = product.getCategory().getCategoryID();
         this.price = product.getPrice().toString();
         this.canDeliver = product.getCanDeliver();
+        this.status = product.getStatus();
     }
 
 }

@@ -3,6 +3,7 @@ package com.isproj2.regainmobile.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.OfferDTO;
 import com.isproj2.regainmobile.dto.ViewOfferDTO;
+import com.isproj2.regainmobile.model.ResponseModel;
 import com.isproj2.regainmobile.services.OfferService;
 
 @RestController
@@ -31,15 +33,16 @@ public class OfferController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ViewOfferDTO> updateOffer(@PathVariable("id") Integer offerId, @RequestBody ViewOfferDTO offerDTO) {
+    public ResponseEntity<ViewOfferDTO> updateOffer(@PathVariable("id") Integer offerId,
+            @RequestBody ViewOfferDTO offerDTO) {
         ViewOfferDTO updatedOffer = offerService.updateOffer(offerId, offerDTO);
         return ResponseEntity.ok(updatedOffer);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOffer(@PathVariable("id") Integer offerId) {
+    public ResponseModel<Void> deleteOffer(@PathVariable("id") Integer offerId) {
         offerService.deleteOffer(offerId);
-        return ResponseEntity.noContent().build();
+        return new ResponseModel<>(HttpStatus.OK.value(), "Offer deleted");
     }
 
     @GetMapping("/{id}")
