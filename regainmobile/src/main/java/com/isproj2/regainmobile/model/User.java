@@ -1,11 +1,9 @@
 package com.isproj2.regainmobile.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +18,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -81,11 +80,13 @@ public class User {
     @Column(name = "contact_number", length = 50)
     private String phone;
 
-    @Column(name = "profile_image_url")
-    private String profileImageUrl;
+    @Lob
+    @Column(name = "profile_image",  columnDefinition = "LONGBLOB")
+    private byte [] profileImage;
 
-    @Column(name = "gcash_qr_url")
-    private String gcashQrUrl;
+    @Lob
+    @Column(name = "gcash_qr",  columnDefinition = "LONGBLOB")
+    private byte [] gcashQr;
 
     @Column(name = "birthday")
     private LocalDate birthday;
@@ -155,28 +156,11 @@ public class User {
         this.accountStatus = userDTO.getAccountStatus();
         this.penaltyPoints = userDTO.getPenaltyPoints();
         this.phone = userDTO.getPhone();
-        // this.profileImagePath = userDTO.getProfileImagePath();
-        // this.gcashQR = userDTO.getGcashQR();
         this.birthday = userDTO.getBirthday();
         this.junkshopName = userDTO.getJunkshopName();
+        this.profileImage = userDTO.getProfileImage();
+        this.gcashQr = userDTO.getGcashQRcode();
     }
-
-    // public User(UserDTO userDTO) {
-    // this.userID = userDTO.getId();
-    // this.lastName = userDTO.getLastName();
-    // this.firstName = userDTO.getFirstName();
-    // this.username = userDTO.getUsername();
-    // this.role = userDTO.getRole();
-    // this.password = userDTO.getPassword();
-    // this.email = userDTO.getEmail();
-    // this.accountStatus = userDTO.getAccountStatus();
-    // this.penaltyPoints = userDTO.getPenaltyPoints();
-    // this.phone = userDTO.getPhone();
-    // // this.profileImagePath = userDTO.getProfileImagePath();
-    // // this.gcashQR = userDTO.getGcashQR();
-    // this.birthday = userDTO.getBirthday();
-    // this.junkshopName = userDTO.getJunkshopName();
-    // }
 
     public void setRole(Role role) {
         this.role = role;

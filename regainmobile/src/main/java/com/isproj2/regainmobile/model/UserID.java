@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -41,16 +42,15 @@ public class UserID {
     @Column(name = "id_number", length = 100)
     private String idNumber;
 
-    @Column(name = "id_image_url")
-    private String idImageUrl;
+    @Lob
+    @Column(name = "id_image")
+    private byte [] idImage;
 
     public UserID(User user, UserIDDTO dto) {
         this.id = dto.getId();
         this.user = user;
         this.idType = dto.getIdType();
         this.idNumber = dto.getIdNumber();
-        // this.idImage = dto.getIdImage();
-
     }
 
 }

@@ -26,6 +26,8 @@ public class UserIDDTO {
 
     private String idImage;
 
+    private byte [] idImages;
+ 
     public UserIDDTO(UserID userID) {
         this.id = userID.getId();
         this.user = new UserDTO(userID.getUser());
