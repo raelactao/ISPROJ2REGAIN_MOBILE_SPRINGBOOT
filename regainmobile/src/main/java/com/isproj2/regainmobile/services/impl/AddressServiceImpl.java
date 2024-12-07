@@ -39,6 +39,9 @@ public class AddressServiceImpl implements AddressService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + addressDTO.getUserID()));
 
         Address address = new Address(addressDTO, user);
+        if (addressDTO.getUnitNumber().isEmpty()) {
+            address.setUnitNumber(null);
+        }
         addressRepository.save(address);
         return addressDTO;
     }

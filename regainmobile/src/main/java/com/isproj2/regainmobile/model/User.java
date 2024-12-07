@@ -10,10 +10,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import com.isproj2.regainmobile.config.EncryptionUtil;
 import com.isproj2.regainmobile.dto.UserDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +27,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.groups.ConvertGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,32 +55,38 @@ public class User {
     @JoinColumn(name = "role_type") // ** needs to be 'role_type' column as FK column in DB **
     private Role role; // property name must match with 'mappedBy' name in Role class
 
+    @Convert(converter = EncryptionUtil.class)
     @Column(name = "last_name")
     private String lastName;
 
+    @Convert(converter = EncryptionUtil.class)
+    @Convert(converter = EncryptionUtil.class)
     @Column(name = "first_name")
     private String firstName;
 
+    @Convert(converter = EncryptionUtil.class)
     @lombok.NonNull
     @Column(name = "user_name")
     private String username;
 
+    @Convert(converter = EncryptionUtil.class)
     @lombok.NonNull
     @Email
     @Column(name = "email", nullable = false)
     private String email;
 
+    // will be hashed rather than encrypted
     @lombok.NonNull
     @Column(name = "pass", nullable = false, length = 255)
     private String password;
 
-    @Value("${some.key:Pending}")
     @Column(name = "acc_status", columnDefinition = "default 'Pending'")
     private String accountStatus = "Pending";
 
     @Column(name = "penalty_points")
     private int penaltyPoints = 0;
 
+    @Convert(converter = EncryptionUtil.class)
     @Column(name = "contact_number", length = 50)
     private String phone;
 
@@ -87,8 +96,9 @@ public class User {
     @Column(name = "GCashQR")
     private byte[] gcashQR;
 
+    @Convert(converter = EncryptionUtil.class)
     @Column(name = "birthday")
-    private LocalDate birthday;
+    private String birthday;
 
     // @Lob
     // @Column(name = "profile_picture", columnDefinition = "BLOB", nullable = true)
@@ -97,6 +107,7 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private UserID userIDDetails;
 
+    @Convert(converter = EncryptionUtil.class)
     @Column(name = "js_name", nullable = true)
     private String junkshopName;
 
@@ -157,7 +168,9 @@ public class User {
         this.phone = userDTO.getPhone();
         // this.profileImagePath = userDTO.getProfileImagePath();
         // this.gcashQR = userDTO.getGcashQR();
-        this.birthday = userDTO.getBirthday();
+        if (userDTO.getBirthday() != null) {
+            this.birthday = userDTO.getBirthday().toString();
+        }
         this.junkshopName = userDTO.getJunkshopName();
     }
 

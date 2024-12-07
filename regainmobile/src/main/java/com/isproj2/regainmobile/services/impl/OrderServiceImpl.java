@@ -92,6 +92,8 @@ public class OrderServiceImpl implements OrderService {
                 Order order = new Order(orderDTO, buyer, address, product, payment);
                 order.setOrderDate(Date.valueOf(LocalDate.now())); // Set current timestamp for order date
                 orderRepository.save(order);
+                product.setStatus("Ordered");
+                productRepository.save(product);
 
                 return orderDTO;
         }

@@ -70,7 +70,7 @@ public class UserDTO {
         this.phone = user.getPhone();
         // this.profileImagePath = user.getProfileImagePath().toString();
         // this.gcashQR = user.getGcashQR().toString();
-        this.birthday = user.getBirthday();
+        this.birthday = LocalDate.parse(user.getBirthday());
         this.junkshopName = user.getJunkshopName();
     }
 }

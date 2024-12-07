@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
         // userDTO.getRole()));
 
         User user = new User(userDTO, role);
+        user.setAccountStatus("Pending");
         user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Hash the password
         _userRepository.save(user);
 
@@ -101,6 +102,15 @@ public class UserServiceImpl implements UserService {
         // userDTO.getRole()));
 
         User updatedUser = new User(userDTO, role);
+
+        String dtoEncoded;
+        if (userDTO.getPassword() != null || !userDTO.getPassword().isEmpty()) {
+            dtoEncoded = passwordEncoder.encode(userDTO.getPassword());
+        } else {
+            dtoEncoded = user.getPassword();
+        }
+        updatedUser.setPassword(dtoEncoded);
+
         return new UserDTO(_userRepository.save(updatedUser));
     }
 

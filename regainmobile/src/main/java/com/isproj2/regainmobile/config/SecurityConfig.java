@@ -30,41 +30,54 @@ public class SecurityConfig {
 
         @Bean
         SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                // return http
+                // .authorizeHttpRequests(
+                // authz -> authz
+                // .requestMatchers("/api/register", "/api/login")
+                // .permitAll()
+                // .requestMatchers("/api/user/addID").permitAll()
+                // .requestMatchers("/api/user/update").permitAll()
+                // .requestMatchers(
+                // "/api/products/viewlist/{id}",
+                // "/api/products/userviewlist/{id}")
+                // .permitAll()
+                // .requestMatchers("/api/addresses/*",
+                // "/api/addresses/user/{id}")
+                // .permitAll()
+                // .requestMatchers("/api/category/list").permitAll()
+                // .requestMatchers("/api/chat/*").permitAll()
+                // .requestMatchers("/api/favorites/*",
+                // "/api/favorites/list/{id}",
+                // "/api/favorites/delete/{userId}/{productId}")
+                // .permitAll()
+                // .requestMatchers("/api/green_zone/*").permitAll()
+                // .requestMatchers("/api/listingreports/*").permitAll()
+                // .requestMatchers("/api/products/add",
+                // "/api/products/list/{id}",
+                // "/api/products/update/{id}",
+                // "/api/products/delete/{id}")
+                // .permitAll()
+                // .requestMatchers("/api/offers/add",
+                // "/api/offers/buyer/{buyerId}/viewoffers",
+                // "/api/offers/product/{productId}/viewoffers")
+                // .permitAll()
+                // .requestMatchers(new AntPathRequestMatcher(
+                // "/api/offers/{id}", "PUT"))
+                // .permitAll()
+                // .requestMatchers(new AntPathRequestMatcher(
+                // "/api/offers/{id}", "DELETE"))
+                // .permitAll()
+                // .requestMatchers("/api/orders/*").permitAll()
+                // .requestMatchers("/api/userreports/*").permitAll()
+                // .anyRequest().authenticated())
+                // .httpBasic(Customizer.withDefaults())
+                // .csrf(csrf -> csrf.disable())
+                // .build();
+
                 return http
                                 .authorizeHttpRequests(
                                                 authz -> authz
-                                                                .requestMatchers("/api/register", "/api/login")
-                                                                .permitAll()
-                                                                .requestMatchers("/api/user/addID").permitAll()
-                                                                .requestMatchers("/api/user/update").permitAll()
-                                                                .requestMatchers(new AntPathRequestMatcher(
-                                                                                "/api/products/viewlist/{id}", "GET"))
-                                                                .permitAll()
-                                                                .requestMatchers("/api/addresses/*",
-                                                                                "/api/addresses/user/{id}")
-                                                                .permitAll()
-                                                                .requestMatchers("/api/category/list").permitAll()
-                                                                .requestMatchers("/api/chat/*").permitAll()
-                                                                .requestMatchers("/api/favorites/*",
-                                                                                "/api/favorites/list/{id}",
-                                                                                "/api/favorites/delete/{userId}/{productId}")
-                                                                .permitAll()
-                                                                .requestMatchers("/api/green_zone/*").permitAll()
-                                                                .requestMatchers("/api/listingreports/*").permitAll()
-                                                                .requestMatchers("/api/products/*",
-                                                                                "/api/products/update/{id}",
-                                                                                "/api/products/delete/{id}")
-                                                                .permitAll()
-                                                                .requestMatchers("/api/offers/*").permitAll()
-                                                                .requestMatchers(new AntPathRequestMatcher(
-                                                                                "/api/offers/{id}", "PUT"))
-                                                                .permitAll()
-                                                                .requestMatchers(new AntPathRequestMatcher(
-                                                                                "/api/offers/{id}", "DELETE"))
-                                                                .permitAll()
-                                                                .requestMatchers("/api/orders/*").permitAll()
-                                                                .requestMatchers("/api/userreports/*").permitAll()
-                                                                .anyRequest().authenticated())
+                                                                .anyRequest().permitAll())
                                 .httpBasic(Customizer.withDefaults())
                                 .csrf(csrf -> csrf.disable())
                                 .build();
