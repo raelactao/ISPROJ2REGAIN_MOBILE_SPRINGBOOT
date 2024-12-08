@@ -1,6 +1,10 @@
 package com.isproj2.regainmobile.services.impl;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 // import java.util.Optional;
 
@@ -10,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.isproj2.regainmobile.dto.ListingReportDTO;
 import com.isproj2.regainmobile.dto.UserDTO;
 import com.isproj2.regainmobile.dto.UserIDDTO;
+import com.isproj2.regainmobile.dto.UserReportDTO;
 import com.isproj2.regainmobile.exceptions.AuthenticationException;
 import com.isproj2.regainmobile.exceptions.ImageValidateService;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
@@ -20,8 +26,10 @@ import com.isproj2.regainmobile.exceptions.UserAlreadyExistsException;
 import com.isproj2.regainmobile.model.Role;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.model.UserID;
+import com.isproj2.regainmobile.repo.ListingReportRepository;
 import com.isproj2.regainmobile.repo.RoleRepository;
 import com.isproj2.regainmobile.repo.UserIDRepository;
+import com.isproj2.regainmobile.repo.UserReportRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.UserService;
 
@@ -200,5 +208,37 @@ public class UserServiceImpl implements UserService {
     //     user.setGcashQr(file.getBytes());
     //     _userRepository.save(user);
     // }
+
+    @Override
+    public int getPenaltyPointsByUserId(Integer userId) {
+        User user = _userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+        return user.getPenaltyPoints();
+    }
+
+    
+    @Autowired
+    private UserReportRepository userReportRepository;
+
+    @Autowired
+    private ListingReportRepository listingReportRepository;
+
+    public Map<String, List<?>> getUserAndListingReports(Integer userId) {
+        List<UserReportDTO> userReports = userReportRepository.findByReportedUser_UserID(userId)
+                .stream()
+                .map(UserReportDTO::new)
+                .collect(Collectors.toList());
+
+        List<ListingReportDTO> listingReports = listingReportRepository.findByReportedListingSellerUserID(userId)
+                .stream()
+                .map(ListingReportDTO::new)
+                .collect(Collectors.toList());
+
+        Map<String, List<?>> combinedReports = new HashMap<>();
+        combinedReports.put("userReports", userReports);
+        combinedReports.put("listingReports", listingReports);
+
+        return combinedReports;
+    }
 
 }
