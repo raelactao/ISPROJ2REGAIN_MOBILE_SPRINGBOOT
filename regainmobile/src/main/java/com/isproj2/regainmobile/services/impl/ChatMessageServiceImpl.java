@@ -1,5 +1,6 @@
 package com.isproj2.regainmobile.services.impl;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 
@@ -32,22 +33,41 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     public ChatMessage sendMessage(ChatMessageDTO messageDTO) {
+        // Fetch the chat room by room ID
         ChatRoom chatRoom = chatRoomRepository.findByRoomId(messageDTO.getRoomId())
             .orElseThrow(() -> new ResourceNotFoundException("Chat room not found"));
 
+        // Fetch the sender and receiver by their IDs
         User sender = userRepository.findById(messageDTO.getSenderId())
             .orElseThrow(() -> new ResourceNotFoundException("Sender not found"));
         User receiver = userRepository.findById(messageDTO.getReceiverId())
             .orElseThrow(() -> new ResourceNotFoundException("Receiver not found"));
 
-        if (!chatRoom.getUser1().getUserID().equals(sender.getUserID()) && 
+        // Validate if the sender is part of the chat room
+        if (!chatRoom.getUser1().getUserID().equals(sender.getUserID()) &&
             !chatRoom.getUser2().getUserID().equals(sender.getUserID())) {
             throw new IllegalArgumentException("Sender is not part of this chat room");
         }
 
-        ChatMessage chatMessage = new ChatMessage(sender, receiver, messageDTO.getContent(), chatRoom, LocalDateTime.now());
+        // Optional: Validate if the receiver is part of the chat room
+        if (!chatRoom.getUser1().getUserID().equals(receiver.getUserID()) &&
+            !chatRoom.getUser2().getUserID().equals(receiver.getUserID())) {
+            throw new IllegalArgumentException("Receiver is not part of this chat room");
+        }
+
+        // Create a new ChatMessage
+        ChatMessage chatMessage = new ChatMessage(
+            sender,
+            receiver,
+            messageDTO.getContent(),
+            chatRoom,
+            Instant.now() // Use Instant for consistent UTC timestamps
+        );
+
+        // Save the message to the repository
         return chatMessageRepository.save(chatMessage);
     }
+
 
     @Override
     public Page<ChatMessageDTO> getMessages(String roomId, Pageable pageable) {

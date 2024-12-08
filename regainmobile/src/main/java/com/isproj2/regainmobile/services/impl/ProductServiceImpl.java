@@ -1,5 +1,6 @@
 package com.isproj2.regainmobile.services.impl;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -9,9 +10,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
 import com.isproj2.regainmobile.dto.ViewProductDTO;
+import com.isproj2.regainmobile.exceptions.ImageValidateService;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Address;
 import com.isproj2.regainmobile.model.Category;
@@ -43,6 +46,9 @@ public class ProductServiceImpl implements ProductService {
         @Autowired
         private FavoriteRepository favoriteRepository;
 
+        @Autowired
+        private ImageValidateService validationService;
+
         @Override
         public ProductDTO createProduct(ProductDTO productDTO) {
                 User seller = userRepository.findById(productDTO.getSellerID())
@@ -58,6 +64,11 @@ public class ProductServiceImpl implements ProductService {
                                                 "Category not found with id " + productDTO.getCategoryID()));
 
                 Product product = new Product(productDTO, seller, loc, categ);
+
+                if (productDTO.getImage() != null) {
+                        product.setImage(productDTO.getImage());
+                    }
+                    
                 productRepository.save(product);
                 return productDTO;
         }
@@ -90,6 +101,10 @@ public class ProductServiceImpl implements ProductService {
                 product.setPrice(new BigDecimal(productDTO.getPrice()));
                 product.setCanDeliver(productDTO.getCanDeliver());
 
+                if (productDTO.getImage() != null) {
+                        product.setImage(productDTO.getImage());
+                }                
+
                 productRepository.save(product);
                 return productDTO;
         }
@@ -111,7 +126,7 @@ public class ProductServiceImpl implements ProductService {
                                 product.getDescription(), product.getWeight().toString(),
                                 product.getLocation().getAddressID(),
                                 product.getCategory().getCategoryID(),
-                                product.getPrice().toString(), product.getCanDeliver());
+                                product.getPrice().toString(), product.getImage(), product.getCanDeliver());
         }
 
         // @Override
@@ -128,7 +143,7 @@ public class ProductServiceImpl implements ProductService {
                                                 product.getWeight().toString(),
                                                 product.getLocation().getAddressID(),
                                                 product.getCategory().getCategoryID(), product.getPrice().toString(),
-                                                product.getCanDeliver()))
+                                                product.getImage(), product.getCanDeliver()))
                                 .collect(Collectors.toList());
         }
 
@@ -214,4 +229,42 @@ public class ProductServiceImpl implements ProductService {
                 return sellerProducts;
         }
 
+        @Override
+        public List<ViewProductDTO> getViewProductsByCategory(String category, Integer userId) {
+        // Retrieve all products for the given category
+        List<Product> products = productRepository.findByCategoryName(category);
+        
+        // Fetch the user's favorites
+        List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
+        
+        // Convert products to ViewProductDTO and mark as favorite if applicable
+        return products.stream()
+                .map(product -> {
+                        boolean isFavorited = userFaves.stream()
+                                .anyMatch(fave -> fave.getProduct().equals(product));
+                        return new ViewProductDTO(product, isFavorited);
+                })
+                .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<ViewProductDTO> searchViewProducts(String searchTerm, Integer userId) {
+        // Retrieve all products for the user
+        List<ViewProductDTO> allProducts = getViewProducts(userId);
+
+        // Filter products based on the search term
+        return allProducts.stream()
+                .filter(product -> product.getProductName().toLowerCase().contains(searchTerm.toLowerCase())
+                        || (product.getDescription() != null && product.getDescription().toLowerCase().contains(searchTerm.toLowerCase())))
+                .collect(Collectors.toList());
+        }
+
+        @Override
+        public void uploadProductImage(MultipartFile file, Integer productId) throws IOException {
+                validationService.validateImageFile(file);
+
+                Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+                product.setImage(file.getBytes());
+                productRepository.save(product);
+        }
 }

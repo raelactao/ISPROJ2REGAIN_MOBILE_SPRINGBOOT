@@ -1,5 +1,7 @@
 package com.isproj2.regainmobile.controller;
 
+import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -13,10 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.isproj2.regainmobile.dto.UserDTO;
 import com.isproj2.regainmobile.dto.UserIDDTO;
+import com.isproj2.regainmobile.exceptions.ImageValidateService;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.exceptions.UserAlreadyExistsException;
 import com.isproj2.regainmobile.model.ResponseModel;
@@ -33,17 +38,54 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PutMapping("/update")
-    public ResponseModel<UserDTO> updateUser(@RequestBody UserDTO userDTO) {
-        UserDTO savedUser;
-        try {
-            savedUser = userService.updateUser(userDTO);
-        } catch (UserAlreadyExistsException e) {
-            return new ResponseModel<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-        }
+    @Autowired
+    private ImageValidateService imageValidateService;
 
-        return new ResponseModel<>(HttpStatus.OK.value(), "User saved", savedUser);
+    @PutMapping("/update")
+    public ResponseEntity<UserDTO> updateUser(
+            @RequestParam Integer id,
+            @RequestParam(required = false) MultipartFile profileImage,
+            @RequestParam(required = false) MultipartFile gcashQRcode,
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam String username,
+            @RequestParam String email,
+            @RequestParam String role,
+            @RequestParam String password,
+            @RequestParam String phone,
+            @RequestParam(required = false) LocalDate birthday,
+            @RequestParam(required = false) String junkshopName) {
+
+        try {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(id);
+            userDTO.setFirstName(firstName);
+            userDTO.setLastName(lastName);
+            userDTO.setUsername(username);
+            userDTO.setEmail(email);
+            userDTO.setRole(role);
+            userDTO.setPassword(password);
+            userDTO.setPhone(phone);
+            userDTO.setBirthday(birthday);
+            userDTO.setJunkshopName(junkshopName);
+
+            if (profileImage != null && !profileImage.isEmpty()) {
+                imageValidateService.validateImageFile(profileImage);
+                userDTO.setProfileImage(profileImage.getBytes());
+            }
+            if (gcashQRcode != null && !gcashQRcode.isEmpty()) {
+                imageValidateService.validateImageFile(gcashQRcode);
+                userDTO.setGcashQRcode(gcashQRcode.getBytes());
+            }
+
+            UserDTO updatedUser = userService.updateUser(userDTO);
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
+
 
     @GetMapping("/seller/by-username/{username}")
     public ResponseModel<Integer> getSellerIdByUsername(@PathVariable String username) {
@@ -57,15 +99,31 @@ public class UserController {
 
     @PostMapping("/addID")
     public ResponseModel<UserIDDTO> addUserID(@RequestBody UserIDDTO idDTO) {
-        // UserIDDTO addedID;
         try {
+            // Delegate to the service layer
             userService.addUserIDDetails(idDTO);
+            return new ResponseModel<>(HttpStatus.OK.value(), "User ID saved successfully", idDTO);
+        } catch (IllegalArgumentException e) {
+            return new ResponseModel<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            return new ResponseModel<>(HttpStatus.NOT_FOUND.value(), e.getMessage());
         } catch (RuntimeException e) {
-            return new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "An error occurred while saving the user ID: " + e.getMessage());
         }
+    }
+    
 
-        return new ResponseModel<>(HttpStatus.OK.value(), "User saved", idDTO);
 
+    @GetMapping("/profile-image/{username}")
+    public ResponseEntity<String> getProfileImage(@PathVariable String username) {
+        byte[] image = userService.getProfileImageByUsername(username);
+        if (image != null) {
+            String base64Image = Base64.getEncoder().encodeToString(image);
+            return ResponseEntity.ok(base64Image);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @GetMapping("/{id}/penalty-points")
@@ -89,4 +147,5 @@ public class UserController {
         Map<String, List<?>> combinedReports = userService.getUserAndListingReports(userId);
         return ResponseEntity.ok(combinedReports);
     }
+
 }

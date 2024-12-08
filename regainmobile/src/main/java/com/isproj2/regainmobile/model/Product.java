@@ -1,7 +1,6 @@
 package com.isproj2.regainmobile.model;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.Collection;
 import com.isproj2.regainmobile.dto.ProductDTO;
 
@@ -13,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -62,8 +62,9 @@ public class Product {
     @Column(name = "price", columnDefinition = "Decimal(19,2)")
     private BigDecimal price;
 
-    @Column(name = "image")
-    private String imagePath;
+    @Lob
+    @Column(name = "image", columnDefinition = "LONGBLOB")
+    private byte[] image;
 
     @lombok.NonNull
     @Column(name = "can_deliver", columnDefinition = "tinyint(1) default '0'")
@@ -90,7 +91,6 @@ public class Product {
         this.location = location;
         this.category = category;
         this.price = new BigDecimal(productDTO.getPrice());
-        // this.image = productDTO.getImage();
         this.canDeliver = productDTO.getCanDeliver();
     }
 }

@@ -1,5 +1,6 @@
 package com.isproj2.regainmobile.services.impl;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.isproj2.regainmobile.dto.ListingReportDTO;
 import com.isproj2.regainmobile.dto.UserDTO;
 import com.isproj2.regainmobile.dto.UserIDDTO;
 import com.isproj2.regainmobile.dto.UserReportDTO;
 import com.isproj2.regainmobile.exceptions.AuthenticationException;
+import com.isproj2.regainmobile.exceptions.ImageValidateService;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.exceptions.UserAccountNotActiveException;
 import com.isproj2.regainmobile.exceptions.UserAlreadyExistsException;
@@ -46,6 +49,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ImageValidateService validationService;
 
     @Override
     public void addUser(UserDTO userDTO) {
@@ -102,38 +108,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(UserDTO userDTO) {
-
-        // String errorMessage = "Username or Contact Number already exists";
-
+        // Fetch the existing user
         User user = _userRepository.findById(userDTO.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " + userDTO.getId()));
-
+    
+        // Retrieve the current role
         Role role = _roleRepository.findByName(user.getRole().getName());
-        // .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " +
-        // userDTO.getRole()));
-
-        // boolean usernameAlreadyExists =
-        // _userRepository.existsByUsername(userDTO.getUsername());
-        // boolean contactNumberAlreadyExists =
-        // _userRepository.existsByContactNumber(userDTO.getContactNumber());
-
-        // if (usernameAlreadyExists &&
-        // !(user.getUsername().equals(userDTO.getUsername()))) {
-        // throw new ValidationException(errorMessage);
-        // } else if (contactNumberAlreadyExists
-        // && !(user.getContactNumber().equals(userDTO.getContactNumber()))) {
-        // throw new ValidationException(errorMessage);
-        // }
-
-        User updatedUser = new User(userDTO, role);
-        return new UserDTO(_userRepository.save(updatedUser));
+    
+        // Update user details
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword()); // Ideally, hash the password
+        user.setPhone(userDTO.getPhone());
+        user.setBirthday(userDTO.getBirthday());
+        user.setJunkshopName(userDTO.getJunkshopName());
+        user.setRole(role);
+    
+        // Update images if provided
+        if (userDTO.getProfileImage() != null) {
+            user.setProfileImage(userDTO.getProfileImage());
+        }
+        if (userDTO.getGcashQRcode() != null) {
+            user.setGcashQr(userDTO.getGcashQRcode());
+        }
+    
+        // Save and return updated user
+        return new UserDTO(_userRepository.save(user));
     }
-    // @Override
-    // public UserDTO getUserById(Integer userId) {
-    // Optional<User> user = _userRepository.findById(userId);
-    // return user.orElseThrow(() -> new IllegalArgumentException("User not
-    // found"));
-    // }
+    
 
     @Override
     public String getUsernameById(Integer userId) {
@@ -157,21 +161,53 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUserIDDetails(UserIDDTO userID) {
-
+    
         User foundUser = _userRepository.findByUsername(userID.getUser().getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User not found with username " + userID.getUser().getUsername()));
-
+    
         User updatedUser = new User(userID.getUser(), foundUser.getRole());
         updatedUser.setUserID(foundUser.getUserID());
         updatedUser.setAccountStatus(foundUser.getAccountStatus());
         _userRepository.save(updatedUser);
-
+    
+        // Decode Base64 string to byte[]
+        byte[] idImageBytes = userID.getIdImageBytes();
+        if (idImageBytes == null) {
+            throw new IllegalArgumentException("ID image cannot be null");
+        }
+    
         UserID newID = new UserID(updatedUser, userID);
+        newID.setIdImage(idImageBytes);
         _IdRepository.save(newID);
-
+    
         return;
     }
+    
+
+    @Override
+    public byte[] getProfileImageByUsername(String username) {
+        User user = _userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        return user.getProfileImage();
+    }
+    // @Override
+    // public void uploadProfileImage(MultipartFile file, Integer userId) throws IOException {
+    //     validationService.validateImageFile(file);
+
+    //     User user = _userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    //     user.setProfileImage(file.getBytes());
+    //     _userRepository.save(user);
+    // }
+
+    // @Override
+    // public void uploadGCashQR(MultipartFile file, Integer userId) throws IOException {
+    //     validationService.validateImageFile(file);
+
+    //     User user = _userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    //     user.setGcashQr(file.getBytes());
+    //     _userRepository.save(user);
+    // }
 
     @Override
     public int getPenaltyPointsByUserId(Integer userId) {

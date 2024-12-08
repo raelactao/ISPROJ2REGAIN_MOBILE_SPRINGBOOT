@@ -1,5 +1,8 @@
 package com.isproj2.regainmobile.services;
 
+import java.io.IOException;
+
+import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +26,11 @@ public interface UserService {
 
     void addUserIDDetails(UserIDDTO userID);
 
+    byte[] getProfileImageByUsername(String username);
+
+    // void uploadProfileImage(MultipartFile file, Integer userId) throws IOException;
+
+    // void uploadGCashQR(MultipartFile file, Integer userId) throws IOException;
     int getPenaltyPointsByUserId(Integer userId);
 
     Map<String, List<?>> getUserAndListingReports(Integer userId);
