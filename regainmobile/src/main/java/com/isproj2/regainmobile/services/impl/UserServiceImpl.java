@@ -33,8 +33,6 @@ import com.isproj2.regainmobile.repo.UserReportRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.UserService;
 
-import jakarta.validation.ValidationException;
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -66,6 +64,7 @@ public class UserServiceImpl implements UserService {
         // userDTO.getRole()));
 
         User user = new User(userDTO, role);
+        user.setAccountStatus("Pending");
         user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Hash the password
         _userRepository.save(user);
 
@@ -75,26 +74,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO login(UserDTO userDTO) {
 
-        // String errorMessage = "User does not exist";
-
         User user = _userRepository.findByUsername(userDTO.getUsername().trim())
                 .orElseThrow(() -> new AuthenticationException());
 
         Role role = _roleRepository.findByName(user.getRole().getName());
 
-        // if (user.getPassword().matches(userDTO.getPassword()) && user.getAccountStatus().equals("Active")) {
-        //     UserDTO loginUser = new UserDTO(user);
-        //     loginUser.setRole(role.getName());
-        //     return loginUser;
+        // if (user.getPassword().matches(userDTO.getPassword()) &&
+        // user.getAccountStatus().equals("Active")) {
+        // UserDTO loginUser = new UserDTO(user);
+        // loginUser.setRole(role.getName());
+        // return loginUser;
         // } else if (user.getPassword().matches(userDTO.getPassword())
-        //         && user.getAccountStatus().equals("Pending")) {
-        //     throw new UserAccountNotActiveException();
+        // && user.getAccountStatus().equals("Pending")) {
+        // throw new UserAccountNotActiveException();
         // } else {
-        //     throw new AuthenticationException();
+        // throw new AuthenticationException();
         // }
 
         if (passwordEncoder.matches(userDTO.getPassword(), user.getPassword()) // Match hashed password
-            && "Active".equals(user.getAccountStatus())) {
+                && "Active".equals(user.getAccountStatus())) {
             UserDTO loginUser = new UserDTO(user);
             loginUser.setRole(user.getRole().getName());
             return loginUser;
@@ -114,6 +112,21 @@ public class UserServiceImpl implements UserService {
     
         // Retrieve the current role
         Role role = _roleRepository.findByName(user.getRole().getName());
+
+        // .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " +
+        // userDTO.getRole()));
+
+        //User updatedUser = new User(userDTO, role);
+
+        //String dtoEncoded;
+        //if (userDTO.getPassword() != null || !userDTO.getPassword().isEmpty()) {
+        //    dtoEncoded = passwordEncoder.encode(userDTO.getPassword());
+        //} else {
+        //    dtoEncoded = user.getPassword();
+        //}
+        //updatedUser.setPassword(dtoEncoded);
+
+        //return new UserDTO(_userRepository.save(updatedUser));
     
         // Update user details
         user.setFirstName(userDTO.getFirstName());
@@ -165,6 +178,23 @@ public class UserServiceImpl implements UserService {
         User foundUser = _userRepository.findByUsername(userID.getUser().getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User not found with username " + userID.getUser().getUsername()));
+
+        //branch securityRoles
+        // String dtoPassword = passwordEncoder.encode(userID.getUser().getPassword());
+
+        if (passwordEncoder.matches(userID.getUser().getPassword(), foundUser.getPassword())) {
+            User updatedUser = new User(userID.getUser(), foundUser.getRole());
+            String dtoEncoded = passwordEncoder.encode(userID.getUser().getPassword());
+            updatedUser.setPassword(dtoEncoded);
+            updatedUser.setUserID(foundUser.getUserID());
+            updatedUser.setAccountStatus(foundUser.getAccountStatus());
+            _userRepository.save(updatedUser);
+
+            UserID newID = new UserID(updatedUser, userID);
+            _IdRepository.save(newID);
+        } else {
+            throw new AuthenticationException();
+        }
     
         User updatedUser = new User(userID.getUser(), foundUser.getRole());
         updatedUser.setUserID(foundUser.getUserID());
@@ -180,7 +210,8 @@ public class UserServiceImpl implements UserService {
         UserID newID = new UserID(updatedUser, userID);
         newID.setIdImage(idImageBytes);
         _IdRepository.save(newID);
-    
+
+        //main
         return;
     }
     

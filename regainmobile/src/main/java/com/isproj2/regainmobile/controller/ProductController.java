@@ -2,6 +2,7 @@ package com.isproj2.regainmobile.controller;
 
 import java.util.List;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.isproj2.regainmobile.dto.ProductDTO;
 import com.isproj2.regainmobile.dto.ViewProductDTO;
+import com.isproj2.regainmobile.model.ResponseModel;
 import com.isproj2.regainmobile.exceptions.ImageValidateService;
 import com.isproj2.regainmobile.services.ProductService;
 
@@ -130,9 +132,9 @@ public ResponseEntity<?> createProduct(
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable("id") Integer productId) {
+    public ResponseModel<Void> deleteProduct(@PathVariable("id") Integer productId) {
         productService.deleteProduct(productId);
-        return ResponseEntity.noContent().build();
+        return new ResponseModel<>(HttpStatus.OK.value(), "Product deleted");
     }
 
     @GetMapping("/{id}")
@@ -141,11 +143,11 @@ public ResponseEntity<?> createProduct(
         return ResponseEntity.ok(productDTO);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        List<ProductDTO> products = productService.getAllProducts();
-        return ResponseEntity.ok(products);
-    }
+    // @GetMapping("/list")
+    // public ResponseEntity<List<ProductDTO>> getAllProducts() {
+    // List<ProductDTO> products = productService.getAllProducts();
+    // return ResponseEntity.ok(products);
+    // }
 
     @GetMapping("/list/{id}")
     public ResponseEntity<List<ProductDTO>> getAllProductsByUser(@PathVariable("id") Integer userId) {
@@ -159,12 +161,15 @@ public ResponseEntity<?> createProduct(
     // return ResponseEntity.ok(products);
     // }
 
+    // to get viewproducts by id user
     @GetMapping("/userviewlist/{id}")
     public ResponseEntity<List<ViewProductDTO>> getViewProductsByUser(@PathVariable("id") Integer userId) {
         List<ViewProductDTO> products = productService.getViewProductsByUser(userId);
         return ResponseEntity.ok(products);
     }
 
+    // get ALL viewproducts with favorites of id user
+    // (ALL products and displays whether favorited)
     @GetMapping("/viewlist/{id}")
     public ResponseEntity<List<ViewProductDTO>> getAllProductsByUserFavorites(@PathVariable("id") Integer userId) {
         List<ViewProductDTO> productsWithFavorites = productService.getViewProducts(userId);

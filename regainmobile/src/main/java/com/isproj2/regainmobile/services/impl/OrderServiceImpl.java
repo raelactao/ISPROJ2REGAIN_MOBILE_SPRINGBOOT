@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.isproj2.regainmobile.dto.AddressDTO;
 import com.isproj2.regainmobile.dto.OrderDTO;
+import com.isproj2.regainmobile.dto.OrderLogDTO;
 import com.isproj2.regainmobile.dto.PaymentDTO;
 import com.isproj2.regainmobile.dto.ViewOfferDTO;
 import com.isproj2.regainmobile.dto.ViewProductDTO;
@@ -54,8 +55,8 @@ public class OrderServiceImpl implements OrderService {
         @Autowired
         private PaymentRepository paymentRepository;
 
-        @Autowired
-        private OfferRepository offerRepository;
+        // @Autowired
+        // private OfferRepository offerRepository;
 
         @Override
         @Transactional
@@ -92,6 +93,8 @@ public class OrderServiceImpl implements OrderService {
                 Order order = new Order(orderDTO, buyer, address, product, payment);
                 order.setOrderDate(Date.valueOf(LocalDate.now())); // Set current timestamp for order date
                 orderRepository.save(order);
+                product.setStatus("Ordered");
+                productRepository.save(product);
 
                 return orderDTO;
         }
@@ -124,6 +127,35 @@ public class OrderServiceImpl implements OrderService {
 
                 return convertToOrderDTO(order);
 
+        }
+
+        @Override
+        @Transactional
+        public OrderDTO updateOrderStatus(OrderDTO orderDTO, Integer updatedByUserID) {
+                Order order = orderRepository.findById(orderDTO.getOrderID())
+                                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+                User updatedByUser = userRepository.findById(updatedByUserID)
+                                .orElseThrow(() -> new RuntimeException("User not found"));
+
+                // Log the previous status
+                String prevStatus = order.getCurrentStatus();
+
+                // Update current status
+                order.setCurrentStatus(orderDTO.getCurrentStatus());
+                Order updatedOrder = orderRepository.save(order);
+
+                // Create and save the OrderLog
+                OrderLog orderLog = new OrderLog();
+                orderLog.setOrder(order);
+                orderLog.setPrevStatus(prevStatus);
+                orderLog.setDeliveryDate(order.getDeliveryDate());
+                orderLog.setUpdatedByUser(updatedByUser);
+                orderLog.setTimeStamp(LocalDateTime.now());
+
+                orderLogRepository.save(orderLog);
+
+                return convertToOrderDTO(updatedOrder);
         }
 
         private OrderDTO convertToOrderDTO(Order order) {
@@ -168,6 +200,26 @@ public class OrderServiceImpl implements OrderService {
                                 .collect(Collectors.toList());
         }
 
+        @Override
+        public List<OrderLogDTO> getOrderLogsByOrderId(Integer orderId) {
+                List<OrderLog> orderLogs = orderLogRepository.findByOrderOrderID(orderId);
+                return orderLogs.stream()
+                                .map(this::convertTLogDTO)
+                                .collect(Collectors.toList());
+        }
+
+        private OrderLogDTO convertTLogDTO(OrderLog log) {
+                OrderLogDTO dto = new OrderLogDTO();
+                dto.setTrackingID(log.getTrackingID());
+                dto.setOrderID(log.getOrder().getOrderID());
+                dto.setDeliveryDate(log.getDeliveryDate());
+                dto.setPrevStatus(log.getPrevStatus());
+                dto.setUpdatedByUserID(log.getUpdatedByUser().getUserID());
+                dto.setTimeStamp(log.getTimeStamp());
+
+                return dto;
+        }
+
         private OrderDTO convertToDTO(Order order) {
                 OrderDTO orderDTO = new OrderDTO();
                 orderDTO.setOrderID(order.getOrderID());
@@ -186,53 +238,59 @@ public class OrderServiceImpl implements OrderService {
                 return orderDTO;
         }
 
-        @Override
-        public List<OrderDTO> getOrdersByDeliveryBuyer(String deliveryMethod, Integer userId) {
+        // @Override
+        // public List<OrderDTO> getOrdersByDeliveryBuyer(String deliveryMethod, Integer
+        // userId) {
 
-                Boolean verified = false;
+        // Boolean verified = false;
 
-                // if (deliveryMethod == ("Seller Drop-off") || deliveryMethod == ("Buyer
-                // Pick-up")) {
-                // verified = true;
-                // }
+        // // if (deliveryMethod == ("Seller Drop-off") || deliveryMethod == ("Buyer
+        // // Pick-up")) {
+        // // verified = true;
+        // // }
 
-                User buyer = userRepository.findById(userId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Buyer not found with id " + userId));
-                List<Order> orderList = orderRepository.findByBuyer(buyer);
-                List<OrderDTO> dtoList = new ArrayList<OrderDTO>();
+        // User buyer = userRepository.findById(userId)
+        // .orElseThrow(() -> new ResourceNotFoundException("Buyer not found with id " +
+        // userId));
+        // List<Order> orderList = orderRepository.findByBuyer(buyer);
+        // List<OrderDTO> dtoList = new ArrayList<OrderDTO>();
 
-                for (Order order : orderList) {
-                        if (order.getDeliveryMethod().equals(deliveryMethod)) {
-                                dtoList.add(new OrderDTO(order));
-                        }
+        // for (Order order : orderList) {
+        // if (order.getDeliveryMethod().equals(deliveryMethod)) {
+        // dtoList.add(new OrderDTO(order));
+        // }
 
-                }
+        // }
 
-                return dtoList;
+        // return dtoList;
 
-        }
+        // }
 
-        @Override
-        public List<OrderDTO> getOrdersByDeliverySeller(String deliveryMethod, Integer userId) {
-                Boolean verified = false;
+        // @Override
+        // public List<OrderDTO> getOrdersByDeliverySeller(String deliveryMethod,
+        // Integer userId) {
+        // Boolean verified = false;
 
-                // if (deliveryMethod.equals("Seller Drop-off") || deliveryMethod.equals("Buyer
-                // Pick-up")) {
-                // verified = true;
-                // }
+        // // if (deliveryMethod.equals("Seller Drop-off") ||
+        // deliveryMethod.equals("Buyer
+        // // Pick-up")) {
+        // // verified = true;
+        // // }
 
-                User seller = userRepository.findById(userId)
-                                .orElseThrow(() -> new ResourceNotFoundException("Buyer not found with id " + userId));
-                List<Order> orderList = orderRepository.findByProductSellerUserID(seller.getUserID());
-                List<OrderDTO> dtoList = new ArrayList<OrderDTO>();
+        // User seller = userRepository.findById(userId)
+        // .orElseThrow(() -> new ResourceNotFoundException("Buyer not found with id " +
+        // userId));
+        // List<Order> orderList =
+        // orderRepository.findByProductSellerUserID(seller.getUserID());
+        // List<OrderDTO> dtoList = new ArrayList<OrderDTO>();
 
-                for (Order order : orderList) {
-                        if (order.getDeliveryMethod().equals(deliveryMethod)) {
-                                dtoList.add(new OrderDTO(order));
-                        }
+        // for (Order order : orderList) {
+        // if (order.getDeliveryMethod().equals(deliveryMethod)) {
+        // dtoList.add(new OrderDTO(order));
+        // }
 
-                }
+        // }
 
-                return dtoList;
-        }
+        // return dtoList;
+        // }
 }

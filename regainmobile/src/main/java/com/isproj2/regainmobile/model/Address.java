@@ -2,9 +2,11 @@ package com.isproj2.regainmobile.model;
 
 import java.util.Collection;
 
+import com.isproj2.regainmobile.config.EncryptionUtil;
 import com.isproj2.regainmobile.dto.AddressDTO;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,25 +36,31 @@ public class Address {
     @Column(name = "address_id")
     private Integer addressID;
 
+    @Convert(converter = EncryptionUtil.class)
     @Column(name = "unit_number", nullable = true)
     private String unitNumber;
 
+    @Convert(converter = EncryptionUtil.class)
     @lombok.NonNull
     @Column(name = "street")
     private String street;
 
+    @Convert(converter = EncryptionUtil.class)
     @lombok.NonNull
     @Column(name = "barangay")
     private String barangay;
 
+    @Convert(converter = EncryptionUtil.class)
     @lombok.NonNull
     @Column(name = "city")
     private String city;
 
+    @Convert(converter = EncryptionUtil.class)
     @lombok.NonNull
     @Column(name = "province")
     private String province;
 
+    @Convert(converter = EncryptionUtil.class)
     @lombok.NonNull
     @Column(name = "zip_code")
     private String zipCode;

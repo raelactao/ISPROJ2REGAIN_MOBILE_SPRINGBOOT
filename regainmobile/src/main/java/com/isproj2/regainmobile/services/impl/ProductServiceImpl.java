@@ -61,9 +61,10 @@ public class ProductServiceImpl implements ProductService {
 
                 Address loc = addressRepository.findById(productDTO.getLocation())
                                 .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Category not found with id " + productDTO.getCategoryID()));
+                                                "Address not found with id " + productDTO.getLocation()));
 
                 Product product = new Product(productDTO, seller, loc, categ);
+                product.setStatus("Pending");
 
                 if (productDTO.getImage() != null) {
                         product.setImage(productDTO.getImage());
@@ -126,7 +127,8 @@ public class ProductServiceImpl implements ProductService {
                                 product.getDescription(), product.getWeight().toString(),
                                 product.getLocation().getAddressID(),
                                 product.getCategory().getCategoryID(),
-                                product.getPrice().toString(), product.getImage(), product.getCanDeliver());
+                                product.getPrice().toString(), product.getCanDeliver(),
+                                product.getStatus(),product.getImage());
         }
 
         // @Override
@@ -143,7 +145,8 @@ public class ProductServiceImpl implements ProductService {
                                                 product.getWeight().toString(),
                                                 product.getLocation().getAddressID(),
                                                 product.getCategory().getCategoryID(), product.getPrice().toString(),
-                                                product.getImage(), product.getCanDeliver()))
+                                                product.getCanDeliver(), product.getStatus()
+                                                product.getImage()))
                                 .collect(Collectors.toList());
         }
 
@@ -170,7 +173,7 @@ public class ProductServiceImpl implements ProductService {
                 // favorited the product
                 List<ViewProductDTO> viewProducts = new ArrayList<ViewProductDTO>();
 
-                List<Product> products = productRepository.findAll();
+                List<Product> products = productRepository.findByStatus("Active");
                 Collections.reverse(products);
                 List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
 

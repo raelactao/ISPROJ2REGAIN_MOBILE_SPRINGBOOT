@@ -3,6 +3,7 @@ package com.isproj2.regainmobile.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.OfferDTO;
 import com.isproj2.regainmobile.dto.ViewOfferDTO;
+import com.isproj2.regainmobile.model.ResponseModel;
 import com.isproj2.regainmobile.services.OfferService;
 
 @RestController
@@ -31,46 +33,50 @@ public class OfferController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ViewOfferDTO> updateOffer(@PathVariable("id") Integer offerId, @RequestBody ViewOfferDTO offerDTO) {
+    public ResponseEntity<ViewOfferDTO> updateOffer(@PathVariable("id") Integer offerId,
+            @RequestBody ViewOfferDTO offerDTO) {
         ViewOfferDTO updatedOffer = offerService.updateOffer(offerId, offerDTO);
         return ResponseEntity.ok(updatedOffer);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOffer(@PathVariable("id") Integer offerId) {
+    public ResponseModel<Void> deleteOffer(@PathVariable("id") Integer offerId) {
         offerService.deleteOffer(offerId);
-        return ResponseEntity.noContent().build();
+        return new ResponseModel<>(HttpStatus.OK.value(), "Offer deleted");
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<OfferDTO> getOfferById(@PathVariable("id") Integer offerId) {
-        OfferDTO offerDTO = offerService.getOfferById(offerId);
-        return ResponseEntity.ok(offerDTO);
-    }
+    // @GetMapping("/{id}")
+    // public ResponseEntity<OfferDTO> getOfferById(@PathVariable("id") Integer
+    // offerId) {
+    // OfferDTO offerDTO = offerService.getOfferById(offerId);
+    // return ResponseEntity.ok(offerDTO);
+    // }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<OfferDTO>> getAllOffers() {
-        List<OfferDTO> offers = offerService.getAllOffers();
-        return ResponseEntity.ok(offers);
-    }
+    // @GetMapping("/all")
+    // public ResponseEntity<List<OfferDTO>> getAllOffers() {
+    // List<OfferDTO> offers = offerService.getAllOffers();
+    // return ResponseEntity.ok(offers);
+    // }
 
-    @GetMapping("/buyer/{buyerId}")
-    public ResponseEntity<List<OfferDTO>> getOffersByBuyer(@PathVariable Integer buyerId) {
-        List<OfferDTO> offers = offerService.getOffersByBuyer(buyerId);
-        return ResponseEntity.ok(offers);
-    }
+    // @GetMapping("/buyer/{buyerId}")
+    // public ResponseEntity<List<OfferDTO>> getOffersByBuyer(@PathVariable Integer
+    // buyerId) {
+    // List<OfferDTO> offers = offerService.getOffersByBuyer(buyerId);
+    // return ResponseEntity.ok(offers);
+    // }
 
-    @GetMapping("/seller/{sellerId}")
-    public ResponseEntity<List<OfferDTO>> getOffersBySeller(@PathVariable Integer sellerId) {
-        List<OfferDTO> offers = offerService.getOffersBySeller(sellerId);
-        return ResponseEntity.ok(offers);
-    }
+    // @GetMapping("/seller/{sellerId}")
+    // public ResponseEntity<List<OfferDTO>> getOffersBySeller(@PathVariable Integer
+    // sellerId) {
+    // List<OfferDTO> offers = offerService.getOffersBySeller(sellerId);
+    // return ResponseEntity.ok(offers);
+    // }
 
-    @GetMapping("/viewalloffers")
-    public ResponseEntity<List<ViewOfferDTO>> getAllViewOffers() {
-        List<ViewOfferDTO> viewOffers = offerService.getAllViewOffers();
-        return ResponseEntity.ok(viewOffers);
-    }
+    // @GetMapping("/viewalloffers")
+    // public ResponseEntity<List<ViewOfferDTO>> getAllViewOffers() {
+    // List<ViewOfferDTO> viewOffers = offerService.getAllViewOffers();
+    // return ResponseEntity.ok(viewOffers);
+    // }
 
     @GetMapping("/buyer/{buyerId}/viewoffers")
     public ResponseEntity<List<ViewOfferDTO>> getViewOffersByBuyer(@PathVariable Integer buyerId) {

@@ -38,14 +38,17 @@ public class ViewProductDTO {
 
     private Boolean isFavorite; // favorite
 
+    private String status;
+
     private String image;
+
 
     public ViewProductDTO(Integer productID, @NonNull String productName,
             @NonNull String city,
             @NonNull BigDecimal price, @NonNull String username,
             String description,
             @NonNull Double weight,
-            String name, @NonNull Boolean canDeliver, @NonNull Boolean isFavorite) {
+            String name, @NonNull Boolean canDeliver, @NonNull Boolean isFavorite, String status) {
         this.productID = productID;
         this.productName = productName;
         this.location = city;
@@ -56,6 +59,7 @@ public class ViewProductDTO {
         this.category = name;
         this.canDeliver = canDeliver;
         this.isFavorite = isFavorite;
+        this.status = status;
     }
 
     public ViewProductDTO(Product product, Boolean fave) {
@@ -69,6 +73,7 @@ public class ViewProductDTO {
         this.category = product.getCategory().getName();
         this.canDeliver = product.getCanDeliver();
         this.isFavorite = fave;
+        this.status = product.getStatus();
         // Convert the image bytes to a Base64-encoded string
         if (product.getImage() != null) {
             this.image = Base64.getEncoder().encodeToString(product.getImage());

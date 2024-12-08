@@ -70,6 +70,9 @@ public class Product {
     @Column(name = "can_deliver", columnDefinition = "tinyint(1) default '0'")
     private Boolean canDeliver;
 
+    @Column(name = "status", length = 20)
+    private String status;
+
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Collection<Favorite> favorite;
 
