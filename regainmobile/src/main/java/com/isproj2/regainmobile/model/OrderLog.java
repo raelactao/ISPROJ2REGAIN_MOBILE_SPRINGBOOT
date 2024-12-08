@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -32,7 +33,7 @@ public class OrderLog {
     private Integer trackingID;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id", unique = true)
+    @JoinColumn(name = "order_id", referencedColumnName = "order_id", unique = false)
     private Order order;
 
     @lombok.NonNull

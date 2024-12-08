@@ -22,9 +22,9 @@ public class OrderLogDTO {
 
     @lombok.NonNull
     private String prevStatus;
-    
-    private Integer updatedByUserID; 
-    
+
+    private Integer updatedByUserID;
+
     @lombok.NonNull
     private LocalDateTime timeStamp;
 }

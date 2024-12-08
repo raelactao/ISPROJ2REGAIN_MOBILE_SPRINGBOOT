@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.OrderDTO;
+import com.isproj2.regainmobile.dto.OrderLogDTO;
 import com.isproj2.regainmobile.dto.OrderStatusUpdateRequest;
 import com.isproj2.regainmobile.services.OrderService;
 
@@ -30,13 +31,11 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }
 
-    @PutMapping("/{orderID}/status")
+    @PutMapping("/update/{userId}")
     public ResponseEntity<OrderDTO> updateOrderStatus(
-            @PathVariable Integer orderID,
-            @RequestBody OrderStatusUpdateRequest request) {
+            @RequestBody OrderDTO orderDTO, @PathVariable Integer userId) {
 
-        OrderDTO updatedOrderDTO = orderService.updateOrderStatus(orderID, request.getNewStatus(),
-                request.getUpdatedByUserID());
+        OrderDTO updatedOrderDTO = orderService.updateOrderStatus(orderDTO, userId);
         return ResponseEntity.ok(updatedOrderDTO);
     }
 
@@ -46,17 +45,21 @@ public class OrderController {
         return ResponseEntity.ok(orderDTO);
     }
 
-    @GetMapping("/buyer/{buyerId}/{deliveryMethod}")
-    public ResponseEntity<List<OrderDTO>> getOrdersByBuyer(@PathVariable String deliveryMethod,
-            @PathVariable Integer buyerId) {
-        List<OrderDTO> orders = orderService.getOrdersByDeliveryBuyer(deliveryMethod, buyerId);
+    @GetMapping("/buyer/{buyerId}")
+    public ResponseEntity<List<OrderDTO>> getOrdersByBuyer(@PathVariable Integer buyerId) {
+        List<OrderDTO> orders = orderService.getOrdersByBuyer(buyerId);
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/seller/{sellerId}/{deliveryMethod}")
-    public ResponseEntity<List<OrderDTO>> getOrdersBySeller(@PathVariable String deliveryMethod,
-            @PathVariable Integer sellerId) {
-        List<OrderDTO> orders = orderService.getOrdersByDeliverySeller(deliveryMethod, sellerId);
+    @GetMapping("/logs/{orderId}")
+    public ResponseEntity<List<OrderLogDTO>> getOrderLogsByOrder(@PathVariable Integer orderId) {
+        List<OrderLogDTO> orders = orderService.getOrderLogsByOrderId(orderId);
+        return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<List<OrderDTO>> getOrdersBySeller(@PathVariable Integer sellerId) {
+        List<OrderDTO> orders = orderService.getOrdersBySeller(sellerId);
         return ResponseEntity.ok(orders);
     }
 }
