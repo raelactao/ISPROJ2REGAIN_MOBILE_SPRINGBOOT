@@ -1,5 +1,6 @@
 package com.isproj2.regainmobile.model;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -41,18 +42,18 @@ public class ChatMessage {
     private String content;
 
     @Column(name = "timestamp")
-    private LocalDateTime timestamp;
+    private Instant timestamp;
 
     @ManyToOne
     @JoinColumn(name = "room_id", referencedColumnName = "room_id", nullable = false)
     @JsonBackReference
     private ChatRoom roomId; 
 
-    public ChatMessage(User sender, User receiver, String content, ChatRoom roomId, LocalDateTime timestamp) {
+    public ChatMessage(User sender, User receiver, String content, ChatRoom roomId, Instant timestamp) {
         this.sender = sender;
         this.receiver = receiver;
         this.content = content;
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = timestamp != null ? timestamp : Instant.now();
         this.roomId = roomId;
     }
 
