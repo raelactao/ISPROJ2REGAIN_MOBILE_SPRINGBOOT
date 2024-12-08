@@ -57,7 +57,7 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public List<RatingDTO> getRatingsByUserId(Integer userId) {
-        List<Ratings> ratings = ratingRepository.findByRatedUserID_Id(userId);
+        List<Ratings> ratings = ratingRepository.findByRatedUserID_UserID(userId);
         return ratings.stream().map(RatingDTO::new).collect(Collectors.toList());
     }
 

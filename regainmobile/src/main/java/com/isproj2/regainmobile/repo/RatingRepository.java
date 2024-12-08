@@ -9,5 +9,5 @@ import com.isproj2.regainmobile.model.Ratings;
 
 @Repository
 public interface RatingRepository extends JpaRepository<Ratings, Integer> {
-    List<Ratings> findByRatedUserID_Id(Integer ratedUserId);
+    List<Ratings> findByRatedUserID_UserID(Integer ratedUserId);
 }
