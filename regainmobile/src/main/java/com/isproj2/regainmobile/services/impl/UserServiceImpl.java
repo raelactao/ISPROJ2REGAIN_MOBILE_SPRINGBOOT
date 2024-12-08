@@ -285,4 +285,15 @@ public class UserServiceImpl implements UserService {
         return combinedReports;
     }
 
+    @Override
+    public UserDTO getUserById(Integer userId) {
+        // Fetch user from repository
+        User user = _userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " + userId));
+    
+        // Convert User entity to UserDTO
+        return new UserDTO(user);
+    }
+    
+
 }

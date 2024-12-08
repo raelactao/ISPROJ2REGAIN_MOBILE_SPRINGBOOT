@@ -35,5 +35,5 @@ public interface UserService {
 
     Map<String, List<?>> getUserAndListingReports(Integer userId);
 
-    // UserDTO getUserById(Integer userId);
+    UserDTO getUserById(Integer userId);
 }

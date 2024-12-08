@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,33 +42,40 @@ public class UserController {
     @Autowired
     private ImageValidateService imageValidateService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PutMapping("/update")
     public ResponseEntity<UserDTO> updateUser(
             @RequestParam Integer id,
             @RequestParam(required = false) MultipartFile profileImage,
             @RequestParam(required = false) MultipartFile gcashQRcode,
-            @RequestParam String firstName,
-            @RequestParam String lastName,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
             @RequestParam String username,
-            @RequestParam String email,
-            @RequestParam String role,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String role,
             @RequestParam String password,
-            @RequestParam String phone,
+            @RequestParam(required = false) String phone,
             @RequestParam(required = false) LocalDate birthday,
             @RequestParam(required = false) String junkshopName) {
 
         try {
-            UserDTO userDTO = new UserDTO();
-            userDTO.setId(id);
-            userDTO.setFirstName(firstName);
-            userDTO.setLastName(lastName);
-            userDTO.setUsername(username);
-            userDTO.setEmail(email);
-            userDTO.setRole(role);
-            userDTO.setPassword(password);
-            userDTO.setPhone(phone);
-            userDTO.setBirthday(birthday);
-            userDTO.setJunkshopName(junkshopName);
+
+            // Fetch the existing user
+            UserDTO userDTO = userService.getUserById(id);
+            // Update only the provided fields
+            if (firstName != null) userDTO.setFirstName(firstName);
+            if (lastName != null) userDTO.setLastName(lastName);
+            if (junkshopName != null) userDTO.setJunkshopName(junkshopName);
+            if (email != null) userDTO.setEmail(email);
+            if (role != null) userDTO.setRole(role);
+            // Handle password encoding
+            if (password != null && !password.isEmpty() && !passwordEncoder.matches(password, userDTO.getPassword())) {
+                userDTO.setPassword(passwordEncoder.encode(password));
+            }
+            if (phone != null) userDTO.setPhone(phone);
+            if (birthday != null) userDTO.setBirthday(birthday);
 
             if (profileImage != null && !profileImage.isEmpty()) {
                 imageValidateService.validateImageFile(profileImage);
