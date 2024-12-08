@@ -24,6 +24,8 @@ public interface UserService {
 
     void addUserIDDetails(UserIDDTO userID);
 
+    byte[] getProfileImageByUsername(String username);
+
     // void uploadProfileImage(MultipartFile file, Integer userId) throws IOException;
 
     // void uploadGCashQR(MultipartFile file, Integer userId) throws IOException;

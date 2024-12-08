@@ -1,6 +1,7 @@
 package com.isproj2.regainmobile.controller;
 
 import java.time.LocalDate;
+import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -111,15 +112,29 @@ public class UserController {
 
     @PostMapping("/addID")
     public ResponseModel<UserIDDTO> addUserID(@RequestBody UserIDDTO idDTO) {
-        // UserIDDTO addedID;
         try {
+            // Delegate to the service layer
             userService.addUserIDDetails(idDTO);
+            return new ResponseModel<>(HttpStatus.OK.value(), "User ID saved successfully", idDTO);
+        } catch (IllegalArgumentException e) {
+            return new ResponseModel<>(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        } catch (ResourceNotFoundException e) {
+            return new ResponseModel<>(HttpStatus.NOT_FOUND.value(), e.getMessage());
         } catch (RuntimeException e) {
-            return new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "An error occurred while saving the user ID: " + e.getMessage());
         }
-
-        return new ResponseModel<>(HttpStatus.OK.value(), "User saved", idDTO);
-
     }
+    
 
+    @GetMapping("/profile-image/{username}")
+    public ResponseEntity<String> getProfileImage(@PathVariable String username) {
+        byte[] image = userService.getProfileImageByUsername(username);
+        if (image != null) {
+            String base64Image = Base64.getEncoder().encodeToString(image);
+            return ResponseEntity.ok(base64Image);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
 }

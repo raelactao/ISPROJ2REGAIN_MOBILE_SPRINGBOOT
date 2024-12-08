@@ -43,7 +43,7 @@ public class UserID {
     private String idNumber;
 
     @Lob
-    @Column(name = "id_image")
+    @Column(name = "id_image", columnDefinition = "LONGBLOB")
     private byte [] idImage;
 
     public UserID(User user, UserIDDTO dto) {
@@ -51,6 +51,9 @@ public class UserID {
         this.user = user;
         this.idType = dto.getIdType();
         this.idNumber = dto.getIdNumber();
+        if (dto.getIdImage() != null && !dto.getIdImage().isEmpty()) {
+            this.idImage = dto.getIdImageBytes(); // Decode Base64 to byte[]
+        }
     }
 
 }

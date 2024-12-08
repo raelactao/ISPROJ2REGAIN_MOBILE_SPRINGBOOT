@@ -153,22 +153,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUserIDDetails(UserIDDTO userID) {
-
+    
         User foundUser = _userRepository.findByUsername(userID.getUser().getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User not found with username " + userID.getUser().getUsername()));
-
+    
         User updatedUser = new User(userID.getUser(), foundUser.getRole());
         updatedUser.setUserID(foundUser.getUserID());
         updatedUser.setAccountStatus(foundUser.getAccountStatus());
         _userRepository.save(updatedUser);
-
+    
+        // Decode Base64 string to byte[]
+        byte[] idImageBytes = userID.getIdImageBytes();
+        if (idImageBytes == null) {
+            throw new IllegalArgumentException("ID image cannot be null");
+        }
+    
         UserID newID = new UserID(updatedUser, userID);
+        newID.setIdImage(idImageBytes);
         _IdRepository.save(newID);
-
+    
         return;
     }
+    
 
+    @Override
+    public byte[] getProfileImageByUsername(String username) {
+        User user = _userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        return user.getProfileImage();
+    }
     // @Override
     // public void uploadProfileImage(MultipartFile file, Integer userId) throws IOException {
     //     validationService.validateImageFile(file);
