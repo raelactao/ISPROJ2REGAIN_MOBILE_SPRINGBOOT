@@ -23,8 +23,8 @@ public class RatingDTO {
     private LocalDateTime dateEdited;
 
     public RatingDTO(Ratings rating) {
-        this.ratedUserId = rating.getRatedUserID().getId();
-        this.ratedByUserId = rating.getRatedByUserID().getId();
+        this.ratedUserId = rating.getRatedUserID().getUserID();
+        this.ratedByUserId = rating.getRatedByUserID().getUserID();
         this.rateValue = rating.getRateValue();
         this.comments = rating.getComments();
         this.dateCreated = rating.getDateCreated();
