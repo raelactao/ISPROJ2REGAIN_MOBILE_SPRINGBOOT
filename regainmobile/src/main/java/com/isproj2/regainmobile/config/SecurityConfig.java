@@ -22,12 +22,7 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/api/register", "/api/login").permitAll()
-                                .requestMatchers("/api/user/update/{id}").permitAll()
-                                .requestMatchers("/api/password/**").permitAll()
-                                .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
+                .anyRequest().permitAll())
                 .build();
     }
 
