@@ -15,9 +15,9 @@ import com.isproj2.regainmobile.model.User;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     Optional<ChatRoom> findByRoomId(String roomId);
 
-    // Custom query to find chat room between two users in either order
-    @Query("SELECT c FROM ChatRoom c WHERE (c.user1 = ?1 AND c.user2 = ?2) OR (c.user1 = ?3 AND c.user2 = ?4)")
-    Optional<ChatRoom> findByUser1AndUser2OrUser2AndUser1(User user1, User user2, User user3, User user4);
+    @Query("SELECT c FROM ChatRoom c WHERE (c.user1 = :user1 AND c.user2 = :user2) OR (c.user1 = :user2 AND c.user2 = :user1)")
+    Optional<ChatRoom> findByUser1AndUser2OrUser2AndUser1(@Param("user1") User user1, @Param("user2") User user2);
+
 
     List<ChatRoom> findByUser1OrUser2(User user1, User user2);
 

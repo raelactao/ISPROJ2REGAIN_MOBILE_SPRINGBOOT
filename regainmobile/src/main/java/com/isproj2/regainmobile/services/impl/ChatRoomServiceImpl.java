@@ -35,11 +35,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             .orElseThrow(() -> new ResourceNotFoundException("User 1 not found"));
         User user2 = userRepository.findById(userId2)
             .orElseThrow(() -> new ResourceNotFoundException("User 2 not found"));
-
+    
+        // Check for existing ChatRoom in both directions
         return chatRoomRepository
-            .findByUser1AndUser2OrUser2AndUser1(user1, user2, user1, user2)
+            .findByUser1AndUser2OrUser2AndUser1(user1, user2)
             .orElseGet(() -> chatRoomRepository.save(new ChatRoom(user1, user2)));
     }
+    
 
     @Override
     public ChatRoom findByRoomId(String roomId) {

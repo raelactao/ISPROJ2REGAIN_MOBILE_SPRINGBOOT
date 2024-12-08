@@ -2,6 +2,9 @@ package com.isproj2.regainmobile.dto;
 
 import java.time.LocalDateTime;
 
+import com.isproj2.regainmobile.model.ListingReport;
+import com.isproj2.regainmobile.model.UserReport;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +24,6 @@ public class UserReportDTO {
 
     private Integer reasonCategoryID;
 
-    @lombok.NonNull
     private String reportReply;
 
     private String details;
@@ -30,5 +32,16 @@ public class UserReportDTO {
     private LocalDateTime timeStamp;
 
     @lombok.NonNull
-    private String userReportStatus;
+    private String userReportStatus = "Pending";
+
+    public UserReportDTO(UserReport userReport) {
+        this.userReportID = userReport.getUserReportID();
+        this.reporterID = userReport.getReporter().getUserID();
+        this.reportedUserID = userReport.getReportedUser().getUserID();
+        this.reasonCategoryID = userReport.getReasonCategory().getReportCategoryID();
+        this.reportReply = userReport.getReportReply();
+        this.details = userReport.getDetails();
+        this.timeStamp = userReport.getTimeStamp();
+        this.userReportStatus = userReport.getUserReportStatus();
+    }
 }

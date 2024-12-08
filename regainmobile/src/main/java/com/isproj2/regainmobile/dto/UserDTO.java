@@ -47,11 +47,11 @@ public class UserDTO {
 
     private String profileImagePath;
 
-    // private byte[] profileImagePath;
+    private byte[] profileImage;
 
     private String gcashQR;
 
-    // private byte[] gcashQR;
+    private byte[] gcashQRcode;
 
     private LocalDate birthday;
 
@@ -72,5 +72,7 @@ public class UserDTO {
         // this.gcashQR = user.getGcashQR().toString();
         this.birthday = LocalDate.parse(user.getBirthday());
         this.junkshopName = user.getJunkshopName();
+        this.profileImage = user.getProfileImage();
+        this.gcashQRcode = user.getGcashQr();
     }
 }

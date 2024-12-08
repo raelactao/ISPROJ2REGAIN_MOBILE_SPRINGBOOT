@@ -1,6 +1,7 @@
 package com.isproj2.regainmobile.dto;
 
 import java.math.BigDecimal;
+import java.util.Base64;
 
 import com.isproj2.regainmobile.model.Product;
 
@@ -39,6 +40,9 @@ public class ViewProductDTO {
 
     private String status;
 
+    private String image;
+
+
     public ViewProductDTO(Integer productID, @NonNull String productName,
             @NonNull String city,
             @NonNull BigDecimal price, @NonNull String username,
@@ -70,6 +74,12 @@ public class ViewProductDTO {
         this.canDeliver = product.getCanDeliver();
         this.isFavorite = fave;
         this.status = product.getStatus();
+        // Convert the image bytes to a Base64-encoded string
+        if (product.getImage() != null) {
+            this.image = Base64.getEncoder().encodeToString(product.getImage());
+        } else {
+            this.image = null; // Handle cases where the image is not present
+        }
     }
 
     // public ViewProductDTO(Product product) {

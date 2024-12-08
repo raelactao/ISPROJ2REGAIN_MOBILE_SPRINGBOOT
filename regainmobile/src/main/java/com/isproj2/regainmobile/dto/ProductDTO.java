@@ -35,7 +35,8 @@ public class ProductDTO {
 
     @lombok.NonNull
     private String price;
-    // private byte[] image;
+    
+    private byte[] image;
 
     @lombok.NonNull
     private Boolean canDeliver;
@@ -51,6 +52,7 @@ public class ProductDTO {
         this.location = product.getLocation().getAddressID();
         this.categoryID = product.getCategory().getCategoryID();
         this.price = product.getPrice().toString();
+        this.image = product.getImage();
         this.canDeliver = product.getCanDeliver();
         this.status = product.getStatus();
     }

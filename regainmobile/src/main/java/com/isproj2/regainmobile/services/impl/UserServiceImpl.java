@@ -1,23 +1,35 @@
 package com.isproj2.regainmobile.services.impl;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 // import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.isproj2.regainmobile.dto.ListingReportDTO;
 import com.isproj2.regainmobile.dto.UserDTO;
 import com.isproj2.regainmobile.dto.UserIDDTO;
+import com.isproj2.regainmobile.dto.UserReportDTO;
 import com.isproj2.regainmobile.exceptions.AuthenticationException;
+import com.isproj2.regainmobile.exceptions.ImageValidateService;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.exceptions.UserAccountNotActiveException;
 import com.isproj2.regainmobile.exceptions.UserAlreadyExistsException;
 import com.isproj2.regainmobile.model.Role;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.model.UserID;
+import com.isproj2.regainmobile.repo.ListingReportRepository;
 import com.isproj2.regainmobile.repo.RoleRepository;
 import com.isproj2.regainmobile.repo.UserIDRepository;
+import com.isproj2.regainmobile.repo.UserReportRepository;
 import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.services.UserService;
 
@@ -35,6 +47,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ImageValidateService validationService;
 
     @Override
     public void addUser(UserDTO userDTO) {
@@ -91,28 +106,51 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(UserDTO userDTO) {
-
-        // String errorMessage = "Username or Contact Number already exists";
-
+        // Fetch the existing user
         User user = _userRepository.findById(userDTO.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " + userDTO.getId()));
-
+    
+        // Retrieve the current role
         Role role = _roleRepository.findByName(user.getRole().getName());
+
         // .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " +
         // userDTO.getRole()));
 
-        User updatedUser = new User(userDTO, role);
+        //User updatedUser = new User(userDTO, role);
 
-        String dtoEncoded;
-        if (userDTO.getPassword() != null || !userDTO.getPassword().isEmpty()) {
-            dtoEncoded = passwordEncoder.encode(userDTO.getPassword());
-        } else {
-            dtoEncoded = user.getPassword();
+        //String dtoEncoded;
+        //if (userDTO.getPassword() != null || !userDTO.getPassword().isEmpty()) {
+        //    dtoEncoded = passwordEncoder.encode(userDTO.getPassword());
+        //} else {
+        //    dtoEncoded = user.getPassword();
+        //}
+        //updatedUser.setPassword(dtoEncoded);
+
+        //return new UserDTO(_userRepository.save(updatedUser));
+    
+        // Update user details
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword()); // Ideally, hash the password
+        user.setPhone(userDTO.getPhone());
+        user.setBirthday(userDTO.getBirthday());
+        user.setJunkshopName(userDTO.getJunkshopName());
+        user.setRole(role);
+    
+        // Update images if provided
+        if (userDTO.getProfileImage() != null) {
+            user.setProfileImage(userDTO.getProfileImage());
         }
-        updatedUser.setPassword(dtoEncoded);
-
-        return new UserDTO(_userRepository.save(updatedUser));
+        if (userDTO.getGcashQRcode() != null) {
+            user.setGcashQr(userDTO.getGcashQRcode());
+        }
+    
+        // Save and return updated user
+        return new UserDTO(_userRepository.save(user));
     }
+    
 
     @Override
     public String getUsernameById(Integer userId) {
@@ -136,11 +174,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUserIDDetails(UserIDDTO userID) {
-
+    
         User foundUser = _userRepository.findByUsername(userID.getUser().getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User not found with username " + userID.getUser().getUsername()));
 
+        //branch securityRoles
         // String dtoPassword = passwordEncoder.encode(userID.getUser().getPassword());
 
         if (passwordEncoder.matches(userID.getUser().getPassword(), foundUser.getPassword())) {
@@ -156,8 +195,81 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new AuthenticationException();
         }
+    
+        User updatedUser = new User(userID.getUser(), foundUser.getRole());
+        updatedUser.setUserID(foundUser.getUserID());
+        updatedUser.setAccountStatus(foundUser.getAccountStatus());
+        _userRepository.save(updatedUser);
+    
+        // Decode Base64 string to byte[]
+        byte[] idImageBytes = userID.getIdImageBytes();
+        if (idImageBytes == null) {
+            throw new IllegalArgumentException("ID image cannot be null");
+        }
+    
+        UserID newID = new UserID(updatedUser, userID);
+        newID.setIdImage(idImageBytes);
+        _IdRepository.save(newID);
 
+        //main
         return;
+    }
+    
+
+    @Override
+    public byte[] getProfileImageByUsername(String username) {
+        User user = _userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        return user.getProfileImage();
+    }
+    // @Override
+    // public void uploadProfileImage(MultipartFile file, Integer userId) throws IOException {
+    //     validationService.validateImageFile(file);
+
+    //     User user = _userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    //     user.setProfileImage(file.getBytes());
+    //     _userRepository.save(user);
+    // }
+
+    // @Override
+    // public void uploadGCashQR(MultipartFile file, Integer userId) throws IOException {
+    //     validationService.validateImageFile(file);
+
+    //     User user = _userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    //     user.setGcashQr(file.getBytes());
+    //     _userRepository.save(user);
+    // }
+
+    @Override
+    public int getPenaltyPointsByUserId(Integer userId) {
+        User user = _userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+        return user.getPenaltyPoints();
+    }
+
+    
+    @Autowired
+    private UserReportRepository userReportRepository;
+
+    @Autowired
+    private ListingReportRepository listingReportRepository;
+
+    public Map<String, List<?>> getUserAndListingReports(Integer userId) {
+        List<UserReportDTO> userReports = userReportRepository.findByReportedUser_UserID(userId)
+                .stream()
+                .map(UserReportDTO::new)
+                .collect(Collectors.toList());
+
+        List<ListingReportDTO> listingReports = listingReportRepository.findByReportedListingSellerUserID(userId)
+                .stream()
+                .map(ListingReportDTO::new)
+                .collect(Collectors.toList());
+
+        Map<String, List<?>> combinedReports = new HashMap<>();
+        combinedReports.put("userReports", userReports);
+        combinedReports.put("listingReports", listingReports);
+
+        return combinedReports;
     }
 
 }
