@@ -13,22 +13,22 @@ import org.springframework.beans.factory.annotation.Value;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import lombok.Getter;
-//try
+
 @Getter
 @Converter
 public class EncryptionUtil implements AttributeConverter<String, String> {
 
-    @Value("${regain.crypto.key}")
-    private String KEY;
+    // @Value("${regain.crypto.key}")
+    private String KEY = "1234567812345678";
 
-    @Value("${regain.crypto.iv}")
-    private String INIT_V;
+    // @Value("${regain.crypto.iv}")
+    private String INIT_V = "1234567812345678";
 
-    @Value("${regain.crypto.algo}")
-    private String ALGORITHM;
+    // @Value("${regain.crypto.algo}")
+    private String ALGORITHM = "AES/CBC/PKCS5PADDING";
 
-    @Value("${regain.crypto.enc}")
-    private String ENC;
+    // @Value("${regain.crypto.enc}")
+    private String ENC = "AES";
 
     @Override
     public String convertToDatabaseColumn(String attribute) {
