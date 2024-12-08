@@ -68,8 +68,8 @@ public class ProductServiceImpl implements ProductService {
 
                 if (productDTO.getImage() != null) {
                         product.setImage(productDTO.getImage());
-                    }
-                    
+                }
+
                 productRepository.save(product);
                 return productDTO;
         }
@@ -104,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
 
                 if (productDTO.getImage() != null) {
                         product.setImage(productDTO.getImage());
-                }                
+                }
 
                 productRepository.save(product);
                 return productDTO;
@@ -123,12 +123,13 @@ public class ProductServiceImpl implements ProductService {
                 Product product = productRepository.findById(productId)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Product not found with id " + productId));
-                return new ProductDTO(product.getProductID(), product.getSeller().getUserID(), product.getProductName(),
+                return new ProductDTO(product.getProductID(),
+                                product.getSeller().getUserID(), product.getProductName(),
                                 product.getDescription(), product.getWeight().toString(),
                                 product.getLocation().getAddressID(),
                                 product.getCategory().getCategoryID(),
                                 product.getPrice().toString(), product.getCanDeliver(),
-                                product.getStatus(),product.getImage());
+                                product.getStatus(), product.getImage());
         }
 
         // @Override
@@ -145,7 +146,7 @@ public class ProductServiceImpl implements ProductService {
                                                 product.getWeight().toString(),
                                                 product.getLocation().getAddressID(),
                                                 product.getCategory().getCategoryID(), product.getPrice().toString(),
-                                                product.getCanDeliver(), product.getStatus()
+                                                product.getCanDeliver(), product.getStatus(),
                                                 product.getImage()))
                                 .collect(Collectors.toList());
         }
@@ -234,39 +235,42 @@ public class ProductServiceImpl implements ProductService {
 
         @Override
         public List<ViewProductDTO> getViewProductsByCategory(String category, Integer userId) {
-        // Retrieve all products for the given category
-        List<Product> products = productRepository.findByCategoryName(category);
-        
-        // Fetch the user's favorites
-        List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
-        
-        // Convert products to ViewProductDTO and mark as favorite if applicable
-        return products.stream()
-                .map(product -> {
-                        boolean isFavorited = userFaves.stream()
-                                .anyMatch(fave -> fave.getProduct().equals(product));
-                        return new ViewProductDTO(product, isFavorited);
-                })
-                .collect(Collectors.toList());
+                // Retrieve all products for the given category
+                List<Product> products = productRepository.findByCategoryName(category);
+
+                // Fetch the user's favorites
+                List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
+
+                // Convert products to ViewProductDTO and mark as favorite if applicable
+                return products.stream()
+                                .map(product -> {
+                                        boolean isFavorited = userFaves.stream()
+                                                        .anyMatch(fave -> fave.getProduct().equals(product));
+                                        return new ViewProductDTO(product, isFavorited);
+                                })
+                                .collect(Collectors.toList());
         }
 
         @Override
         public List<ViewProductDTO> searchViewProducts(String searchTerm, Integer userId) {
-        // Retrieve all products for the user
-        List<ViewProductDTO> allProducts = getViewProducts(userId);
+                // Retrieve all products for the user
+                List<ViewProductDTO> allProducts = getViewProducts(userId);
 
-        // Filter products based on the search term
-        return allProducts.stream()
-                .filter(product -> product.getProductName().toLowerCase().contains(searchTerm.toLowerCase())
-                        || (product.getDescription() != null && product.getDescription().toLowerCase().contains(searchTerm.toLowerCase())))
-                .collect(Collectors.toList());
+                // Filter products based on the search term
+                return allProducts.stream()
+                                .filter(product -> product.getProductName().toLowerCase()
+                                                .contains(searchTerm.toLowerCase())
+                                                || (product.getDescription() != null && product.getDescription()
+                                                                .toLowerCase().contains(searchTerm.toLowerCase())))
+                                .collect(Collectors.toList());
         }
 
         @Override
         public void uploadProductImage(MultipartFile file, Integer productId) throws IOException {
                 validationService.validateImageFile(file);
 
-                Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+                Product product = productRepository.findById(productId)
+                                .orElseThrow(() -> new RuntimeException("Product not found"));
                 product.setImage(file.getBytes());
                 productRepository.save(product);
         }

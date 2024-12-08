@@ -91,7 +91,8 @@ public class UserServiceImpl implements UserService {
         // throw new AuthenticationException();
         // }
 
-        if (passwordEncoder.matches(userDTO.getPassword(), user.getPassword()) // Match hashed password
+        // Match hashed password
+        if (passwordEncoder.matches(userDTO.getPassword(), user.getPassword())
                 && "Active".equals(user.getAccountStatus())) {
             UserDTO loginUser = new UserDTO(user);
             loginUser.setRole(user.getRole().getName());
@@ -109,36 +110,46 @@ public class UserServiceImpl implements UserService {
         // Fetch the existing user
         User user = _userRepository.findById(userDTO.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " + userDTO.getId()));
-    
+
         // Retrieve the current role
         Role role = _roleRepository.findByName(user.getRole().getName());
 
         // .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " +
         // userDTO.getRole()));
 
-        //User updatedUser = new User(userDTO, role);
+        // User updatedUser = new User(userDTO, role);
 
-        //String dtoEncoded;
-        //if (userDTO.getPassword() != null || !userDTO.getPassword().isEmpty()) {
-        //    dtoEncoded = passwordEncoder.encode(userDTO.getPassword());
-        //} else {
-        //    dtoEncoded = user.getPassword();
-        //}
-        //updatedUser.setPassword(dtoEncoded);
+        // String dtoEncoded;
+        // if (userDTO.getPassword() != null || !userDTO.getPassword().isEmpty()) {
+        // dtoEncoded = passwordEncoder.encode(userDTO.getPassword());
+        // } else {
+        // dtoEncoded = user.getPassword();
+        // }
+        // updatedUser.setPassword(dtoEncoded);
 
-        //return new UserDTO(_userRepository.save(updatedUser));
-    
+        // return new UserDTO(_userRepository.save(updatedUser));
+
         // Update user details
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword()); // Ideally, hash the password
+
+        // ensures password stays hashed on update
+        String dtoEncoded;
+        if (userDTO.getPassword() != null || !userDTO.getPassword().isEmpty()) {
+            dtoEncoded = passwordEncoder.encode(userDTO.getPassword());
+        } else {
+            dtoEncoded = user.getPassword();
+        }
+        user.setPassword(dtoEncoded);
+
+        // user.setPassword(userDTO.getPassword()); // Ideally, hash the password
         user.setPhone(userDTO.getPhone());
-        user.setBirthday(userDTO.getBirthday());
+        user.setBirthday(userDTO.getBirthday().toString());
         user.setJunkshopName(userDTO.getJunkshopName());
         user.setRole(role);
-    
+
         // Update images if provided
         if (userDTO.getProfileImage() != null) {
             user.setProfileImage(userDTO.getProfileImage());
@@ -146,11 +157,10 @@ public class UserServiceImpl implements UserService {
         if (userDTO.getGcashQRcode() != null) {
             user.setGcashQr(userDTO.getGcashQRcode());
         }
-    
+
         // Save and return updated user
         return new UserDTO(_userRepository.save(user));
     }
-    
 
     @Override
     public String getUsernameById(Integer userId) {
@@ -174,47 +184,47 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUserIDDetails(UserIDDTO userID) {
-    
+
         User foundUser = _userRepository.findByUsername(userID.getUser().getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User not found with username " + userID.getUser().getUsername()));
 
-        //branch securityRoles
+        // branch securityRoles
         // String dtoPassword = passwordEncoder.encode(userID.getUser().getPassword());
 
+        User updatedUser;
         if (passwordEncoder.matches(userID.getUser().getPassword(), foundUser.getPassword())) {
-            User updatedUser = new User(userID.getUser(), foundUser.getRole());
+            updatedUser = new User(userID.getUser(), foundUser.getRole());
             String dtoEncoded = passwordEncoder.encode(userID.getUser().getPassword());
             updatedUser.setPassword(dtoEncoded);
             updatedUser.setUserID(foundUser.getUserID());
             updatedUser.setAccountStatus(foundUser.getAccountStatus());
-            _userRepository.save(updatedUser);
+            // _userRepository.save(updatedUser);
 
-            UserID newID = new UserID(updatedUser, userID);
-            _IdRepository.save(newID);
+            // UserID newID = new UserID(updatedUser, userID);
+            // _IdRepository.save(newID);
         } else {
             throw new AuthenticationException();
         }
-    
-        User updatedUser = new User(userID.getUser(), foundUser.getRole());
-        updatedUser.setUserID(foundUser.getUserID());
-        updatedUser.setAccountStatus(foundUser.getAccountStatus());
+
+        // User updatedUser = new User(userID.getUser(), foundUser.getRole());
+        // updatedUser.setUserID(foundUser.getUserID());
+        // updatedUser.setAccountStatus(foundUser.getAccountStatus());
         _userRepository.save(updatedUser);
-    
+
         // Decode Base64 string to byte[]
         byte[] idImageBytes = userID.getIdImageBytes();
         if (idImageBytes == null) {
             throw new IllegalArgumentException("ID image cannot be null");
         }
-    
+
         UserID newID = new UserID(updatedUser, userID);
         newID.setIdImage(idImageBytes);
         _IdRepository.save(newID);
 
-        //main
+        // main
         return;
     }
-    
 
     @Override
     public byte[] getProfileImageByUsername(String username) {
@@ -223,21 +233,25 @@ public class UserServiceImpl implements UserService {
         return user.getProfileImage();
     }
     // @Override
-    // public void uploadProfileImage(MultipartFile file, Integer userId) throws IOException {
-    //     validationService.validateImageFile(file);
+    // public void uploadProfileImage(MultipartFile file, Integer userId) throws
+    // IOException {
+    // validationService.validateImageFile(file);
 
-    //     User user = _userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-    //     user.setProfileImage(file.getBytes());
-    //     _userRepository.save(user);
+    // User user = _userRepository.findById(userId).orElseThrow(() -> new
+    // RuntimeException("User not found"));
+    // user.setProfileImage(file.getBytes());
+    // _userRepository.save(user);
     // }
 
     // @Override
-    // public void uploadGCashQR(MultipartFile file, Integer userId) throws IOException {
-    //     validationService.validateImageFile(file);
+    // public void uploadGCashQR(MultipartFile file, Integer userId) throws
+    // IOException {
+    // validationService.validateImageFile(file);
 
-    //     User user = _userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-    //     user.setGcashQr(file.getBytes());
-    //     _userRepository.save(user);
+    // User user = _userRepository.findById(userId).orElseThrow(() -> new
+    // RuntimeException("User not found"));
+    // user.setGcashQr(file.getBytes());
+    // _userRepository.save(user);
     // }
 
     @Override
@@ -247,7 +261,6 @@ public class UserServiceImpl implements UserService {
         return user.getPenaltyPoints();
     }
 
-    
     @Autowired
     private UserReportRepository userReportRepository;
 

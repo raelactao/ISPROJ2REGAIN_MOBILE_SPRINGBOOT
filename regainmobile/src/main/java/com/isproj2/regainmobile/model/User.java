@@ -90,12 +90,12 @@ public class User {
     private String phone;
 
     @Lob
-    @Column(name = "profile_image",  columnDefinition = "LONGBLOB")
-    private byte [] profileImage;
+    @Column(name = "profile_image", columnDefinition = "LONGBLOB")
+    private byte[] profileImage;
 
     @Lob
-    @Column(name = "gcash_qr",  columnDefinition = "LONGBLOB")
-    private byte [] gcashQr;
+    @Column(name = "gcash_qr", columnDefinition = "LONGBLOB")
+    private byte[] gcashQr;
 
     @Convert(converter = EncryptionUtil.class)
     @Column(name = "birthday")
@@ -170,7 +170,7 @@ public class User {
         if (userDTO.getBirthday() != null) {
             this.birthday = userDTO.getBirthday().toString();
         }
-        this.birthday = userDTO.getBirthday();
+        // this.birthday = userDTO.getBirthday().toString();
         this.junkshopName = userDTO.getJunkshopName();
         this.profileImage = userDTO.getProfileImage();
         this.gcashQr = userDTO.getGcashQRcode();
