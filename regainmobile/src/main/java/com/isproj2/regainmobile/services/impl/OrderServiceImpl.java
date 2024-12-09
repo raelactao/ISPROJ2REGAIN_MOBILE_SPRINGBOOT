@@ -175,12 +175,37 @@ public class OrderServiceImpl implements OrderService {
                 User updatedByUser = userRepository.findById(updatedByUserID)
                                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+                Payment orderPayment = order.getPaymentMethod();
+
                 // Log the previous status
                 String prevStatus = order.getCurrentStatus();
 
                 // Update current status
                 order.setCurrentStatus(orderDTO.getCurrentStatus());
                 Order updatedOrder = orderRepository.save(order);
+
+                // COD: check order status, if received, payment status = Paid
+                // COD: if order status cancelled, payment status = Declined
+                if (order.getPaymentMethod().getPaymentType().equals("Cash on Delivery")) {
+                        String paymentStatus = null;
+                        switch (updatedOrder.getCurrentStatus()) {
+                                case "Received":
+                                        paymentStatus = "Paid";
+                                        orderPayment.setStatus(paymentStatus);
+                                        break;
+                                case "Cancelled":
+                                        paymentStatus = "Declined";
+                                        orderPayment.setStatus(paymentStatus);
+                                default:
+                                        break;
+                        }
+                        if (paymentStatus != null) {
+                                paymentRepository.save(orderPayment);
+                        }
+
+                }
+
+                // GCash: buttons should not show if payment is still pending
 
                 // Create and save the OrderLog
                 OrderLog orderLog = new OrderLog();
