@@ -25,4 +25,6 @@ public interface CommissionsRepository extends JpaRepository<Commissions, Intege
 
     List<Commissions> findByPaymentId(int paymentId);
 
+    List<Commissions> findByStatus(String status);
+
 }

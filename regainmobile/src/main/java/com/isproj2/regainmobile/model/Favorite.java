@@ -29,7 +29,7 @@ public class Favorite {
     private Integer favoriteID;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = false)
     private User user;
 
     @ManyToOne
