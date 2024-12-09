@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.isproj2.regainmobile.dto.CommissionsDTO;
+import com.isproj2.regainmobile.dto.CommissionsTotalDTO;
 import com.isproj2.regainmobile.dto.OrderDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Commissions;
@@ -39,6 +40,24 @@ public class CommissionServiceImpl implements CommissionService {
     private CommissionsDTO convertToDTO(Commissions comm) {
         CommissionsDTO dto = new CommissionsDTO(comm);
         return dto;
+    }
+
+    @Override
+    public CommissionsTotalDTO getCommissionsTotal(Integer userId) {
+
+        // List<Commissions> userCommissions =
+        // commissionsRepository.findByUserUserID(userId);
+        // List<Commissions> pendingCommissions =
+        // commissionsRepository.findByStatus("Paid");
+        // List<Commissions> filteredComms = userCommissions.
+
+        // List<CommissionsDTO> dtoList =
+        // filteredComms.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        // CommissionsTotalDTO total = new CommissionsTotalDTO();
+
+        return new CommissionsTotalDTO();
+
     }
 
 }
