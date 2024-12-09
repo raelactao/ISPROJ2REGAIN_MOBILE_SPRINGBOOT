@@ -1,5 +1,7 @@
 package com.isproj2.regainmobile.services.impl;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,18 +47,21 @@ public class CommissionServiceImpl implements CommissionService {
     @Override
     public CommissionsTotalDTO getCommissionsTotal(Integer userId) {
 
-        // List<Commissions> userCommissions =
-        // commissionsRepository.findByUserUserID(userId);
-        // List<Commissions> pendingCommissions =
-        // commissionsRepository.findByStatus("Paid");
-        // List<Commissions> filteredComms = userCommissions.
+        List<Commissions> userCommissions = commissionsRepository.findByUserUserID(userId);
+        List<Commissions> pendingCommissions = commissionsRepository.findByStatus("Paid");
+        userCommissions.removeAll(pendingCommissions);
+        List<CommissionsDTO> dtoList = userCommissions.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        BigDecimal totalBal = commissionsRepository.sumCommissionsForUser(userId);
 
         // List<CommissionsDTO> dtoList =
         // filteredComms.stream().map(this::convertToDTO).collect(Collectors.toList());
 
-        // CommissionsTotalDTO total = new CommissionsTotalDTO();
+        // this.weight = new DecimalFormat("0.00").format(product.getWeight());
 
-        return new CommissionsTotalDTO();
+        CommissionsTotalDTO commTotal = new CommissionsTotalDTO(new DecimalFormat("0.00").format(totalBal), dtoList);
+
+        return commTotal;
 
     }
 
