@@ -93,6 +93,9 @@ public class Order {
         this.deliveryDate = orderDTO.getDeliveryDate();
         this.paymentMethod = payment;
         this.totalAmount = new BigDecimal(orderDTO.getTotalAmount());
+        if (orderDTO.getCommissionFee() != null) {
+            this.commissionFee = new BigDecimal(orderDTO.getCommissionFee());
+        }
         this.currentStatus = orderDTO.getCurrentStatus();
         this.address = address;
     }
