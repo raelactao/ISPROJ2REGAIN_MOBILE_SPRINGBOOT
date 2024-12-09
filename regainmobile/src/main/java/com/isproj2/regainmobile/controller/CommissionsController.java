@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.CommissionsDTO;
+import com.isproj2.regainmobile.dto.CommissionsTotalDTO;
 import com.isproj2.regainmobile.services.CommissionService;
 
 @RestController
@@ -27,6 +28,12 @@ public class CommissionsController {
     public ResponseEntity<List<CommissionsDTO>> getCommsByUser(@PathVariable Integer userId) {
         List<CommissionsDTO> commList = commissionService.getCommissionsByUserId(userId);
         return ResponseEntity.ok(commList);
+    }
+
+    @GetMapping("/total/{userId}")
+    public ResponseEntity<CommissionsTotalDTO> getCommTotalByUser(@PathVariable Integer userId) {
+        CommissionsTotalDTO commTotal = commissionService.getCommissionsTotal(userId);
+        return ResponseEntity.ok(commTotal);
     }
 
     // @GetMapping("/logs/{orderId}")
