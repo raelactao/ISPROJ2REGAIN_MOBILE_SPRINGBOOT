@@ -164,43 +164,43 @@ public class UserServiceImpl implements UserService {
     // }
 
     @Override
-public UserProfileUpdateDTO updateUser(UserProfileUpdateDTO userProfileDTO) {
-    // Fetch the existing user
-    User existingUser = _userRepository.findById(userProfileDTO.getId())
-            .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " + userProfileDTO.getId()));
+    public UserProfileUpdateDTO updateUser(UserProfileUpdateDTO userProfileDTO) {
+        // Fetch the existing user
+        User existingUser = _userRepository.findById(userProfileDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID " + userProfileDTO.getId()));
 
-    // Update only the provided fields
-    if (userProfileDTO.getFirstName() != null) {
-        existingUser.setFirstName(userProfileDTO.getFirstName());
-    }
-    if (userProfileDTO.getLastName() != null) {
-        existingUser.setLastName(userProfileDTO.getLastName());
-    }
-    if (userProfileDTO.getJunkshopName() != null) {
-        existingUser.setJunkshopName(userProfileDTO.getJunkshopName());
-    }
-    if (userProfileDTO.getProfileImage() != null) {
-        existingUser.setProfileImage(userProfileDTO.getProfileImage());
-    }
-    if (userProfileDTO.getGcashQRcode() != null) {
-        existingUser.setGcashQr(userProfileDTO.getGcashQRcode());
-    }
+        // Update only the provided fields
+        if (userProfileDTO.getFirstName() != null) {
+            existingUser.setFirstName(userProfileDTO.getFirstName());
+        }
+        if (userProfileDTO.getLastName() != null) {
+            existingUser.setLastName(userProfileDTO.getLastName());
+        }
+        if (userProfileDTO.getJunkshopName() != null) {
+            existingUser.setJunkshopName(userProfileDTO.getJunkshopName());
+        }
+        if (userProfileDTO.getProfileImage() != null) {
+            existingUser.setProfileImage(userProfileDTO.getProfileImage());
+        }
+        if (userProfileDTO.getGcashQRcode() != null) {
+            existingUser.setGcashQr(userProfileDTO.getGcashQRcode());
+        }
 
-    // Save the updated user
-    User updatedUser = _userRepository.save(existingUser);
+        // Save the updated user
+        User updatedUser = _userRepository.save(existingUser);
 
-    // Convert the updated User entity back to DTO
-    UserProfileUpdateDTO responseDTO = new UserProfileUpdateDTO();
-    responseDTO.setId(updatedUser.getUserID());
-    responseDTO.setFirstName(updatedUser.getFirstName());
-    responseDTO.setLastName(updatedUser.getLastName());
-    responseDTO.setJunkshopName(updatedUser.getJunkshopName());
-    responseDTO.setUsername(updatedUser.getUsername());
-    responseDTO.setProfileImage(updatedUser.getProfileImage());
-    responseDTO.setGcashQRcode(updatedUser.getGcashQr());
+        // Convert the updated User entity back to DTO
+        UserProfileUpdateDTO responseDTO = new UserProfileUpdateDTO();
+        responseDTO.setId(updatedUser.getUserID());
+        responseDTO.setFirstName(updatedUser.getFirstName());
+        responseDTO.setLastName(updatedUser.getLastName());
+        responseDTO.setJunkshopName(updatedUser.getJunkshopName());
+        responseDTO.setUsername(updatedUser.getUsername());
+        responseDTO.setProfileImage(updatedUser.getProfileImage());
+        responseDTO.setGcashQRcode(updatedUser.getGcashQr());
 
-    return responseDTO;
-}
+        return responseDTO;
+    }
 
 
 
