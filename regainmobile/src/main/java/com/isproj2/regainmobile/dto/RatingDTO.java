@@ -15,6 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RatingDTO {
 
+    private Integer ratingId;
     private Integer ratedUserId;
     private Integer ratedByUserId;
     private Integer rateValue;
@@ -23,6 +24,7 @@ public class RatingDTO {
     private LocalDateTime dateEdited;
 
     public RatingDTO(Ratings rating) {
+        this.ratingId = rating.getRatingID();
         this.ratedUserId = rating.getRatedUserID().getUserID();
         this.ratedByUserId = rating.getRatedByUserID().getUserID();
         this.rateValue = rating.getRateValue();
