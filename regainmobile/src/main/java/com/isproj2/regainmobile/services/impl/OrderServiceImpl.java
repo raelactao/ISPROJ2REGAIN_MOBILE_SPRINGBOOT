@@ -79,9 +79,7 @@ public class OrderServiceImpl implements OrderService {
                 // "Payment not found with id " + orderDTO.getPaymentMethod()));
 
                 Payment payment = new Payment(orderDTO.getPaymentMethod());
-                if (payment.getPaymentType() == "GCash") {
 
-                }
                 paymentRepository.save(payment);
 
                 Address address = new Address();
