@@ -16,4 +16,6 @@ public interface FavoriteService {
     FavoriteDTO getFavoriteById(Integer favoriteId);
 
     List<ViewProductDTO> getFavoritesByUser(Integer userId);
+
+    Boolean getIsFavorite(Integer productId, Integer userId);
 }

@@ -26,6 +26,8 @@ public class ViewProductDTO {
 
     private String price;
 
+    private Integer sellerID;
+
     private String sellerUsername; // user
 
     private String description;
@@ -41,7 +43,6 @@ public class ViewProductDTO {
     private String status;
 
     private String image;
-
 
     public ViewProductDTO(Integer productID, @NonNull String productName,
             @NonNull String city,

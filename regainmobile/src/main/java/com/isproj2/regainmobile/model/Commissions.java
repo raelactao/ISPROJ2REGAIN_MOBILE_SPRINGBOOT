@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -21,23 +22,28 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class Commissions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "commission_id")
     private int commissionID;
 
+    @lombok.NonNull
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user; // The seller to whom commission is assigned
 
+    @lombok.NonNull
     @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "order_id")
     private Order order;
 
+    @lombok.NonNull
     @Column(name = "commission_balance", columnDefinition = "Decimal(19,2)")
     private BigDecimal commissionBalance;
 
+    @lombok.NonNull
     @Column(name = "status", length = 20)
     private String status;
 
