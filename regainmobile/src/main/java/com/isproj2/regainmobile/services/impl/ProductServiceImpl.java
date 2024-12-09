@@ -235,21 +235,29 @@ public class ProductServiceImpl implements ProductService {
 
         @Override
         public List<ViewProductDTO> getViewProductsByCategory(String category, Integer userId) {
-                // Retrieve all products for the given category
-                List<Product> products = productRepository.findByCategoryName(category);
+        List<Product> products;
 
-                // Fetch the user's favorites
-                List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
-
-                // Convert products to ViewProductDTO and mark as favorite if applicable
-                return products.stream()
-                                .map(product -> {
-                                        boolean isFavorited = userFaves.stream()
-                                                        .anyMatch(fave -> fave.getProduct().equals(product));
-                                        return new ViewProductDTO(product, isFavorited);
-                                })
-                                .collect(Collectors.toList());
+        if (category == null || category.isEmpty()) {
+                // Fetch all active products
+                products = productRepository.findByStatus("Active");
+        } else {
+                // Fetch products by category and status "Active"
+                products = productRepository.findByCategoryNameAndStatus(category, "Active");
         }
+
+        // Fetch the user's favorites
+        List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
+
+        // Convert products to ViewProductDTO and mark as favorite if applicable
+        return products.stream()
+                .map(product -> {
+                        boolean isFavorited = userFaves.stream()
+                                .anyMatch(fave -> fave.getProduct().equals(product));
+                        return new ViewProductDTO(product, isFavorited);
+                })
+                .collect(Collectors.toList());
+        }
+
 
         @Override
         public List<ViewProductDTO> searchViewProducts(String searchTerm, Integer userId) {

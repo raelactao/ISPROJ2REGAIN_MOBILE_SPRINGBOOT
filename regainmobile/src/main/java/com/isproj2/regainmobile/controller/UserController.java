@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.isproj2.regainmobile.dto.UserDTO;
 import com.isproj2.regainmobile.dto.UserIDDTO;
+import com.isproj2.regainmobile.dto.UserProfileUpdateDTO;
 import com.isproj2.regainmobile.exceptions.ImageValidateService;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.exceptions.UserAlreadyExistsException;
@@ -45,55 +46,95 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+//     @PutMapping("/update")
+// public ResponseEntity<UserDTO> updateUser(
+//         @RequestParam Integer id,
+//         @RequestParam(required = false) MultipartFile profileImage,
+//         @RequestParam(required = false) MultipartFile gcashQRcode,
+//         @RequestParam(required = false) String firstName,
+//         @RequestParam(required = false) String lastName,
+//         @RequestParam String username,
+//         @RequestParam(required = false) String email,
+//         @RequestParam(required = false) String role,
+//         @RequestParam(required = false) String password,
+//         @RequestParam(required = false) String phone,
+//         @RequestParam(required = false) LocalDate birthday,
+//         @RequestParam(required = false) String junkshopName) {
+
+//     try {
+//         // Fetch the existing user
+//         UserDTO userDTO = userService.getUserById(id);
+
+//         // Update only the provided fields
+//         if (firstName != null) userDTO.setFirstName(firstName);
+//         if (lastName != null) userDTO.setLastName(lastName);
+//         if (junkshopName != null) userDTO.setJunkshopName(junkshopName);
+//         if (email != null) userDTO.setEmail(email);
+//         if (role != null) userDTO.setRole(role);
+//         if (phone != null) userDTO.setPhone(phone);
+//         if (birthday != null) userDTO.setBirthday(birthday);
+
+//         // Only update password if provided
+//         if (password != null && !password.isEmpty()) {
+//             System.out.println("Updating password...");
+//             userDTO.setPassword(passwordEncoder.encode(password));
+//         } else {
+//             System.out.println("Retaining existing password...");
+//             userDTO.setPassword(userDTO.getPassword()); // Retain existing password
+//         }
+
+//         // Handle profile image if provided
+//         if (profileImage != null && !profileImage.isEmpty()) {
+//             imageValidateService.validateImageFile(profileImage);
+//             userDTO.setProfileImage(profileImage.getBytes());
+//         }
+
+//         // Handle GCASH QR code if provided
+//         if (gcashQRcode != null && !gcashQRcode.isEmpty()) {
+//             imageValidateService.validateImageFile(gcashQRcode);
+//             userDTO.setGcashQRcode(gcashQRcode.getBytes());
+//         }
+
+//         UserDTO updatedUser = userService.updateUser(userDTO);
+//         return ResponseEntity.ok(updatedUser);
+//     } catch (Exception e) {
+//         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//     }
+// }
+
     @PutMapping("/update")
-    public ResponseEntity<UserDTO> updateUser(
+    public ResponseEntity<UserProfileUpdateDTO> updateUser(
             @RequestParam Integer id,
-            @RequestParam(required = false) MultipartFile profileImage,
-            @RequestParam(required = false) MultipartFile gcashQRcode,
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
-            @RequestParam String username,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String role,
-            @RequestParam String password,
-            @RequestParam(required = false) String phone,
-            @RequestParam(required = false) LocalDate birthday,
-            @RequestParam(required = false) String junkshopName) {
-
+            @RequestParam(required = false) String junkshopName,
+            @RequestParam(required = false) MultipartFile profileImage,
+            @RequestParam(required = false) MultipartFile gcashQRcode) {
         try {
+            // Prepare the DTO
+            UserProfileUpdateDTO userProfileDTO = new UserProfileUpdateDTO();
+            userProfileDTO.setId(id);
+            userProfileDTO.setFirstName(firstName);
+            userProfileDTO.setLastName(lastName);
+            userProfileDTO.setJunkshopName(junkshopName);
 
-            // Fetch the existing user
-            UserDTO userDTO = userService.getUserById(id);
-            // Update only the provided fields
-            if (firstName != null) userDTO.setFirstName(firstName);
-            if (lastName != null) userDTO.setLastName(lastName);
-            if (junkshopName != null) userDTO.setJunkshopName(junkshopName);
-            if (email != null) userDTO.setEmail(email);
-            if (role != null) userDTO.setRole(role);
-            // Handle password encoding
-            if (password != null && !password.isEmpty() && !passwordEncoder.matches(password, userDTO.getPassword())) {
-                userDTO.setPassword(passwordEncoder.encode(password));
-            }
-            if (phone != null) userDTO.setPhone(phone);
-            if (birthday != null) userDTO.setBirthday(birthday);
-
+            // Convert MultipartFile to byte array if not null
             if (profileImage != null && !profileImage.isEmpty()) {
                 imageValidateService.validateImageFile(profileImage);
-                userDTO.setProfileImage(profileImage.getBytes());
+                userProfileDTO.setProfileImage(profileImage.getBytes());
             }
             if (gcashQRcode != null && !gcashQRcode.isEmpty()) {
                 imageValidateService.validateImageFile(gcashQRcode);
-                userDTO.setGcashQRcode(gcashQRcode.getBytes());
+                userProfileDTO.setGcashQRcode(gcashQRcode.getBytes());
             }
 
-            UserDTO updatedUser = userService.updateUser(userDTO);
+            // Pass the DTO to the service layer
+            UserProfileUpdateDTO updatedUser = userService.updateUser(userProfileDTO);
             return ResponseEntity.ok(updatedUser);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
 
     @GetMapping("/seller/by-username/{username}")
     public ResponseModel<Integer> getSellerIdByUsername(@PathVariable String username) {

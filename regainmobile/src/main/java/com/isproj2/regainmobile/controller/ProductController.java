@@ -177,9 +177,12 @@ public ResponseEntity<?> createProduct(
     }
 
     @GetMapping("/view/filter")
-    public List<ViewProductDTO> getViewProductsByCategory(@RequestParam String category, @RequestParam Integer userId) {
-    return productService.getViewProductsByCategory(category, userId);
+    public List<ViewProductDTO> getViewProductsByCategory(
+            @RequestParam(required = false) String category,
+            @RequestParam Integer userId) {
+        return productService.getViewProductsByCategory(category, userId);
     }
+    
 
     @GetMapping("/search")
     public ResponseEntity<List<ViewProductDTO>> searchProducts(
