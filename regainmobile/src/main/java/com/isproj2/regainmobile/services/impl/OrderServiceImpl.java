@@ -28,6 +28,7 @@ import com.isproj2.regainmobile.model.Payment;
 import com.isproj2.regainmobile.model.Product;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.repo.AddressRepository;
+import com.isproj2.regainmobile.repo.CommissionsRepository;
 import com.isproj2.regainmobile.repo.OfferRepository;
 import com.isproj2.regainmobile.repo.OrderLogRepository;
 import com.isproj2.regainmobile.repo.OrderRepository;
@@ -60,6 +61,9 @@ public class OrderServiceImpl implements OrderService {
         // @Autowired
         // private OfferRepository offerRepository;
 
+        @Autowired
+        private CommissionsRepository commissionsRepository;
+
         @Override
         @Transactional
         public OrderDTO createOrder(OrderDTO orderDTO) {
@@ -84,8 +88,10 @@ public class OrderServiceImpl implements OrderService {
 
                 Address address = new Address();
                 if (orderDTO.getDeliveryMethod().equals("Buyer Pick-up")) {
+                        // if buyer pick-up, buyer goes to product listing location
                         address = product.getLocation();
                 } else if (orderDTO.getDeliveryMethod().equals("Seller Drop-off")) {
+                        // if seller drop-off, buyer needs to list address in orderDTO
                         address = addressRepository.findByAddressID(orderDTO.getAddress().getAddressID())
                                         .orElseThrow(() -> new ResourceNotFoundException(
                                                         "Address not found with id "
@@ -181,6 +187,8 @@ public class OrderServiceImpl implements OrderService {
                 // Update current status
                 order.setCurrentStatus(orderDTO.getCurrentStatus());
                 Order updatedOrder = orderRepository.save(order);
+
+                // if updated status is received, create commission record
 
                 // Create and save the OrderLog
                 OrderLog orderLog = new OrderLog();

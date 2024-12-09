@@ -25,7 +25,7 @@ public class Commissions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "commission_id")
-    private int commissionID;
+    private Integer commissionID;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
