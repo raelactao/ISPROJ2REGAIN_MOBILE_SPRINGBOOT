@@ -115,4 +115,31 @@ public class FavoriteServiceImpl implements FavoriteService {
         return;
     }
 
+    @Override
+    public Boolean getIsFavorite(Integer productId, Integer userId) {
+        Boolean isFavorite = null;
+        // User user = userRepository.findById(userId)
+        // .orElseThrow(() -> new ResourceNotFoundException("User not found with id " +
+        // userId));
+        // List<Favorite> favoritesOfUser = favoriteRepository.findByUser(user);
+
+        // for (Favorite fave : favoritesOfUser) {
+        // if (fave.getProduct().getProductID() == productId) {
+        // isFavorite = true;
+        // }
+        // }
+
+        // String message = favoriteRepository.getIsFavorite(productId,
+        // userId).toString();
+
+        // System.out.println(message);
+
+        isFavorite = favoriteRepository.getIsFavorite(productId, userId);
+        if (isFavorite == null) {
+            isFavorite = false;
+        }
+
+        return isFavorite;
+    }
+
 }

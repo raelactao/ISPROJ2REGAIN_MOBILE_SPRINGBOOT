@@ -1,5 +1,6 @@
 package com.isproj2.regainmobile.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.isproj2.regainmobile.dto.OrderDTO;
 import com.isproj2.regainmobile.dto.OrderLogDTO;
 import com.isproj2.regainmobile.dto.OrderStatusUpdateRequest;
+import com.isproj2.regainmobile.services.FavoriteService;
 import com.isproj2.regainmobile.services.OrderService;
 
 @RestController
@@ -24,6 +26,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private FavoriteService favoriteService;
 
     @PostMapping("/add")
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
@@ -48,7 +53,10 @@ public class OrderController {
     @GetMapping("/buyer/{buyerId}")
     public ResponseEntity<List<OrderDTO>> getOrdersByBuyer(@PathVariable Integer buyerId) {
         List<OrderDTO> orders = orderService.getOrdersByBuyer(buyerId);
-        return ResponseEntity.ok(orders);
+
+        List<OrderDTO> orderFaves = converWithFavorites(orders, buyerId);
+
+        return ResponseEntity.ok(orderFaves);
     }
 
     @GetMapping("/logs/{orderId}")
@@ -60,6 +68,20 @@ public class OrderController {
     @GetMapping("/seller/{sellerId}")
     public ResponseEntity<List<OrderDTO>> getOrdersBySeller(@PathVariable Integer sellerId) {
         List<OrderDTO> orders = orderService.getOrdersBySeller(sellerId);
-        return ResponseEntity.ok(orders);
+
+        List<OrderDTO> orderFaves = converWithFavorites(orders, sellerId);
+
+        return ResponseEntity.ok(orderFaves);
+    }
+
+    private List<OrderDTO> converWithFavorites(List<OrderDTO> dtoList, Integer userId) {
+
+        Boolean favorited = false;
+        for (OrderDTO order : dtoList) {
+            favorited = favoriteService.getIsFavorite(order.getProduct().getProductID(), userId);
+            order.getProduct().setIsFavorite(favorited);
+        }
+
+        return dtoList;
     }
 }

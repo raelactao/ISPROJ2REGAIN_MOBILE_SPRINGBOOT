@@ -56,6 +56,7 @@ public class OrderDTO {
 
     public OrderDTO(Order order) {
         this.orderID = order.getOrderID();
+        this.product = new ViewProductDTO(order.getProduct(), false);
         this.buyerUsername = order.getBuyer().getUsername();
         this.orderDate = order.getOrderDate();
         this.deliveryMethod = order.getDeliveryMethod();

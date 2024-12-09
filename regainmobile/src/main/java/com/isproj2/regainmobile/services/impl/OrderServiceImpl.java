@@ -273,7 +273,7 @@ public class OrderServiceImpl implements OrderService {
         public List<OrderDTO> getOrdersBySeller(Integer sellerID) {
                 List<Order> orders = orderRepository.findByProductSellerUserID(sellerID);
                 return orders.stream()
-                                .map(this::convertToDTO)
+                                .map(this::convertToOrderDTO)
                                 .collect(Collectors.toList());
         }
 
@@ -297,23 +297,23 @@ public class OrderServiceImpl implements OrderService {
                 return dto;
         }
 
-        private OrderDTO convertToDTO(Order order) {
-                OrderDTO orderDTO = new OrderDTO();
-                orderDTO.setOrderID(order.getOrderID());
-                // orderDTO.setProductID(order.getProduct().getProductID());
-                orderDTO.setProduct(new ViewProductDTO(order.getProduct(), false));
-                // orderDTO.setBuyerID(order.getBuyer().getUserID());
-                orderDTO.setBuyerUsername(order.getBuyer().getUsername());
-                orderDTO.setOrderDate(order.getOrderDate());
-                orderDTO.setDeliveryMethod(order.getDeliveryMethod());
-                orderDTO.setDeliveryDate(order.getDeliveryDate());
-                orderDTO.setPaymentMethod(new PaymentDTO(order.getPaymentMethod()));
-                orderDTO.setTotalAmount(order.getTotalAmount().toString());
-                orderDTO.setCurrentStatus(order.getCurrentStatus());
-                orderDTO.setAddress(new AddressDTO(order.getAddress()));
-                // orderDTO.setAddressID(order.getAddress().getAddressID());
-                return orderDTO;
-        }
+        // private OrderDTO convertToDTO(Order order) {
+        // OrderDTO orderDTO = new OrderDTO();
+        // orderDTO.setOrderID(order.getOrderID());
+        // // orderDTO.setProductID(order.getProduct().getProductID());
+        // orderDTO.setProduct(new ViewProductDTO(order.getProduct(), false));
+        // // orderDTO.setBuyerID(order.getBuyer().getUserID());
+        // orderDTO.setBuyerUsername(order.getBuyer().getUsername());
+        // orderDTO.setOrderDate(order.getOrderDate());
+        // orderDTO.setDeliveryMethod(order.getDeliveryMethod());
+        // orderDTO.setDeliveryDate(order.getDeliveryDate());
+        // orderDTO.setPaymentMethod(new PaymentDTO(order.getPaymentMethod()));
+        // orderDTO.setTotalAmount(order.getTotalAmount().toString());
+        // orderDTO.setCurrentStatus(order.getCurrentStatus());
+        // orderDTO.setAddress(new AddressDTO(order.getAddress()));
+        // // orderDTO.setAddressID(order.getAddress().getAddressID());
+        // return orderDTO;
+        // }
 
         // @Override
         // public List<OrderDTO> getOrdersByDeliveryBuyer(String deliveryMethod, Integer
