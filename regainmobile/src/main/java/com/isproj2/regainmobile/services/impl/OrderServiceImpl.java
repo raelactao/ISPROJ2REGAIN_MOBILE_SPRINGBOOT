@@ -1,5 +1,6 @@
 package com.isproj2.regainmobile.services.impl;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,32 +73,68 @@ public class OrderServiceImpl implements OrderService {
 
                 Integer productID = product.getLocation().getAddressID();
 
-                Address address = new Address();
-
                 // Payment payment =
                 // paymentRepository.findById(orderDTO.getPaymentMethod().getId())
                 // .orElseThrow(() -> new ResourceNotFoundException(
                 // "Payment not found with id " + orderDTO.getPaymentMethod()));
 
                 Payment payment = new Payment(orderDTO.getPaymentMethod());
+                if (payment.getPaymentType() == "GCash") {
+
+                }
                 paymentRepository.save(payment);
 
+                Address address = new Address();
                 if (orderDTO.getDeliveryMethod().equals("Buyer Pick-up")) {
-                        address = addressRepository.findByAddressID(productID)
+                        address = product.getLocation();
+                } else if (orderDTO.getDeliveryMethod().equals("Seller Drop-off")) {
+                        address = addressRepository.findByAddressID(orderDTO.getAddress().getAddressID())
                                         .orElseThrow(() -> new ResourceNotFoundException(
                                                         "Address not found with id "
-                                                                        + product.getLocation().getAddressID()));
-                } else if (orderDTO.getDeliveryMethod().equals("Seller Drop-off")) {
-                        address = product.getLocation();
+                                                                        + orderDTO.getAddress().getAddressID()));
                 }
 
                 Order order = new Order(orderDTO, buyer, address, product, payment);
                 order.setOrderDate(Date.valueOf(LocalDate.now())); // Set current timestamp for order date
+                order.setCommissionFee(computeCommissionFee(order));
                 orderRepository.save(order);
                 product.setStatus("Ordered");
                 productRepository.save(product);
 
                 return orderDTO;
+        }
+
+        public BigDecimal computeCommissionFee(Order order) {
+
+                BigDecimal commFee;
+                BigDecimal percentage;
+
+                switch (order.getProduct().getCategory().getName()) {
+                        case "Metal":
+                                percentage = new BigDecimal(0.03);
+                                break;
+                        case "Plastic":
+                                percentage = new BigDecimal(0.025);
+                                break;
+                        case "Paper":
+                                percentage = new BigDecimal(0.02);
+                                break;
+                        case "Glass":
+                                percentage = new BigDecimal(0.02);
+                                break;
+                        case "Electronics":
+                                percentage = new BigDecimal(0.03);
+                                break;
+                        default:
+                                percentage = null;
+                }
+
+                if (percentage != null) {
+                        commFee = order.getTotalAmount().multiply(percentage);
+                } else {
+                        commFee = null;
+                }
+                return commFee;
         }
 
         @Override
@@ -129,6 +167,7 @@ public class OrderServiceImpl implements OrderService {
 
         }
 
+        // being currently used
         @Override
         @Transactional
         public OrderDTO updateOrderStatus(OrderDTO orderDTO, Integer updatedByUserID) {
@@ -155,7 +194,7 @@ public class OrderServiceImpl implements OrderService {
 
                 orderLogRepository.save(orderLog);
 
-                return convertToOrderDTO(updatedOrder);
+                return new OrderDTO(updatedOrder);
         }
 
         private OrderDTO convertToOrderDTO(Order order) {
@@ -168,6 +207,7 @@ public class OrderServiceImpl implements OrderService {
                                 order.getDeliveryDate(),
                                 new PaymentDTO(order.getPaymentMethod()),
                                 order.getTotalAmount().toString(),
+                                order.getCommissionFee().toString(),
                                 order.getCurrentStatus(),
                                 new AddressDTO(order.getAddress()));
         }
@@ -180,7 +220,7 @@ public class OrderServiceImpl implements OrderService {
                 return new OrderDTO(order.getOrderID(), new ViewProductDTO(order.getProduct(), false),
                                 order.getBuyer().getUsername(), order.getOrderDate(), order.getDeliveryMethod(),
                                 order.getDeliveryDate(), new PaymentDTO(order.getPaymentMethod()),
-                                order.getTotalAmount().toString(),
+                                order.getTotalAmount().toString(), order.getCommissionFee().toString(),
                                 order.getCurrentStatus(), new AddressDTO(order.getAddress()));
         }
 

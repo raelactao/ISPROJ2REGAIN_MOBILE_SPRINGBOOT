@@ -45,6 +45,8 @@ public class OrderDTO {
     @lombok.NonNull
     private String totalAmount;
 
+    private String commissionFee;
+
     @lombok.NonNull
     private String currentStatus;
 
@@ -60,6 +62,9 @@ public class OrderDTO {
         this.deliveryDate = order.getDeliveryDate();
         this.paymentMethod = new PaymentDTO(order.getPaymentMethod());
         this.totalAmount = order.getTotalAmount().toString();
+        if (order.getCommissionFee() != null) {
+            this.commissionFee = order.getCommissionFee().toString();
+        }
         this.currentStatus = order.getCurrentStatus();
         this.address = new AddressDTO(order.getAddress());
     }

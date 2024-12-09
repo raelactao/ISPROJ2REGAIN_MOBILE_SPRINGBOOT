@@ -84,9 +84,17 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         createReportCategoryIfNotFound("Suspicious Account");
         createReportCategoryIfNotFound("Fake Location");
         createReportCategoryIfNotFound("Item Wrongly Categorized");
-        createReportCategoryIfNotFound("Selling Prohibited Items");
+        createReportCategoryIfNotFound("Prohibited Listing");
         createReportCategoryIfNotFound("Mispriced Listings");
         createReportCategoryIfNotFound("Offensive Behavior/Content");
+        createReportCategoryIfNotFound("Chat Spam");
+        createReportCategoryIfNotFound("False Transactions attempts");
+        createReportCategoryIfNotFound("Spam Listing");
+        createReportCategoryIfNotFound("Improper Product Name");
+        createReportCategoryIfNotFound("Empty Parcel");
+        createReportCategoryIfNotFound("Outside Transaction");
+        createReportCategoryIfNotFound("Improper Username");
+        createReportCategoryIfNotFound("Selling Prohibited Items");
         createReportCategoryIfNotFound("Phishing Scammer");
         createReportCategoryIfNotFound("Cancelling On Deal");
 
