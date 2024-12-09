@@ -21,6 +21,7 @@ import com.isproj2.regainmobile.dto.ViewOfferDTO;
 import com.isproj2.regainmobile.dto.ViewProductDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Address;
+import com.isproj2.regainmobile.model.Commissions;
 import com.isproj2.regainmobile.model.Offer;
 import com.isproj2.regainmobile.model.Order;
 import com.isproj2.regainmobile.model.OrderLog;
@@ -28,6 +29,7 @@ import com.isproj2.regainmobile.model.Payment;
 import com.isproj2.regainmobile.model.Product;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.repo.AddressRepository;
+import com.isproj2.regainmobile.repo.CommissionsRepository;
 import com.isproj2.regainmobile.repo.OfferRepository;
 import com.isproj2.regainmobile.repo.OrderLogRepository;
 import com.isproj2.regainmobile.repo.OrderRepository;
@@ -59,6 +61,9 @@ public class OrderServiceImpl implements OrderService {
 
         // @Autowired
         // private OfferRepository offerRepository;
+
+        @Autowired
+        private CommissionsRepository commissionsRepository;
 
         @Override
         @Transactional
@@ -188,10 +193,16 @@ public class OrderServiceImpl implements OrderService {
                 // COD: if order status cancelled, payment status = Declined
                 if (order.getPaymentMethod().getPaymentType().equals("Cash on Delivery")) {
                         String paymentStatus = null;
+                        Commissions newComm = null;
                         switch (updatedOrder.getCurrentStatus()) {
                                 case "Received":
                                         paymentStatus = "Paid";
                                         orderPayment.setStatus(paymentStatus);
+                                        newComm = new Commissions(
+                                                        updatedOrder.getProduct().getSeller(),
+                                                        updatedOrder,
+                                                        updatedOrder.getCommissionFee(),
+                                                        "Pending");
                                         break;
                                 case "Cancelled":
                                         paymentStatus = "Declined";
@@ -201,6 +212,9 @@ public class OrderServiceImpl implements OrderService {
                         }
                         if (paymentStatus != null) {
                                 paymentRepository.save(orderPayment);
+                        }
+                        if (newComm != null) {
+                                commissionsRepository.save(newComm);
                         }
 
                 }
