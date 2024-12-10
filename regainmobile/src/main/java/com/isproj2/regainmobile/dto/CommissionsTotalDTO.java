@@ -15,9 +15,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CommissionsTotalDTO {
 
-    private String total;
+    private String totalBal;
 
-    private List<CommissionsDTO> commList;
+    private List<CommissionsDTO> commsList;
 
     // public CommissionsTotalDTO(List<Commisisons>) {
 

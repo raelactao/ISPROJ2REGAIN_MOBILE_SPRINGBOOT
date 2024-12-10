@@ -43,64 +43,61 @@ public class UserController {
     @Autowired
     private ImageValidateService imageValidateService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    // @PutMapping("/update")
+    // public ResponseEntity<UserDTO> updateUser(
+    // @RequestParam Integer id,
+    // @RequestParam(required = false) MultipartFile profileImage,
+    // @RequestParam(required = false) MultipartFile gcashQRcode,
+    // @RequestParam(required = false) String firstName,
+    // @RequestParam(required = false) String lastName,
+    // @RequestParam String username,
+    // @RequestParam(required = false) String email,
+    // @RequestParam(required = false) String role,
+    // @RequestParam(required = false) String password,
+    // @RequestParam(required = false) String phone,
+    // @RequestParam(required = false) LocalDate birthday,
+    // @RequestParam(required = false) String junkshopName) {
 
-//     @PutMapping("/update")
-// public ResponseEntity<UserDTO> updateUser(
-//         @RequestParam Integer id,
-//         @RequestParam(required = false) MultipartFile profileImage,
-//         @RequestParam(required = false) MultipartFile gcashQRcode,
-//         @RequestParam(required = false) String firstName,
-//         @RequestParam(required = false) String lastName,
-//         @RequestParam String username,
-//         @RequestParam(required = false) String email,
-//         @RequestParam(required = false) String role,
-//         @RequestParam(required = false) String password,
-//         @RequestParam(required = false) String phone,
-//         @RequestParam(required = false) LocalDate birthday,
-//         @RequestParam(required = false) String junkshopName) {
+    // try {
+    // // Fetch the existing user
+    // UserDTO userDTO = userService.getUserById(id);
 
-//     try {
-//         // Fetch the existing user
-//         UserDTO userDTO = userService.getUserById(id);
+    // // Update only the provided fields
+    // if (firstName != null) userDTO.setFirstName(firstName);
+    // if (lastName != null) userDTO.setLastName(lastName);
+    // if (junkshopName != null) userDTO.setJunkshopName(junkshopName);
+    // if (email != null) userDTO.setEmail(email);
+    // if (role != null) userDTO.setRole(role);
+    // if (phone != null) userDTO.setPhone(phone);
+    // if (birthday != null) userDTO.setBirthday(birthday);
 
-//         // Update only the provided fields
-//         if (firstName != null) userDTO.setFirstName(firstName);
-//         if (lastName != null) userDTO.setLastName(lastName);
-//         if (junkshopName != null) userDTO.setJunkshopName(junkshopName);
-//         if (email != null) userDTO.setEmail(email);
-//         if (role != null) userDTO.setRole(role);
-//         if (phone != null) userDTO.setPhone(phone);
-//         if (birthday != null) userDTO.setBirthday(birthday);
+    // // Only update password if provided
+    // if (password != null && !password.isEmpty()) {
+    // System.out.println("Updating password...");
+    // userDTO.setPassword(passwordEncoder.encode(password));
+    // } else {
+    // System.out.println("Retaining existing password...");
+    // userDTO.setPassword(userDTO.getPassword()); // Retain existing password
+    // }
 
-//         // Only update password if provided
-//         if (password != null && !password.isEmpty()) {
-//             System.out.println("Updating password...");
-//             userDTO.setPassword(passwordEncoder.encode(password));
-//         } else {
-//             System.out.println("Retaining existing password...");
-//             userDTO.setPassword(userDTO.getPassword()); // Retain existing password
-//         }
+    // // Handle profile image if provided
+    // if (profileImage != null && !profileImage.isEmpty()) {
+    // imageValidateService.validateImageFile(profileImage);
+    // userDTO.setProfileImage(profileImage.getBytes());
+    // }
 
-//         // Handle profile image if provided
-//         if (profileImage != null && !profileImage.isEmpty()) {
-//             imageValidateService.validateImageFile(profileImage);
-//             userDTO.setProfileImage(profileImage.getBytes());
-//         }
+    // // Handle GCASH QR code if provided
+    // if (gcashQRcode != null && !gcashQRcode.isEmpty()) {
+    // imageValidateService.validateImageFile(gcashQRcode);
+    // userDTO.setGcashQRcode(gcashQRcode.getBytes());
+    // }
 
-//         // Handle GCASH QR code if provided
-//         if (gcashQRcode != null && !gcashQRcode.isEmpty()) {
-//             imageValidateService.validateImageFile(gcashQRcode);
-//             userDTO.setGcashQRcode(gcashQRcode.getBytes());
-//         }
-
-//         UserDTO updatedUser = userService.updateUser(userDTO);
-//         return ResponseEntity.ok(updatedUser);
-//     } catch (Exception e) {
-//         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//     }
-// }
+    // UserDTO updatedUser = userService.updateUser(userDTO);
+    // return ResponseEntity.ok(updatedUser);
+    // } catch (Exception e) {
+    // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    // }
+    // }
 
     @PutMapping("/update")
     public ResponseEntity<UserProfileUpdateDTO> updateUser(
@@ -136,6 +133,17 @@ public class UserController {
         }
     }
 
+    @PutMapping("/delete/{userId}")
+    public ResponseModel<Void> deleteUser(@PathVariable Integer userId, @RequestBody UserDTO userDTO) {
+        try {
+            userService.deleteUser(userId, userDTO);
+        } catch (RuntimeException e) {
+            return new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        }
+
+        return new ResponseModel<Void>(HttpStatus.OK.value(), "User deleted successfully");
+    }
+
     @GetMapping("/seller/by-username/{username}")
     public ResponseModel<Integer> getSellerIdByUsername(@PathVariable String username) {
         try {
@@ -161,8 +169,6 @@ public class UserController {
                     "An error occurred while saving the user ID: " + e.getMessage());
         }
     }
-    
-
 
     @GetMapping("/profile-image/{username}")
     public ResponseEntity<String> getProfileImage(@PathVariable String username) {
@@ -189,7 +195,6 @@ public class UserController {
             return new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", null);
         }
     }
-
 
     @GetMapping("/{userId}/reports")
     public ResponseEntity<Map<String, List<?>>> getUserAndListingReports(@PathVariable Integer userId) {

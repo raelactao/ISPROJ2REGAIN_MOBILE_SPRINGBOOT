@@ -26,8 +26,6 @@ public class ViewProductDTO {
 
     private String price;
 
-    private Integer sellerID;
-
     private String sellerUsername; // user
 
     private String description;
