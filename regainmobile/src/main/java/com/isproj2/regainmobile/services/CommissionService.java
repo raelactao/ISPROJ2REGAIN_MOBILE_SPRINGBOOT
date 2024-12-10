@@ -11,4 +11,6 @@ public interface CommissionService {
 
     CommissionsTotalDTO getCommissionsTotal(Integer userId);
 
+    CommissionsTotalDTO addPaymentForCommissions(List<CommissionsDTO> list, Integer userId);
+
 }

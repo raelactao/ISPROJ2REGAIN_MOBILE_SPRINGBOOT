@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.isproj2.regainmobile.dto.CommissionsDTO;
 import com.isproj2.regainmobile.dto.CommissionsTotalDTO;
+import com.isproj2.regainmobile.model.ResponseModel;
 import com.isproj2.regainmobile.services.CommissionService;
 
 @RestController
@@ -33,6 +34,13 @@ public class CommissionsController {
     @GetMapping("/total/{userId}")
     public ResponseEntity<CommissionsTotalDTO> getCommTotalByUser(@PathVariable Integer userId) {
         CommissionsTotalDTO commTotal = commissionService.getCommissionsTotal(userId);
+        return ResponseEntity.ok(commTotal);
+    }
+
+    @PostMapping("/addPayment/{userId}")
+    public ResponseEntity<CommissionsTotalDTO> addPaymentForCommission(@PathVariable Integer userId,
+            @RequestBody List<CommissionsDTO> list) {
+        CommissionsTotalDTO commTotal = commissionService.addPaymentForCommissions(list, userId);
         return ResponseEntity.ok(commTotal);
     }
 

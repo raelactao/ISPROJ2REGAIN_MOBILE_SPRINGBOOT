@@ -2,6 +2,8 @@ package com.isproj2.regainmobile.model;
 
 import java.math.BigDecimal;
 
+import com.isproj2.regainmobile.dto.CommissionsDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -53,4 +55,16 @@ public class Commissions {
     @ManyToOne
     @JoinColumn(name = "payment_id", referencedColumnName = "payment_id")
     private Payment payment;
+
+    public Commissions(CommissionsDTO dto, User user, Order order, Payment payment) {
+        this.commissionID = dto.getCommissionID();
+        this.user = user;
+        this.order = order;
+        this.commissionBalance = new BigDecimal(dto.getCommissionBalance());
+        this.status = dto.getStatus();
+        this.remarks = dto.getRemarks();
+        this.payment = payment;
+
+    }
+
 }
