@@ -63,48 +63,44 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public Page<ChatRoomDTO> getChatRoomsByUserId(Integer userId, Pageable pageable) {
-        System.out.println("Fetching chat rooms for user ID: " + userId);
-        // Fetch paginated chat rooms where the user is either user1 or user2
-        Page<ChatRoom> chatRoomsPage = chatRoomRepository.findByUser1_UserIDOrUser2_UserID(userId, userId, pageable);
-        System.out.println("Found " + chatRoomsPage.getTotalElements() + " chat rooms for user ID: " + userId);
-        
-        return chatRoomsPage.map(chatRoom -> {
-            System.out.println("Processing chat room ID: " + chatRoom.getRoomId());
+public Page<ChatRoomDTO> getChatRoomsByUserId(Integer userId, Pageable pageable) {
+    System.out.println("Fetching chat rooms for user ID: " + userId);
 
-            User user1 = chatRoom.getUser1();
-            User user2 = chatRoom.getUser2();
-            System.out.println("User 1: " + (user1 != null ? user1.getUsername() : "null"));
-            System.out.println("User 2: " + (user2 != null ? user2.getUsername() : "null"));
-        
-            // Ensure user1 and user2 are not null
-            if (user1 == null || user2 == null) {
-                throw new ResourceNotFoundException("Invalid user references in ChatRoom");
-            }
-        
-    
-            // Determine which user is the current logged-in user
-            String otherUsername = (user1.getUserID().equals(userId)) ? user2.getUsername() : user1.getUsername();
-    
-            // Fetch the last message
-            ChatMessage lastMessage = chatMessageRepository.findTopMessageByRoomId(chatRoom.getRoomId());
-            String lastMessageContent = (lastMessage != null && lastMessage.getContent() != null) 
-                ? lastMessage.getContent() 
-                : "No messages yet";
-            String timestamp = (lastMessage != null && lastMessage.getTimestamp() != null)
-                ? lastMessage.getTimestamp().toString()  // Assuming timestamp is of type `LocalDateTime`
-                : null;  // Handle null timestamp case
-    
-            // Create a DTO to return (containing room info and last message)
-            ChatRoomDTO chatRoomDTO = new ChatRoomDTO();
-            chatRoomDTO.setRoomId(chatRoom.getRoomId());
-            chatRoomDTO.setRoomName(otherUsername); // Set the other user's username
-            chatRoomDTO.setLastMessage(lastMessageContent); // Set the last message
-            chatRoomDTO.setTimestamp(timestamp);
-    
-            return chatRoomDTO;
-        });
-    }
+    Page<ChatRoom> chatRoomsPage = chatRoomRepository.findByUser1_UserIDOrUser2_UserID(userId, userId, pageable);
+    System.out.println("Found " + chatRoomsPage.getTotalElements() + " chat rooms for user ID: " + userId);
+
+    return chatRoomsPage.map(chatRoom -> {
+        User user1 = chatRoom.getUser1();
+        User user2 = chatRoom.getUser2();
+        System.out.println("User 1: " + (user1 != null ? user1.getUsername() : "null"));
+        System.out.println("User 2: " + (user2 != null ? user2.getUsername() : "null"));
+
+        // Ensure user1 and user2 are not null
+        if (user1 == null || user2 == null) {
+            throw new ResourceNotFoundException("Invalid user references in ChatRoom");
+        }
+
+        // Determine the display name for the room (the other user's username)
+        String roomName = user1.getUserID().equals(userId) ? user2.getUsername() : user1.getUsername();
+
+        // Fetch the last message
+        ChatMessage lastMessage = chatMessageRepository.findTopMessageByRoomId(chatRoom.getRoomId());
+        String lastMessageContent = (lastMessage != null) ? lastMessage.getContent() : "No messages yet";
+        String timestamp = (lastMessage != null) ? lastMessage.getTimestamp().toString() : null;
+
+        // Create and populate the ChatRoomDTO
+        ChatRoomDTO chatRoomDTO = new ChatRoomDTO();
+        chatRoomDTO.setRoomId(chatRoom.getRoomId());
+        chatRoomDTO.setRoomName(roomName);
+        chatRoomDTO.setLastMessage(lastMessageContent);
+        chatRoomDTO.setTimestamp(timestamp);
+        chatRoomDTO.setUserId1(user1.getUserID());
+        chatRoomDTO.setUserId2(user2.getUserID());
+
+        return chatRoomDTO;
+    });
+}
+
     
 }
 
