@@ -66,7 +66,10 @@ public class CommissionServiceImpl implements CommissionService {
         List<CommissionsDTO> dtoList = userCommissions.stream().map(this::convertToDTO).collect(Collectors.toList());
 
         BigDecimal totalBal = commissionsRepository.sumCommissionsForUser(userId);
-
+        if (totalBal == null) {
+            int nullValue = 0;
+            totalBal = new BigDecimal(nullValue);
+        }
         CommissionsTotalDTO commTotal = new CommissionsTotalDTO(new DecimalFormat("0.00").format(totalBal), dtoList);
 
         return commTotal;
