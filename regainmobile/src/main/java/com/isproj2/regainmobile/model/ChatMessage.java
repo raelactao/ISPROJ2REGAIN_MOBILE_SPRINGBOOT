@@ -3,6 +3,8 @@ package com.isproj2.regainmobile.model;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -41,6 +43,7 @@ public class ChatMessage {
     @Column(name = "content")
     private String content;
 
+    @CreationTimestamp
     @Column(name = "timestamp")
     private Instant timestamp;
 
