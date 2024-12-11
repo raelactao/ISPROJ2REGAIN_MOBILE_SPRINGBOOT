@@ -96,7 +96,8 @@ public class FavoriteServiceImpl implements FavoriteService {
         List<Favorite> favoritesOfUser = favoriteRepository.findByUser(user);
         Collections.reverse(favoritesOfUser);
         for (Favorite fave : favoritesOfUser) {
-            dtoList.add(new ViewProductDTO(fave.getProduct(), fave.getIsFavorite()));
+            if (!fave.getProduct().getStatus().equals("Ordered"))
+                dtoList.add(new ViewProductDTO(fave.getProduct(), fave.getIsFavorite()));
         }
         return dtoList;
     }
