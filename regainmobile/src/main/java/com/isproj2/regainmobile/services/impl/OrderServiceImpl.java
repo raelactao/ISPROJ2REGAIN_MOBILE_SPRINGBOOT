@@ -21,6 +21,7 @@ import com.isproj2.regainmobile.dto.ViewOfferDTO;
 import com.isproj2.regainmobile.dto.ViewProductDTO;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.model.Address;
+import com.isproj2.regainmobile.model.Commissions;
 import com.isproj2.regainmobile.model.Offer;
 import com.isproj2.regainmobile.model.Order;
 import com.isproj2.regainmobile.model.OrderLog;
@@ -28,6 +29,7 @@ import com.isproj2.regainmobile.model.Payment;
 import com.isproj2.regainmobile.model.Product;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.repo.AddressRepository;
+import com.isproj2.regainmobile.repo.CommissionsRepository;
 import com.isproj2.regainmobile.repo.OfferRepository;
 import com.isproj2.regainmobile.repo.OrderLogRepository;
 import com.isproj2.regainmobile.repo.OrderRepository;
@@ -60,6 +62,9 @@ public class OrderServiceImpl implements OrderService {
         // @Autowired
         // private OfferRepository offerRepository;
 
+        @Autowired
+        private CommissionsRepository commissionsRepository;
+
         @Override
         @Transactional
         public OrderDTO createOrder(OrderDTO orderDTO) {
@@ -71,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Product not found with id " + orderDTO.getProduct().getProductID()));
 
-                Integer productID = product.getLocation().getAddressID();
+                // Integer productID = product.getLocation().getAddressID();
 
                 // Payment payment =
                 // paymentRepository.findById(orderDTO.getPaymentMethod().getId())
@@ -188,10 +193,16 @@ public class OrderServiceImpl implements OrderService {
                 // COD: if order status cancelled, payment status = Declined
                 if (order.getPaymentMethod().getPaymentType().equals("Cash on Delivery")) {
                         String paymentStatus = null;
+                        Commissions newComm = null;
                         switch (updatedOrder.getCurrentStatus()) {
                                 case "Received":
                                         paymentStatus = "Paid";
                                         orderPayment.setStatus(paymentStatus);
+                                        newComm = new Commissions(
+                                                        updatedOrder.getProduct().getSeller(),
+                                                        updatedOrder,
+                                                        updatedOrder.getCommissionFee(),
+                                                        "Pending");
                                         break;
                                 case "Cancelled":
                                         paymentStatus = "Declined";
@@ -201,6 +212,9 @@ public class OrderServiceImpl implements OrderService {
                         }
                         if (paymentStatus != null) {
                                 paymentRepository.save(orderPayment);
+                        }
+                        if (newComm != null) {
+                                commissionsRepository.save(newComm);
                         }
 
                 }
@@ -259,7 +273,7 @@ public class OrderServiceImpl implements OrderService {
         public List<OrderDTO> getOrdersBySeller(Integer sellerID) {
                 List<Order> orders = orderRepository.findByProductSellerUserID(sellerID);
                 return orders.stream()
-                                .map(this::convertToDTO)
+                                .map(this::convertToOrderDTO)
                                 .collect(Collectors.toList());
         }
 
@@ -283,23 +297,23 @@ public class OrderServiceImpl implements OrderService {
                 return dto;
         }
 
-        private OrderDTO convertToDTO(Order order) {
-                OrderDTO orderDTO = new OrderDTO();
-                orderDTO.setOrderID(order.getOrderID());
-                // orderDTO.setProductID(order.getProduct().getProductID());
-                orderDTO.setProduct(new ViewProductDTO(order.getProduct(), false));
-                // orderDTO.setBuyerID(order.getBuyer().getUserID());
-                orderDTO.setBuyerUsername(order.getBuyer().getUsername());
-                orderDTO.setOrderDate(order.getOrderDate());
-                orderDTO.setDeliveryMethod(order.getDeliveryMethod());
-                orderDTO.setDeliveryDate(order.getDeliveryDate());
-                orderDTO.setPaymentMethod(new PaymentDTO(order.getPaymentMethod()));
-                orderDTO.setTotalAmount(order.getTotalAmount().toString());
-                orderDTO.setCurrentStatus(order.getCurrentStatus());
-                orderDTO.setAddress(new AddressDTO(order.getAddress()));
-                // orderDTO.setAddressID(order.getAddress().getAddressID());
-                return orderDTO;
-        }
+        // private OrderDTO convertToDTO(Order order) {
+        // OrderDTO orderDTO = new OrderDTO();
+        // orderDTO.setOrderID(order.getOrderID());
+        // // orderDTO.setProductID(order.getProduct().getProductID());
+        // orderDTO.setProduct(new ViewProductDTO(order.getProduct(), false));
+        // // orderDTO.setBuyerID(order.getBuyer().getUserID());
+        // orderDTO.setBuyerUsername(order.getBuyer().getUsername());
+        // orderDTO.setOrderDate(order.getOrderDate());
+        // orderDTO.setDeliveryMethod(order.getDeliveryMethod());
+        // orderDTO.setDeliveryDate(order.getDeliveryDate());
+        // orderDTO.setPaymentMethod(new PaymentDTO(order.getPaymentMethod()));
+        // orderDTO.setTotalAmount(order.getTotalAmount().toString());
+        // orderDTO.setCurrentStatus(order.getCurrentStatus());
+        // orderDTO.setAddress(new AddressDTO(order.getAddress()));
+        // // orderDTO.setAddressID(order.getAddress().getAddressID());
+        // return orderDTO;
+        // }
 
         // @Override
         // public List<OrderDTO> getOrdersByDeliveryBuyer(String deliveryMethod, Integer

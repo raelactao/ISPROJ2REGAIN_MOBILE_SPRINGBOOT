@@ -16,6 +16,7 @@ public interface UserService {
     void addUser(UserDTO user);
 
     // UserDTO updateUser(UserDTO user);
+    void deleteUser(int userId, UserDTO user);
 
     UserDTO login(UserDTO user);
 
@@ -29,7 +30,8 @@ public interface UserService {
 
     byte[] getProfileImageByUsername(String username);
 
-    // void uploadProfileImage(MultipartFile file, Integer userId) throws IOException;
+    // void uploadProfileImage(MultipartFile file, Integer userId) throws
+    // IOException;
 
     // void uploadGCashQR(MultipartFile file, Integer userId) throws IOException;
     int getPenaltyPointsByUserId(Integer userId);

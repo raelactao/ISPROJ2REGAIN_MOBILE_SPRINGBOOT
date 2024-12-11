@@ -42,7 +42,6 @@ public class ViewProductDTO {
 
     private String image;
 
-
     public ViewProductDTO(Integer productID, @NonNull String productName,
             @NonNull String city,
             @NonNull BigDecimal price, @NonNull String username,
