@@ -77,4 +77,15 @@ public class RatingController {
         }
     }
 
+    @GetMapping("/user/{userId}/sent")
+    public ResponseEntity<?> getRatingsGivenByUser(@PathVariable Integer userId) {
+        try {
+            List<RatingDTO> ratings = ratingService.getRatingsGivenByUser(userId);
+            return ResponseEntity.ok(ratings);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while fetching the ratings.");
+        }
+    }
+
 }
