@@ -12,4 +12,5 @@ import com.isproj2.regainmobile.model.Ratings;
 public interface RatingRepository extends JpaRepository<Ratings, Integer> {
     List<Ratings> findByRatedUserID_UserID(Integer ratedUserId);
     Optional<Ratings> findByRatingID(Integer ratingId);
+    List<Ratings> findByRatedByUserID_UserID(Integer ratedByUserId); 
 }

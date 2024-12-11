@@ -8,4 +8,5 @@ public interface RatingService {
     RatingDTO addRating(RatingDTO ratingDTO);
     RatingDTO updateComment(Integer ratingId, String newComment);
     List<RatingDTO> getRatingsByUserId(Integer userId);
+    List<RatingDTO> getRatingsGivenByUser(Integer userId);
 }
