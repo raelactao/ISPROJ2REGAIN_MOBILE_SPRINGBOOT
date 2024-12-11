@@ -1,6 +1,5 @@
 package com.isproj2.regainmobile.controller;
 
-import com.isproj2.regainmobile.model.ChatMessage;
 import com.isproj2.regainmobile.model.Notifications;
 import com.isproj2.regainmobile.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -18,33 +16,33 @@ public class NotificationController {
     @Autowired
     private NotificationService notificationService;
 
-    /**
-     * Fetch unread messages for a user in a specific chat room.
-     */
-    @GetMapping("/{userId}/unread/{roomId}")
-    public ResponseEntity<?> getUnreadMessages(@PathVariable Integer userId, @PathVariable String roomId) {
-        try {
-            List<ChatMessage> unreadMessages = notificationService.getUnreadMessages(userId, roomId);
-            return ResponseEntity.ok(unreadMessages);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error fetching unread messages: " + e.getMessage());
-        }
-    }
+    // /**
+    //  * Fetch unread messages for a user in a specific chat room.
+    //  */
+    // @GetMapping("/{userId}/unread/{roomId}")
+    // public ResponseEntity<?> getUnreadMessages(@PathVariable Integer userId, @PathVariable String roomId) {
+    //     try {
+    //         List<ChatMessage> unreadMessages = notificationService.getUnreadMessages(userId, roomId);
+    //         return ResponseEntity.ok(unreadMessages);
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    //                              .body("Error fetching unread messages: " + e.getMessage());
+    //     }
+    // }
 
-    /**
-     * Mark all messages in a chat room as read for a user.
-     */
-    @PostMapping("/{userId}/markAsRead/{roomId}")
-    public ResponseEntity<?> markChatAsRead(@PathVariable Integer userId, @PathVariable String roomId) {
-        try {
-            notificationService.markChatAsRead(userId, roomId);
-            return ResponseEntity.ok("Chat marked as read.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error marking chat as read: " + e.getMessage());
-        }
-    }
+    // /**
+    //  * Mark all messages in a chat room as read for a user.
+    //  */
+    // @PostMapping("/{userId}/markAsRead/{roomId}")
+    // public ResponseEntity<?> markChatAsRead(@PathVariable Integer userId, @PathVariable String roomId) {
+    //     try {
+    //         notificationService.markChatAsRead(userId, roomId);
+    //         return ResponseEntity.ok("Chat marked as read.");
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    //                              .body("Error marking chat as read: " + e.getMessage());
+    //     }
+    // }
 
     /**
      * Fetch all unread notifications for a user.

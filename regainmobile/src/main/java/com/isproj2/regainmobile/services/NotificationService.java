@@ -1,10 +1,10 @@
 package com.isproj2.regainmobile.services;
 
 import com.isproj2.regainmobile.model.ChatMessage;
-import com.isproj2.regainmobile.model.ChatUserMetadata;
+// import com.isproj2.regainmobile.model.ChatUserMetadata;
 import com.isproj2.regainmobile.model.Notifications;
 import com.isproj2.regainmobile.repo.ChatMessageRepository;
-import com.isproj2.regainmobile.repo.ChatUserMetadataRepository;
+// import com.isproj2.regainmobile.repo.ChatUserMetadataRepository;
 import com.isproj2.regainmobile.repo.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,40 +19,40 @@ public class NotificationService {
     @Autowired
     private ChatMessageRepository chatMessageRepository;
 
-    @Autowired
-    private ChatUserMetadataRepository chatUserMetadataRepository;
+    // @Autowired
+    // private ChatUserMetadataRepository chatUserMetadataRepository;
 
     @Autowired
     private NotificationRepository notificationRepository;
 
-    /**
-     * Get unread chat messages for a user in a room.
-     */
-    public List<ChatMessage> getUnreadMessages(Integer userId, String roomId) {
-        Optional<ChatUserMetadata> metadataOpt = chatUserMetadataRepository.findByUserIdAndRoomId(userId, roomId);
-        Timestamp lastReadAt = metadataOpt.map(ChatUserMetadata::getLastReadAt).orElse(new Timestamp(0));
+    // /**
+    //  * Get unread chat messages for a user in a room.
+    //  */
+    // public List<ChatMessage> getUnreadMessages(Integer userId, String roomId) {
+    //     Optional<ChatUserMetadata> metadataOpt = chatUserMetadataRepository.findByUserIdAndRoomId(userId, roomId);
+    //     Timestamp lastReadAt = metadataOpt.map(ChatUserMetadata::getLastReadAt).orElse(new Timestamp(0));
 
-        return chatMessageRepository.findUnreadMessages(roomId, lastReadAt);
-    }
+    //     return chatMessageRepository.findUnreadMessages(roomId, lastReadAt);
+    // }
 
-    /**
-     * Mark a chat as read by updating the lastReadAt timestamp.
-     */
-    public void markChatAsRead(Integer userId, String roomId) {
-        Timestamp now = new Timestamp(System.currentTimeMillis());
-        Optional<ChatUserMetadata> metadataOpt = chatUserMetadataRepository.findByUserIdAndRoomId(userId, roomId);
+    // /**
+    //  * Mark a chat as read by updating the lastReadAt timestamp.
+    //  */
+    // public void markChatAsRead(Integer userId, String roomId) {
+    //     Timestamp now = new Timestamp(System.currentTimeMillis());
+    //     Optional<ChatUserMetadata> metadataOpt = chatUserMetadataRepository.findByUserIdAndRoomId(userId, roomId);
         
-        if (metadataOpt.isPresent()) {
-            metadataOpt.get().setLastReadAt(now);
-            chatUserMetadataRepository.save(metadataOpt.get());
-        } else {
-            ChatUserMetadata newMetadata = new ChatUserMetadata();
-            newMetadata.setUserId(userId);
-            newMetadata.setRoomId(roomId);
-            newMetadata.setLastReadAt(now);
-            chatUserMetadataRepository.save(newMetadata);
-        }
-    }
+    //     if (metadataOpt.isPresent()) {
+    //         metadataOpt.get().setLastReadAt(now);
+    //         chatUserMetadataRepository.save(metadataOpt.get());
+    //     } else {
+    //         ChatUserMetadata newMetadata = new ChatUserMetadata();
+    //         newMetadata.setUserId(userId);
+    //         newMetadata.setRoomId(roomId);
+    //         newMetadata.setLastReadAt(now);
+    //         chatUserMetadataRepository.save(newMetadata);
+    //     }
+    // }
 
     /**
      * Get unread notifications for a user.
@@ -86,7 +86,7 @@ public class NotificationService {
         notificationRepository.saveAll(unreadNotifications);
     }
 
-    public boolean markNotificationAsRead(Integer notificationId) {
+     public boolean markNotificationAsRead(Integer notificationId) {
         Optional<Notifications> notificationOpt = notificationRepository.findById(notificationId);
         if (notificationOpt.isPresent()) {
             Notifications notification = notificationOpt.get();
