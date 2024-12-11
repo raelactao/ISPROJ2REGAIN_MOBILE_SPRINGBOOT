@@ -24,6 +24,7 @@ import com.isproj2.regainmobile.exceptions.ImageValidateService;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.exceptions.UserAccountNotActiveException;
 import com.isproj2.regainmobile.exceptions.UserAlreadyExistsException;
+import com.isproj2.regainmobile.exceptions.UserBannedException;
 import com.isproj2.regainmobile.model.Role;
 import com.isproj2.regainmobile.model.User;
 import com.isproj2.regainmobile.model.UserID;
@@ -78,11 +79,7 @@ public class UserServiceImpl implements UserService {
         User user = _userRepository.findByUsername(userDTO.getUsername().trim())
                 .orElseThrow(() -> new AuthenticationException());
 
-        Role role = _roleRepository.findByName(user.getRole().getName());
-
-        if (user.getAccountStatus().equals("Deleted")) {
-            throw new AuthenticationException();
-        }
+        // Role role = _roleRepository.findByName(user.getRole().getName());
 
         // if (user.getPassword().matches(userDTO.getPassword()) &&
         // user.getAccountStatus().equals("Active")) {
@@ -98,13 +95,16 @@ public class UserServiceImpl implements UserService {
 
         // Match hashed password
         if (passwordEncoder.matches(userDTO.getPassword(), user.getPassword())
-                && "Active".equals(user.getAccountStatus())) {
+                && ("Active".equals(user.getAccountStatus()) || "Restricted".equals(user.getAccountStatus())
+                        || "Frozen".equals(user.getAccountStatus()))) {
             UserDTO loginUser = new UserDTO(user);
             loginUser.setRole(user.getRole().getName());
             return loginUser;
         } else if (passwordEncoder.matches(userDTO.getPassword(), user.getPassword())
                 && "Pending".equals(user.getAccountStatus())) {
             throw new UserAccountNotActiveException();
+        } else if (user.getAccountStatus().equals("Banned")) {
+            throw new UserBannedException();
         } else {
             throw new AuthenticationException();
         }
@@ -177,6 +177,8 @@ public class UserServiceImpl implements UserService {
         if ((userId == userDTO.getId()) && (passwordEncoder.matches(userDTO.getPassword(), user.getPassword()))) {
             user.setAccountStatus("Deleted");
             _userRepository.save(user);
+        } else {
+            throw new AuthenticationException("Invalid Credentials");
         }
         return;
 

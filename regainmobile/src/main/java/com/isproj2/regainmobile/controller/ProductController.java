@@ -19,7 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.isproj2.regainmobile.dto.ProductDTO;
 import com.isproj2.regainmobile.dto.ViewProductDTO;
 import com.isproj2.regainmobile.model.ResponseModel;
+import com.isproj2.regainmobile.model.User;
+import com.isproj2.regainmobile.repo.UserRepository;
 import com.isproj2.regainmobile.exceptions.ImageValidateService;
+import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
+import com.isproj2.regainmobile.exceptions.UserBannedException;
 import com.isproj2.regainmobile.services.ProductService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,63 +37,68 @@ public class ProductController {
     private ProductService productService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ImageValidateService imageValidateService;
 
-   @PostMapping("/add")
-public ResponseEntity<?> createProduct(
-        @RequestParam("productName") String productName,
-        @RequestParam("description") String description,
-        @RequestParam("weight") String weight,
-        @RequestParam("location") Integer location,
-        @RequestParam("categoryID") Integer categoryID,
-        @RequestParam("price") String price,
-        @RequestParam("canDeliver") Boolean canDeliver,
-        @RequestParam(value = "image", required = false) MultipartFile image,
-        @RequestParam("sellerID") Integer sellerID) {
-    try {
-        // Logging the received data
-        log.info("Received productName: {}", productName);
-        log.info("Received description: {}", description);
-        log.info("Received weight: {}", weight);
-        log.info("Received location: {}", location);
-        log.info("Received categoryID: {}", categoryID);
-        log.info("Received price: {}", price);
-        log.info("Received canDeliver: {}", canDeliver);
-        log.info("Received sellerID: {}", sellerID);
-        if (image != null && !image.isEmpty()) {
-            log.info("Received image: {}", image.getOriginalFilename());
+    @PostMapping("/add")
+    public ResponseEntity<?> createProduct(
+            @RequestParam("productName") String productName,
+            @RequestParam("description") String description,
+            @RequestParam("weight") String weight,
+            @RequestParam("location") Integer location,
+            @RequestParam("categoryID") Integer categoryID,
+            @RequestParam("price") String price,
+            @RequestParam("canDeliver") Boolean canDeliver,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam("sellerID") Integer sellerID) {
+
+        try {
+            // Logging the received data
+            log.info("Received productName: {}", productName);
+            log.info("Received description: {}", description);
+            log.info("Received weight: {}", weight);
+            log.info("Received location: {}", location);
+            log.info("Received categoryID: {}", categoryID);
+            log.info("Received price: {}", price);
+            log.info("Received canDeliver: {}", canDeliver);
+            log.info("Received sellerID: {}", sellerID);
+            if (image != null && !image.isEmpty()) {
+                log.info("Received image: {}", image.getOriginalFilename());
+            }
+
+            // Create ProductDTO from form data
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.setProductName(productName);
+            productDTO.setDescription(description);
+            productDTO.setWeight(weight);
+            productDTO.setLocation(location);
+            productDTO.setCategoryID(categoryID);
+            productDTO.setPrice(price);
+            productDTO.setCanDeliver(canDeliver);
+            productDTO.setSellerID(sellerID);
+
+            // Handle image
+            if (image != null && !image.isEmpty()) {
+                imageValidateService.validateImageFile(image);
+                productDTO.setImage(image.getBytes());
+            }
+
+            // Save the product
+            ProductDTO createdProduct = productService.createProduct(productDTO);
+            log.info("Product created successfully: {}", createdProduct);
+
+            return ResponseEntity.ok(createdProduct);
+        } catch (UserBannedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (Exception e) {
+            // Log the error for debugging
+            log.error("Error occurred while creating product: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error occurred while creating product: " + e.getMessage());
         }
-
-        // Create ProductDTO from form data
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setProductName(productName);
-        productDTO.setDescription(description);
-        productDTO.setWeight(weight);
-        productDTO.setLocation(location);
-        productDTO.setCategoryID(categoryID);
-        productDTO.setPrice(price);
-        productDTO.setCanDeliver(canDeliver);
-        productDTO.setSellerID(sellerID);
-
-        // Handle image
-        if (image != null && !image.isEmpty()) {
-            imageValidateService.validateImageFile(image);
-            productDTO.setImage(image.getBytes());
-        }
-
-        // Save the product
-        ProductDTO createdProduct = productService.createProduct(productDTO);
-        log.info("Product created successfully: {}", createdProduct);
-
-        return ResponseEntity.ok(createdProduct);
-    } catch (Exception e) {
-        // Log the error for debugging
-        log.error("Error occurred while creating product: ", e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error occurred while creating product: " + e.getMessage());
     }
-}
-
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ProductDTO> updateProduct(
@@ -182,7 +191,6 @@ public ResponseEntity<?> createProduct(
             @RequestParam Integer userId) {
         return productService.getViewProductsByCategory(category, userId);
     }
-    
 
     @GetMapping("/search")
     public ResponseEntity<List<ViewProductDTO>> searchProducts(
