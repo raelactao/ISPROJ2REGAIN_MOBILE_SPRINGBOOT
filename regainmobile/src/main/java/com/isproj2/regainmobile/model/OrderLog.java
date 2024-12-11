@@ -45,7 +45,7 @@ public class OrderLog {
     private String prevStatus;
 
     @ManyToOne
-    @JoinColumn(name = "updated_by_user", referencedColumnName = "user_id", nullable = false)
+    @JoinColumn(name = "updated_by_user", referencedColumnName = "user_id", nullable = true)
     private User updatedByUser;
 
     @lombok.NonNull
