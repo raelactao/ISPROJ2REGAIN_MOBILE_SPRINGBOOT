@@ -16,4 +16,5 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     Order findByProductProductID(Integer prodId);
 
+    List<Order> findByCurrentStatus(String currentStatus);
 }

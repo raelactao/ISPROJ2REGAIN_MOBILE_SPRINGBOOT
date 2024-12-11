@@ -16,6 +16,7 @@ import com.isproj2.regainmobile.dto.ProductDTO;
 import com.isproj2.regainmobile.dto.ViewProductDTO;
 import com.isproj2.regainmobile.exceptions.ImageValidateService;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
+import com.isproj2.regainmobile.exceptions.UserBannedException;
 import com.isproj2.regainmobile.model.Address;
 import com.isproj2.regainmobile.model.Category;
 import com.isproj2.regainmobile.model.Favorite;
@@ -62,6 +63,10 @@ public class ProductServiceImpl implements ProductService {
                 Address loc = addressRepository.findById(productDTO.getLocation())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Address not found with id " + productDTO.getLocation()));
+
+                if (seller.getAccountStatus().equals("Restricted") || seller.getAccountStatus().equals("Frozen")) {
+                        throw new UserBannedException("Your account is currently unable to use this function.");
+                }
 
                 Product product = new Product(productDTO, seller, loc, categ);
                 product.setStatus("Pending");
@@ -235,29 +240,28 @@ public class ProductServiceImpl implements ProductService {
 
         @Override
         public List<ViewProductDTO> getViewProductsByCategory(String category, Integer userId) {
-        List<Product> products;
+                List<Product> products;
 
-        if (category == null || category.isEmpty()) {
-                // Fetch all active products
-                products = productRepository.findByStatus("Active");
-        } else {
-                // Fetch products by category and status "Active"
-                products = productRepository.findByCategoryNameAndStatus(category, "Active");
+                if (category == null || category.isEmpty()) {
+                        // Fetch all active products
+                        products = productRepository.findByStatus("Active");
+                } else {
+                        // Fetch products by category and status "Active"
+                        products = productRepository.findByCategoryNameAndStatus(category, "Active");
+                }
+
+                // Fetch the user's favorites
+                List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
+
+                // Convert products to ViewProductDTO and mark as favorite if applicable
+                return products.stream()
+                                .map(product -> {
+                                        boolean isFavorited = userFaves.stream()
+                                                        .anyMatch(fave -> fave.getProduct().equals(product));
+                                        return new ViewProductDTO(product, isFavorited);
+                                })
+                                .collect(Collectors.toList());
         }
-
-        // Fetch the user's favorites
-        List<Favorite> userFaves = favoriteRepository.findByUser(userRepository.findByUserID(userId));
-
-        // Convert products to ViewProductDTO and mark as favorite if applicable
-        return products.stream()
-                .map(product -> {
-                        boolean isFavorited = userFaves.stream()
-                                .anyMatch(fave -> fave.getProduct().equals(product));
-                        return new ViewProductDTO(product, isFavorited);
-                })
-                .collect(Collectors.toList());
-        }
-
 
         @Override
         public List<ViewProductDTO> searchViewProducts(String searchTerm, Integer userId) {
