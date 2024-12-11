@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.isproj2.regainmobile.dto.UserDTO;
 import com.isproj2.regainmobile.dto.UserIDDTO;
 import com.isproj2.regainmobile.dto.UserProfileUpdateDTO;
+import com.isproj2.regainmobile.exceptions.AuthenticationException;
 import com.isproj2.regainmobile.exceptions.ImageValidateService;
 import com.isproj2.regainmobile.exceptions.ResourceNotFoundException;
 import com.isproj2.regainmobile.exceptions.UserAlreadyExistsException;
@@ -137,6 +138,8 @@ public class UserController {
     public ResponseModel<Void> deleteUser(@PathVariable Integer userId, @RequestBody UserDTO userDTO) {
         try {
             userService.deleteUser(userId, userDTO);
+        } catch (AuthenticationException e) {
+            return new ResponseModel<>(HttpStatus.FORBIDDEN.value(), e.getMessage());
         } catch (RuntimeException e) {
             return new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
